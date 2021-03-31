@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="506.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TabPane prefHeight="417.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="0.0">
+        <tabs>
+          <Tab text="Appointments">
+            <content>
+                  <TabPane>
+                     <tabs>
+                        <Tab closable="false" text="All Appointments">
+                           <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="346.0" prefWidth="734.0">
+                                 <children>
+                                    <Button disable="true" layoutX="403.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Modify" />
+                                    <Button disable="true" layoutX="467.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" text="Delete" />
+                                    <TableView layoutY="46.0" prefHeight="311.0" prefWidth="740.0">
+                                      <columns>
+                                        <TableColumn prefWidth="101.0" text="Appointment ID" />
+                                        <TableColumn prefWidth="74.0" text="Title" />
+                                          <TableColumn prefWidth="74.0" text="Description" />
+                                          <TableColumn prefWidth="74.0" text="Location" />
+                                          <TableColumn prefWidth="74.0" text="Contact" />
+                                          <TableColumn prefWidth="54.0" text="Type" />
+                                          <TableColumn prefWidth="98.0" text="Start Date/Time" />
+                                          <TableColumn prefWidth="92.0" text="End Date/Time" />
+                                          <TableColumn prefWidth="91.0" text="Customer Id" />
+                                      </columns>
+                                    </TableView>
+                                    <TextField layoutX="530.0" layoutY="14.0" prefHeight="25.0" prefWidth="190.0" promptText="Search by ID or Name" />
+                                    <DatePicker layoutX="152.0" layoutY="14.0" prefHeight="25.0" prefWidth="137.0" promptText="Select a week" showWeekNumbers="true" />
+                                    <Label layoutX="14.0" layoutY="18.0" text="View by " />
+                                    <ComboBox layoutX="59.0" layoutY="14.0" prefHeight="25.0" prefWidth="77.0" promptText="Week" />
+                                    <Label layoutX="300.0" layoutY="18.0" text="&lt;Selected Time&gt;" />
+                                 </children></AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab closable="false" text="New Appointment">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="21.0" layoutY="22.0" text="Appointment ID" />
+                                    <TextField disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
+                                    <Label layoutX="21.0" layoutY="53.0" text="Title" />
+                                    <TextField layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <Label layoutX="21.0" layoutY="115.0" text="Location" />
+                                    <Label layoutX="21.0" layoutY="146.0" text="Contact" />
+                                    <Label layoutX="21.0" layoutY="208.0" text="Start Date and Time" />
+                                    <Label layoutX="21.0" layoutY="177.0" text="Type" />
+                                    <Button layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
+                                    <Label disable="true" layoutX="460.0" layoutY="53.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="84.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="115.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="146.0" text="Please select a contact" textFill="RED" />
+                                    <ComboBox editable="true" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Search by ID or Name" />
+                                    <Label layoutX="21.0" layoutY="84.0" text="Description" />
+                                    <Label layoutX="21.0" layoutY="239.0" text="End Date and Time" />
+                                    <Label layoutX="21.0" layoutY="270.0" text="Customer ID" />
+                                    <TextField layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <DatePicker layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <DatePicker layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <TextField disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
+                                    <Label disable="true" layoutX="460.0" layoutY="177.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="208.0" text="Please select date/time" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="239.0" text="Please select date/time" textFill="RED" />
+                                    <TextField layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <TextField layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <ChoiceBox layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <ChoiceBox layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                        <Tab closable="false" disable="true" text="Modify Appointment">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="21.0" layoutY="22.0" text="Appointment ID" />
+                                    <TextField disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
+                                    <Label layoutX="21.0" layoutY="53.0" text="Title" />
+                                    <TextField layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <Label layoutX="21.0" layoutY="115.0" text="Location" />
+                                    <Label layoutX="21.0" layoutY="146.0" text="Contact" />
+                                    <Label layoutX="21.0" layoutY="208.0" text="Start Date and Time" />
+                                    <Label layoutX="21.0" layoutY="177.0" text="Type" />
+                                    <Button layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
+                                    <Label disable="true" layoutX="460.0" layoutY="53.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="84.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="115.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="146.0" text="Please select a contact" textFill="RED" />
+                                    <ComboBox editable="true" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Search by ID or Name" />
+                                    <Label layoutX="21.0" layoutY="84.0" text="Description" />
+                                    <Label layoutX="21.0" layoutY="239.0" text="End Date and Time" />
+                                    <Label layoutX="21.0" layoutY="270.0" text="Customer ID" />
+                                    <TextField layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <DatePicker layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <DatePicker layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <TextField disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
+                                    <Label disable="true" layoutX="460.0" layoutY="177.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="208.0" text="Please select date/time" textFill="RED" />
+                                    <Label disable="true" layoutX="460.0" layoutY="239.0" text="Please select date/time" textFill="RED" />
+                                    <TextField layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <TextField layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <ChoiceBox layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <ChoiceBox layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+            </content>
+          </Tab>
+            <Tab text="Customers">
+               <content>
+                  <TabPane layoutY="14.0" prefHeight="376.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="All Customers">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <TableView layoutY="46.0" prefHeight="313.0" prefWidth="734.0">
+                                      <columns>
+                                        <TableColumn prefWidth="75.0" text="Customer ID" />
+                                        <TableColumn prefWidth="118.0" text="Name" />
+                                          <TableColumn prefWidth="97.0" text="Phone Number" />
+                                          <TableColumn prefWidth="116.0" text="Address" />
+                                          <TableColumn prefWidth="74.0" text="Postal Code" />
+                                          <TableColumn prefWidth="121.0" text="First Level Division" />
+                                          <TableColumn prefWidth="125.0" text="Country" />
+                                      </columns>
+                                    </TableView>
+                                    <Button disable="true" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Modify Customer" />
+                                    <Button disable="true" layoutX="132.0" layoutY="14.0" mnemonicParsing="false" text="Delete Customer" />
+                                    <TextField layoutX="505.0" layoutY="14.0" prefHeight="25.0" prefWidth="215.0" promptText="Search by ID or Name..." />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                      <Tab text="New Customer">
+                        <content>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="21.0" layoutY="22.0" text="Customer ID" />
+                                    <TextField disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
+                                    <TextField layoutX="146.0" layoutY="57.0" />
+                                    <Label layoutX="22.0" layoutY="61.0" text="Name" />
+                                    <TextField layoutX="146.0" layoutY="99.0" />
+                                    <TextField layoutX="146.0" layoutY="139.0" />
+                                    <TextField layoutX="146.0" layoutY="180.0" />
+                                    <ComboBox layoutX="146.0" layoutY="224.0" prefWidth="150.0" />
+                                    <ComboBox layoutX="146.0" layoutY="268.0" prefWidth="150.0" />
+                                    <Label layoutX="24.0" layoutY="103.0" text="Phone Number" />
+                                    <Label layoutX="24.0" layoutY="143.0" text="Address" />
+                                    <Label layoutX="22.0" layoutY="184.0" text="Postal Code" />
+                                    <Label layoutX="24.0" layoutY="272.0" text="First-Level Division" />
+                                    <Label layoutX="24.0" layoutY="228.0" text="Country" />
+                                    <Button layoutX="20.0" layoutY="313.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Customer" />
+                                    <Label disable="true" layoutX="317.0" layoutY="61.0" text="Please use a valid character" textFill="RED" />
+                                    <Label disable="true" layoutX="317.0" layoutY="103.0" text="Please use a valid character" textFill="RED" />
+                                    <Label disable="true" layoutX="317.0" layoutY="143.0" text="Please use a valid character" textFill="RED" />
+                                    <Label disable="true" layoutX="317.0" layoutY="184.0" text="Please use a valid character" textFill="RED" />
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                        <Tab disable="true" text="Modify Customer">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                 <children>
+                                    <Label layoutX="21.0" layoutY="22.0" text="Customer ID" />
+                                    <TextField disable="true" layoutX="146.0" layoutY="18.0" promptText="&lt;Existing Id Goes Here&gt;" />
+                                    <TextField layoutX="146.0" layoutY="57.0" />
+                                    <Label layoutX="22.0" layoutY="61.0" text="Name" />
+                                    <TextField layoutX="146.0" layoutY="99.0" />
+                                    <TextField layoutX="146.0" layoutY="139.0" />
+                                    <TextField layoutX="146.0" layoutY="180.0" />
+                                    <ComboBox layoutX="146.0" layoutY="224.0" prefWidth="150.0" />
+                                    <ComboBox layoutX="146.0" layoutY="268.0" prefWidth="150.0" />
+                                    <Label layoutX="24.0" layoutY="103.0" text="Phone Number" />
+                                    <Label layoutX="24.0" layoutY="143.0" text="Address" />
+                                    <Label layoutX="22.0" layoutY="184.0" text="Postal Code" />
+                                    <Label layoutX="24.0" layoutY="272.0" text="First-Level Division" />
+                                    <Label layoutX="24.0" layoutY="228.0" text="Country" />
+                                    <Button layoutX="20.0" layoutY="313.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save Changes to Customer" />
+                                    <Label disable="true" layoutX="321.0" layoutY="61.0" text="Please use a valid character" textFill="RED" />
+                                    <Label disable="true" layoutX="321.0" layoutY="103.0" text="Please use a valid character" textFill="RED" />
+                                    <Label disable="true" layoutX="321.0" layoutY="143.0" text="Please use a valid character" textFill="RED" />
+                                    <Label disable="true" layoutX="321.0" layoutY="184.0" text="Please use a valid character" textFill="RED" />
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <ScrollPane layoutX="11.0" layoutY="428.0" prefHeight="64.0" prefWidth="711.0">
+        <content>
+          <AnchorPane fx:id="alertPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="692.0">
+               <children>
+                  <Label text="Hello, &lt;User&gt;.  Alerts will be displayed in this window.  All times throughout this application are in local user's time zone." textFill="#616161" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="1.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+   </children>
+   <effect>
+      <ColorAdjust />
+   </effect>
+</AnchorPane>
