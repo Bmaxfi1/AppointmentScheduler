@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane fx:id="MainScene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="232.0" prefWidth="387.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Label layoutX="69.0" layoutY="113.0" prefHeight="24.0" prefWidth="90.0" text="User ID" />
+      <Label layoutX="69.0" layoutY="149.0" text="Password" />
+      <TextField layoutX="159.0" layoutY="113.0" />
+      <TextField layoutX="159.0" layoutY="145.0" />
+      <Label layoutX="69.0" layoutY="33.0" prefHeight="25.0" prefWidth="240.0" text="AppointmentScheduler" textAlignment="CENTER">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label disable="true" layoutX="69.0" layoutY="214.0" text="Incorrect User ID or Password" textFill="RED" />
+      <Label layoutX="69.0" layoutY="73.0" text="Your time zone was identified as " />
+      <Label layoutX="244.0" layoutY="73.0" text="&lt;Timezone Here&gt;" />
+      <Button defaultButton="true" layoutX="69.0" layoutY="183.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="240.0" text="Log In" />
+   </children>
+</AnchorPane>
