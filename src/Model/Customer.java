@@ -9,10 +9,10 @@ public class Customer {
     private String name;
     private String address;
     private int postalCode;
-    private int phoneNumber;
+    private long phoneNumber;
 
     //constructor
-    public Customer(int customerId, String country, String firstLevelDivision, String name, String address, int postalCode, int phoneNumber) {
+    public Customer(int customerId, String country, String firstLevelDivision, String name, String address, int postalCode, long phoneNumber) {
         this.customerId = customerId;
         this.country = country;
         this.firstLevelDivision = firstLevelDivision;
@@ -47,7 +47,7 @@ public class Customer {
         return postalCode;
     }
 
-    public int getPhoneNumber() {
+    public long getPhoneNumber() {
         return phoneNumber;
     }
 

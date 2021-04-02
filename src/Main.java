@@ -1,3 +1,6 @@
+import Model.Appointment;
+import Model.AppointmentList;
+import Model.CustomerList;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,15 +17,17 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        //load window
         Parent root = FXMLLoader.load(getClass().getResource("View/mainWindow.fxml"));
-        System.out.println("done1");
         primaryStage.setTitle("Hello World");
         primaryStage.setScene(new Scene(root, 750, 500));
         primaryStage.show();
-    }
 
+        //build the lists
+        CustomerList customerList = new CustomerList();
+        AppointmentList appointmentList = new AppointmentList();
 
-    public static void main(String[] args) {
-        launch(args);
+        //load the demo lists
+
     }
 }
