@@ -1,6 +1,9 @@
 package Model;
 
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.util.List;
 
 /**
@@ -8,7 +11,7 @@ import java.util.List;
  */
 public class CustomerList {
 
-    private static List<Customer> customerList;
+    private static ObservableList<Customer> customerList = FXCollections.observableArrayList();
 
     /**
      *
@@ -16,5 +19,9 @@ public class CustomerList {
      */
     public void addCustomer(Customer customerToAdd){
         customerList.add(customerToAdd);
+    }
+
+    public Customer getCustomer(int index){
+        return customerList.get(index);
     }
 }

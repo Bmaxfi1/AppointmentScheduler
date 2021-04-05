@@ -1,5 +1,7 @@
 package Model;
 
+import javafx.collections.FXCollections;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +10,7 @@ import java.util.List;
  */
 public class AppointmentList {
 
-    private static List<Appointment> appointmentList;
+    private static List<Appointment> appointmentList = FXCollections.observableArrayList();
 
     /**
      *

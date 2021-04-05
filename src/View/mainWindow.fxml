@@ -6,9 +6,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="506.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TabPane prefHeight="417.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="0.0">
+      <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="0.0">
         <tabs>
           <Tab text="Appointments">
             <content>
@@ -207,7 +207,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <ScrollPane layoutX="11.0" layoutY="428.0" prefHeight="64.0" prefWidth="711.0">
+      <ScrollPane fitToWidth="true" layoutX="11.0" layoutY="428.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="64.0" prefWidth="711.0">
         <content>
           <AnchorPane fx:id="alertPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="692.0">
                <children>

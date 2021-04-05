@@ -1,8 +1,6 @@
 package Model;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This is just a class for loading a sample database to the application, for debugging or demonstration purposes.
@@ -10,8 +8,8 @@ import java.util.List;
 
 public abstract class DemoData {
 
-    public static List<Customer> getDemoCustomerList() {
-        List<Customer> demoCustomerList = new ArrayList<>();
+    public static void addDemoCustomers(CustomerList customerList) {
+
         Customer a = new Customer(10001,
                 "USA",
                 "Utah",
@@ -36,20 +34,20 @@ public abstract class DemoData {
                 24000,
                 4001234567L);
 
-        demoCustomerList.add(a);
-        demoCustomerList.add(b);
-        demoCustomerList.add(c);
-
-        return demoCustomerList;
+        customerList.addCustomer(a);
+        customerList.addCustomer(b);
+        customerList.addCustomer(c);
     }
 
-    public static List<Appointment> getAppointmentList(){
-        List<Appointment> appointmentList = new ArrayList<>();
+    public static void addDemoAppointments(AppointmentList appointmentList){
+        CustomerList customerList = new CustomerList();
+        DemoData.addDemoCustomers(customerList);
+
         Appointment a = new Appointment(100001,
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                getDemoCustomerList().get(0),
+                customerList.getCustomer(0),
                 "Phone",
                 LocalDateTime.now(),
                 LocalDateTime.now());
@@ -57,7 +55,7 @@ public abstract class DemoData {
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                getDemoCustomerList().get(0),
+                customerList.getCustomer(0),
                 "Phone",
                 LocalDateTime.now(),
                 LocalDateTime.now());
@@ -65,15 +63,14 @@ public abstract class DemoData {
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                getDemoCustomerList().get(0),
+                customerList.getCustomer(0),
                 "Phone",
                 LocalDateTime.now(),
                 LocalDateTime.now());
 
-        appointmentList.add(a);
-        appointmentList.add(b);
-        appointmentList.add(c);
-
-        return appointmentList;
+        appointmentList.addAppointment(a);
+        appointmentList.addAppointment(b);
+        appointmentList.addAppointment(c);
     }
+
 }
