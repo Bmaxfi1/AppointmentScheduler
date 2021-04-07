@@ -6,21 +6,21 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="mainAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="506.0" prefWidth="734.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainWindowController">
    <children>
-      <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="0.0">
+      <TabPane fx:id="mainTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="0.0">
         <tabs>
-          <Tab text="Appointments">
+          <Tab fx:id="appointmentsTab" text="Appointments">
             <content>
-                  <TabPane>
+                  <TabPane fx:id="appointmentsTabPane">
                      <tabs>
-                        <Tab closable="false" text="All Appointments">
+                        <Tab fx:id="allAppointmentsTab" closable="false" text="All Appointments">
                            <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="346.0" prefWidth="734.0">
                                  <children>
-                                    <Button disable="true" layoutX="403.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Modify" />
-                                    <Button disable="true" layoutX="467.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" text="Delete" />
-                                    <TableView layoutY="46.0" prefHeight="311.0" prefWidth="740.0">
+                                    <Button fx:id="modifyButton" disable="true" layoutX="403.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Modify" />
+                                    <Button fx:id="deleteButton" disable="true" layoutX="467.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" text="Delete" />
+                                    <TableView fx:id="allAppointmentsTable" layoutY="46.0" prefHeight="311.0" prefWidth="740.0">
                                       <columns>
                                         <TableColumn prefWidth="101.0" text="Appointment ID" />
                                         <TableColumn prefWidth="74.0" text="Title" />
@@ -33,53 +33,53 @@
                                           <TableColumn prefWidth="91.0" text="Customer Id" />
                                       </columns>
                                     </TableView>
-                                    <TextField layoutX="530.0" layoutY="14.0" prefHeight="25.0" prefWidth="190.0" promptText="Search by ID or Name" />
-                                    <DatePicker layoutX="152.0" layoutY="14.0" prefHeight="25.0" prefWidth="137.0" promptText="Select a week" showWeekNumbers="true" />
+                                    <TextField fx:id="searchBox" layoutX="530.0" layoutY="14.0" prefHeight="25.0" prefWidth="190.0" promptText="Search by ID or Name" />
+                                    <DatePicker fx:id="datePicker" layoutX="152.0" layoutY="14.0" prefHeight="25.0" prefWidth="137.0" promptText="Select a week" showWeekNumbers="true" />
                                     <Label layoutX="14.0" layoutY="18.0" text="View by " />
-                                    <ComboBox layoutX="59.0" layoutY="14.0" prefHeight="25.0" prefWidth="77.0" promptText="Week" />
-                                    <Label layoutX="300.0" layoutY="18.0" text="&lt;Selected Time&gt;" />
+                                    <ComboBox fx:id="viewSelection" layoutX="59.0" layoutY="14.0" prefHeight="25.0" prefWidth="77.0" promptText="Week" />
+                                    <Label fx:id="userTimeZone" layoutX="300.0" layoutY="18.0" text="&lt;Selected Time&gt;" />
                                  </children></AnchorPane>
                            </content>
                         </Tab>
-                        <Tab closable="false" text="New Appointment">
+                        <Tab fx:id="addNewAppointmentTab" closable="false" text="New Appointment">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <Label layoutX="21.0" layoutY="22.0" text="Appointment ID" />
-                                    <TextField disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
+                                    <TextField fx:id="idField" disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
                                     <Label layoutX="21.0" layoutY="53.0" text="Title" />
-                                    <TextField layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="descriptionField" layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
                                     <Label layoutX="21.0" layoutY="115.0" text="Location" />
                                     <Label layoutX="21.0" layoutY="146.0" text="Contact" />
                                     <Label layoutX="21.0" layoutY="208.0" text="Start Date and Time" />
                                     <Label layoutX="21.0" layoutY="177.0" text="Type" />
-                                    <Button layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
-                                    <Label disable="true" layoutX="460.0" layoutY="53.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="84.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="115.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="146.0" text="Please select a contact" textFill="RED" />
-                                    <ComboBox editable="true" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Search by ID or Name" />
+                                    <Button fx:id="saveButton" layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
+                                    <Label fx:id="titleErrorMessage" disable="true" layoutX="460.0" layoutY="53.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label fx:id="descriptionErrorMessage" disable="true" layoutX="460.0" layoutY="84.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label fx:id="locationErrorMessage" disable="true" layoutX="460.0" layoutY="115.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label fx:id="contactErrorMessage" disable="true" layoutX="460.0" layoutY="146.0" text="Please select a contact" textFill="RED" />
+                                    <ComboBox fx:id="contactSelector" editable="true" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Search by ID or Name" />
                                     <Label layoutX="21.0" layoutY="84.0" text="Description" />
                                     <Label layoutX="21.0" layoutY="239.0" text="End Date and Time" />
                                     <Label layoutX="21.0" layoutY="270.0" text="Customer ID" />
-                                    <TextField layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <TextField layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <TextField layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <DatePicker layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
-                                    <DatePicker layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
-                                    <TextField disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
-                                    <Label disable="true" layoutX="460.0" layoutY="177.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="208.0" text="Please select date/time" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="239.0" text="Please select date/time" textFill="RED" />
-                                    <TextField layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
-                                    <TextField layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
-                                    <ChoiceBox layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
-                                    <ChoiceBox layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <TextField fx:id="titleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="locationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="typeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <DatePicker fx:id="startDateField" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <DatePicker fx:id="endDateField" layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <TextField fx:id="customerIdField" disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
+                                    <Label fx:id="typeErrorMessage" disable="true" layoutX="460.0" layoutY="177.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label fx:id="startErrorMessage" disable="true" layoutX="460.0" layoutY="208.0" text="Please select date/time" textFill="RED" />
+                                    <Label fx:id="endErrorMessage" disable="true" layoutX="460.0" layoutY="239.0" text="Please select date/time" textFill="RED" />
+                                    <TextField fx:id="startTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <TextField fx:id="endTimeField" layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <ChoiceBox fx:id="startAmOrPm" layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <ChoiceBox fx:id="endAmOrPm" layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
                                  </children>
                               </AnchorPane>
                            </content>
                         </Tab>
-                        <Tab closable="false" disable="true" text="Modify Appointment">
+                        <Tab fx:id="modifyAppointmentTab" closable="false" disable="true" text="Modify Appointment">
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -121,7 +121,7 @@
                   </TabPane>
             </content>
           </Tab>
-            <Tab text="Customers">
+            <Tab fx:id="customersTab" text="Customers">
                <content>
                   <TabPane layoutY="14.0" prefHeight="376.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
@@ -129,7 +129,7 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <TableView layoutY="46.0" prefHeight="313.0" prefWidth="734.0">
+                                    <TableView fx:id="allCustomersTable" layoutY="46.0" prefHeight="313.0" prefWidth="734.0">
                                       <columns>
                                         <TableColumn prefWidth="75.0" text="Customer ID" />
                                         <TableColumn prefWidth="118.0" text="Name" />
@@ -207,13 +207,13 @@
             </Tab>
         </tabs>
       </TabPane>
-      <ScrollPane fitToWidth="true" layoutX="11.0" layoutY="428.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="64.0" prefWidth="711.0">
+      <ScrollPane fx:id="alertScrollPane" fitToWidth="true" layoutX="11.0" layoutY="428.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="64.0" prefWidth="711.0">
         <content>
-          <AnchorPane fx:id="alertPane" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="692.0">
+            <VBox fx:id="alertMessages" prefHeight="18.0" prefWidth="709.0">
                <children>
-                  <Label text="Hello, &lt;User&gt;.  Alerts will be displayed in this window.  All times throughout this application are in local user's time zone." textFill="#616161" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="1.0" />
+                  <Label fx:id="initialAlertMessage" text="Hello, &lt;User&gt;.  Alerts will be displayed in this window.  All times throughout this application are in local user's time zone." textFill="#616161" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="1.0" />
                </children>
-            </AnchorPane>
+            </VBox>
         </content>
       </ScrollPane>
    </children>

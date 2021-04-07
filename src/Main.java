@@ -32,25 +32,6 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        //login logic
-        //Boolean awaitingLogin = false;
-        //while (!awaitingLogin) {
-        //}
-
-        //load main window
-        //Parent mainScene = FXMLLoader.load(getClass().getResource("View/mainWindow.fxml"));
-        //primaryStage.setTitle("AppointmentScheduler");
-        //primaryStage.setScene(new Scene(mainScene, 734, 500));
-        //primaryStage.setResizable(false);
-        //primaryStage.show();
-
-        //build the lists of customers and appointments
-        CustomerList customerList = new CustomerList();
-        AppointmentList appointmentList = new AppointmentList();
-
-        //load demo data into lists
-        DemoData.addDemoCustomers(customerList);
-        DemoData.addDemoAppointments(appointmentList);
 
 
 

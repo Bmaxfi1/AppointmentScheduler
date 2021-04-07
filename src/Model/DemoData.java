@@ -1,5 +1,8 @@
 package Model;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.time.LocalDateTime;
 
 /**
@@ -8,7 +11,7 @@ import java.time.LocalDateTime;
 
 public abstract class DemoData {
 
-    public static void addDemoCustomers(CustomerList customerList) {
+    public static ObservableList<Customer> getDemoCustomerList() {
 
         Customer a = new Customer(10001,
                 "USA",
@@ -34,20 +37,21 @@ public abstract class DemoData {
                 24000,
                 4001234567L);
 
-        customerList.addCustomer(a);
-        customerList.addCustomer(b);
-        customerList.addCustomer(c);
+        ObservableList<Customer> demoCustomerList = FXCollections.observableArrayList();
+        demoCustomerList.addAll(a, b, c);
+        return demoCustomerList;
+
     }
 
-    public static void addDemoAppointments(AppointmentList appointmentList){
-        CustomerList customerList = new CustomerList();
-        DemoData.addDemoCustomers(customerList);
+    public static ObservableList<Appointment> getDemoAppointmentList(){
+        ObservableList<Customer> customerList;
+        customerList = Model.DemoData.getDemoCustomerList();
 
         Appointment a = new Appointment(100001,
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                customerList.getCustomer(0),
+                customerList.get(0),
                 "Phone",
                 LocalDateTime.now(),
                 LocalDateTime.now());
@@ -55,7 +59,7 @@ public abstract class DemoData {
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                customerList.getCustomer(0),
+                customerList.get(0),
                 "Phone",
                 LocalDateTime.now(),
                 LocalDateTime.now());
@@ -63,14 +67,14 @@ public abstract class DemoData {
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                customerList.getCustomer(0),
+                customerList.get(0),
                 "Phone",
                 LocalDateTime.now(),
                 LocalDateTime.now());
 
-        appointmentList.addAppointment(a);
-        appointmentList.addAppointment(b);
-        appointmentList.addAppointment(c);
+        ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
+        appointmentList.addAll(a, b, c);
+        return appointmentList;
     }
 
 }

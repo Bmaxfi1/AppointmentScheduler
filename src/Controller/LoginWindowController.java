@@ -2,7 +2,6 @@ package Controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,12 +9,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
-
 
 //As a reminder, the FXML file is pointing to this controller class.
 
-public class LoginViewController {
+public class LoginWindowController {
 
     @FXML
     private Button loginButton;
@@ -51,8 +48,15 @@ public class LoginViewController {
                 Stage thisStage = (Stage) loginButton.getScene().getWindow();
 
                 //get the new scene from the fxml file and set it to the stage
+                System.out.println("about to load mainWindow.fxml");
                 Parent mainScene = FXMLLoader.load(getClass().getResource("../View/mainWindow.fxml"));
+                System.out.println("Successfully loaded mainWindow.fxml");
+                System.out.println("about to set the scene to mainWindow.fxml");
                 thisStage.setScene(new Scene(mainScene, 734, 500));
+                System.out.println("Successfully set the scene to mainWindow.fxml");
+
+                //create the main window controller
+                MainWindowController mainWindowController = new MainWindowController();
 
             }
             else {
