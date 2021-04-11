@@ -22,15 +22,15 @@
                                     <Button fx:id="deleteButton" disable="true" layoutX="467.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" text="Delete" />
                                     <TableView fx:id="allAppointmentsTable" layoutY="46.0" prefHeight="311.0" prefWidth="740.0">
                                       <columns>
-                                        <TableColumn prefWidth="101.0" text="Appointment ID" />
-                                        <TableColumn prefWidth="74.0" text="Title" />
-                                          <TableColumn prefWidth="74.0" text="Description" />
-                                          <TableColumn prefWidth="74.0" text="Location" />
-                                          <TableColumn prefWidth="74.0" text="Contact" />
-                                          <TableColumn prefWidth="54.0" text="Type" />
-                                          <TableColumn prefWidth="98.0" text="Start Date/Time" />
-                                          <TableColumn prefWidth="92.0" text="End Date/Time" />
-                                          <TableColumn prefWidth="91.0" text="Customer Id" />
+                                        <TableColumn fx:id="appointmentIdColumn" prefWidth="101.0" text="Appointment ID" />
+                                        <TableColumn fx:id="titleColumn" prefWidth="74.0" text="Title" />
+                                          <TableColumn fx:id="descriptionColumn" prefWidth="74.0" text="Description" />
+                                          <TableColumn fx:id="locationColumn" prefWidth="74.0" text="Location" />
+                                          <TableColumn fx:id="contactColumn" prefWidth="74.0" text="Contact" />
+                                          <TableColumn fx:id="typeColumn" prefWidth="54.0" text="Type" />
+                                          <TableColumn fx:id="startColumn" prefWidth="98.0" text="Start Date/Time" />
+                                          <TableColumn fx:id="endColumn" prefWidth="92.0" text="End Date/Time" />
+                                          <TableColumn fx:id="customerIdColumn" prefWidth="91.0" text="Customer Id" />
                                       </columns>
                                     </TableView>
                                     <TextField fx:id="searchBox" layoutX="530.0" layoutY="14.0" prefHeight="25.0" prefWidth="190.0" promptText="Search by ID or Name" />
@@ -125,19 +125,19 @@
                <content>
                   <TabPane layoutY="14.0" prefHeight="376.0" prefWidth="734.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
-                      <Tab text="All Customers">
+                      <Tab fx:id="allCustomersTab" text="All Customers">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <TableView fx:id="allCustomersTable" layoutY="46.0" prefHeight="313.0" prefWidth="734.0">
                                       <columns>
-                                        <TableColumn prefWidth="75.0" text="Customer ID" />
-                                        <TableColumn prefWidth="118.0" text="Name" />
-                                          <TableColumn prefWidth="97.0" text="Phone Number" />
-                                          <TableColumn prefWidth="116.0" text="Address" />
-                                          <TableColumn prefWidth="74.0" text="Postal Code" />
-                                          <TableColumn prefWidth="121.0" text="First Level Division" />
-                                          <TableColumn prefWidth="125.0" text="Country" />
+                                        <TableColumn fx:id="customerIdColumn2" prefWidth="75.0" text="Customer ID" />
+                                        <TableColumn fx:id="nameColumn" prefWidth="118.0" text="Name" />
+                                          <TableColumn fx:id="phoneNumberColumn" prefWidth="97.0" text="Phone Number" />
+                                          <TableColumn fx:id="addressColumn" prefWidth="116.0" text="Address" />
+                                          <TableColumn fx:id="postalCodeColumn" prefWidth="74.0" text="Postal Code" />
+                                          <TableColumn fx:id="firstLevelDivisionColumn" prefWidth="121.0" text="First Level Division" />
+                                          <TableColumn fx:id="countryColumn" prefWidth="125.0" text="Country" />
                                       </columns>
                                     </TableView>
                                     <Button disable="true" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Modify Customer" />

@@ -51,26 +51,29 @@ public abstract class DemoData {
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                customerList.get(0),
+                customerList.get(0).getName(),
                 "Phone",
                 LocalDateTime.now(),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                customerList.get(0).getCustomerId());
         Appointment b = new Appointment(100002,
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                customerList.get(0),
+                customerList.get(0).getName(),
                 "Phone",
                 LocalDateTime.now(),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                customerList.get(0).getCustomerId());
         Appointment c = new Appointment(100003,
                 "Meet Customer",
                 "An appointment to get to know the customer",
                 "Phone",
-                customerList.get(0),
+                customerList.get(0).getName(),
                 "Phone",
                 LocalDateTime.now(),
-                LocalDateTime.now());
+                LocalDateTime.now(),
+                customerList.get(0).getCustomerId());
 
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
         appointmentList.addAll(a, b, c);

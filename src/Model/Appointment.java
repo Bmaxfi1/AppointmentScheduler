@@ -9,20 +9,30 @@ public class Appointment {
     private String title;
     private String description;
     private String location;
-    private Customer contact;
+    private String contactName;
     private String type;
     private LocalDateTime startInstant;
     private LocalDateTime endInstant;
+    private int contactId;
 
-    public Appointment(int appointmentId, String title, String description, String location, Customer contact, String type, LocalDateTime startInstant, LocalDateTime endInstant) {
+    public Appointment(int appointmentId,
+                       String title,
+                       String description,
+                       String location,
+                       String contactName,
+                       String type,
+                       LocalDateTime startInstant,
+                       LocalDateTime endInstant,
+                       int contactId) {
         this.appointmentId = appointmentId;
         this.title = title;
         this.description = description;
         this.location = location;
-        this.contact = contact;
+        this.contactName = contactName;
         this.type = type;
         this.startInstant = startInstant;
         this.endInstant = endInstant;
+        this.contactId = contactId;
     }
 
     public int getAppointmentId() {
@@ -57,12 +67,12 @@ public class Appointment {
         this.location = location;
     }
 
-    public Customer getContact() {
-        return contact;
+    public String getContactName() {
+        return contactName;
     }
 
-    public void setContact(Customer contact) {
-        this.contact = contact;
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 
     public String getType() {
@@ -87,5 +97,13 @@ public class Appointment {
 
     public void setEndInstant(LocalDateTime endInstant) {
         this.endInstant = endInstant;
+    }
+
+    public int getContactId() {
+        return contactId;
+    }
+
+    public void setContactId(int contactId) {
+        this.contactId = contactId;
     }
 }
