@@ -12,6 +12,10 @@ import javafx.stage.Stage;
  *
  * FUTURE ENHANCEMENTS
  * 1. Resizable window with element resizing.
+ * 2. Timestamp on alert messages.
+ * 3. Searchable contact list for adding/modifying appointments.
+ * 4. Typable dates in appointment form.
+ * 5. Flexible time input formats.  Current format must be 'hh:mm'.
  *
  *
  * This Application is organized based on the MVC Structure and also uses the Data Access Object Pattern (DAO) for
@@ -31,6 +35,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(loginWindow, 387, 253));
         primaryStage.setResizable(false);
         primaryStage.show();
+
 
 
 

@@ -45,36 +45,36 @@
                            <content>
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <Label layoutX="21.0" layoutY="22.0" text="Appointment ID" />
                                     <TextField fx:id="idField" disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
-                                    <Label layoutX="21.0" layoutY="53.0" text="Title" />
+                                    <TextField fx:id="titleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
                                     <TextField fx:id="descriptionField" layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="locationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <ComboBox fx:id="contactSelector" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
+                                    <TextField fx:id="typeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <DatePicker fx:id="startDateField" editable="false" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <TextField fx:id="startTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <ChoiceBox fx:id="startAmOrPm" layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <DatePicker fx:id="endDateField" editable="false" layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <TextField fx:id="endTimeField" layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <ChoiceBox fx:id="endAmOrPm" layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <TextField fx:id="customerIdField" disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
+                                    <Button fx:id="saveButton" layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
+                                    <Label layoutX="21.0" layoutY="22.0" text="Appointment ID" />
+                                    <Label layoutX="21.0" layoutY="53.0" text="Title" />
                                     <Label layoutX="21.0" layoutY="115.0" text="Location" />
                                     <Label layoutX="21.0" layoutY="146.0" text="Contact" />
                                     <Label layoutX="21.0" layoutY="208.0" text="Start Date and Time" />
                                     <Label layoutX="21.0" layoutY="177.0" text="Type" />
-                                    <Button fx:id="saveButton" layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
-                                    <Label fx:id="titleErrorMessage" disable="true" layoutX="460.0" layoutY="53.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label fx:id="descriptionErrorMessage" disable="true" layoutX="460.0" layoutY="84.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label fx:id="locationErrorMessage" disable="true" layoutX="460.0" layoutY="115.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label fx:id="contactErrorMessage" disable="true" layoutX="460.0" layoutY="146.0" text="Please select a contact" textFill="RED" />
-                                    <ComboBox fx:id="contactSelector" editable="true" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Search by ID or Name" />
+                                    <Label fx:id="titleErrorMessage" disable="true" layoutX="460.0" layoutY="53.0" textFill="RED" />
+                                    <Label fx:id="descriptionErrorMessage" disable="true" layoutX="460.0" layoutY="84.0" textFill="RED" />
+                                    <Label fx:id="locationErrorMessage" disable="true" layoutX="460.0" layoutY="115.0" textFill="RED" />
+                                    <Label fx:id="contactErrorMessage" disable="true" layoutX="460.0" layoutY="146.0" textFill="RED" />
                                     <Label layoutX="21.0" layoutY="84.0" text="Description" />
                                     <Label layoutX="21.0" layoutY="239.0" text="End Date and Time" />
                                     <Label layoutX="21.0" layoutY="270.0" text="Customer ID" />
-                                    <TextField fx:id="titleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <TextField fx:id="locationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <TextField fx:id="typeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <DatePicker fx:id="startDateField" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
-                                    <DatePicker fx:id="endDateField" layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
-                                    <TextField fx:id="customerIdField" disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
-                                    <Label fx:id="typeErrorMessage" disable="true" layoutX="460.0" layoutY="177.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label fx:id="startErrorMessage" disable="true" layoutX="460.0" layoutY="208.0" text="Please select date/time" textFill="RED" />
-                                    <Label fx:id="endErrorMessage" disable="true" layoutX="460.0" layoutY="239.0" text="Please select date/time" textFill="RED" />
-                                    <TextField fx:id="startTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
-                                    <TextField fx:id="endTimeField" layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
-                                    <ChoiceBox fx:id="startAmOrPm" layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
-                                    <ChoiceBox fx:id="endAmOrPm" layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <Label fx:id="typeErrorMessage" disable="true" layoutX="460.0" layoutY="177.0" textFill="RED" />
+                                    <Label fx:id="startErrorMessage" disable="true" layoutX="460.0" layoutY="208.0" textFill="RED" />
+                                    <Label fx:id="endErrorMessage" disable="true" layoutX="460.0" layoutY="239.0" textFill="RED" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -84,35 +84,35 @@
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <Label layoutX="21.0" layoutY="22.0" text="Appointment ID" />
-                                    <TextField disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
+                                    <TextField fx:id="mIdField" disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
                                     <Label layoutX="21.0" layoutY="53.0" text="Title" />
-                                    <TextField layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="mDescriptionField" layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
                                     <Label layoutX="21.0" layoutY="115.0" text="Location" />
                                     <Label layoutX="21.0" layoutY="146.0" text="Contact" />
                                     <Label layoutX="21.0" layoutY="208.0" text="Start Date and Time" />
                                     <Label layoutX="21.0" layoutY="177.0" text="Type" />
-                                    <Button layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
-                                    <Label disable="true" layoutX="460.0" layoutY="53.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="84.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="115.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="146.0" text="Please select a contact" textFill="RED" />
-                                    <ComboBox editable="true" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Search by ID or Name" />
+                                    <Button fx:id="mSaveButton" layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save Appointment Changes" />
+                                    <Label fx:id="mTitleErrorMessage" disable="true" layoutX="460.0" layoutY="53.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label fx:id="mDescriptionErrorMessage" disable="true" layoutX="460.0" layoutY="84.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label fx:id="mLocationErrorMessage" disable="true" layoutX="460.0" layoutY="115.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label fx:id="mContactErrorMessage" disable="true" layoutX="460.0" layoutY="146.0" text="Please select a contact" textFill="RED" />
+                                    <ComboBox fx:id="mContactSelector" editable="true" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Search by ID or Name" />
                                     <Label layoutX="21.0" layoutY="84.0" text="Description" />
                                     <Label layoutX="21.0" layoutY="239.0" text="End Date and Time" />
                                     <Label layoutX="21.0" layoutY="270.0" text="Customer ID" />
-                                    <TextField layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <TextField layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <TextField layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <DatePicker layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
-                                    <DatePicker layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
-                                    <TextField disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
-                                    <Label disable="true" layoutX="460.0" layoutY="177.0" text="Please do not exceed 50 characters" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="208.0" text="Please select date/time" textFill="RED" />
-                                    <Label disable="true" layoutX="460.0" layoutY="239.0" text="Please select date/time" textFill="RED" />
-                                    <TextField layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
-                                    <TextField layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
-                                    <ChoiceBox layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
-                                    <ChoiceBox layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <TextField fx:id="mTitleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="mLocationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="mTypeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <DatePicker fx:id="mStartDateField" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <DatePicker fx:id="mEndDateField" layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <TextField fx:id="mCustomerIdField" disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
+                                    <Label fx:id="mTypeErrorMessage" disable="true" layoutX="460.0" layoutY="177.0" text="Please do not exceed 50 characters" textFill="RED" />
+                                    <Label fx:id="mStartErrorMessage" disable="true" layoutX="460.0" layoutY="208.0" text="Please select date/time" textFill="RED" />
+                                    <Label fx:id="mEndErrorMessage" disable="true" layoutX="460.0" layoutY="239.0" text="Please select date/time" textFill="RED" />
+                                    <TextField fx:id="mStartTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <TextField fx:id="mEndTimeField" layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
+                                    <ChoiceBox fx:id="mStartAmOrPm" layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
+                                    <ChoiceBox fx:id="mEndAmOrPm" layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
                                  </children>
                               </AnchorPane>
                            </content>

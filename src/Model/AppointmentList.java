@@ -15,9 +15,20 @@ public class AppointmentList {
 
     /**
      *
-     * @param appointmentToAdd
+     * @param appointmentToAdd the appointment to be added to the appointmentList
      */
-    public void addAppointment(Appointment appointmentToAdd){
+    public static void addAppointment(Appointment appointmentToAdd){
         appointmentList.add(appointmentToAdd);
+    }
+
+    public static void addAppointmentList(ObservableList<Appointment> listToAdd) {
+        for (Appointment appointment:
+             listToAdd) {
+            addAppointment(appointment);
+        }
+    }
+
+    public static ObservableList<Appointment> getAppointmentList() {
+        return appointmentList;
     }
 }

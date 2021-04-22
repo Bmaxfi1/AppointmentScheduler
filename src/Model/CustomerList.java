@@ -15,13 +15,35 @@ public class CustomerList {
 
     /**
      *
-     * @param customerToAdd
+     * @param customerToAdd the customer to be added to the list
      */
-    public void addCustomer(Customer customerToAdd){
+    public static void addCustomer(Customer customerToAdd){
         customerList.add(customerToAdd);
     }
 
-    public Customer getCustomer(int index){
+    public static void addCustomerList(ObservableList<Customer> listToAdd) {
+        for (Customer customer:
+             listToAdd) {
+            addCustomer(customer);
+        }
+    }
+
+    public static Customer getCustomer(int index){
         return customerList.get(index);
     }
+
+    public static ObservableList<Customer> getCustomerList() {
+        return customerList;
+    }
+
+    public static ObservableList<String> getCustomerNames(){
+        ObservableList<String> customerNames = FXCollections.observableArrayList();
+        for (Customer customer : customerList)
+        {
+            customerNames.add(customer.getName());
+        }
+        return customerNames;
+    }
+
+    //public static ObservableList<String> searchResults(String searchText) { }
 }
