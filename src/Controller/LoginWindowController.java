@@ -9,6 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.time.ZoneId;
+
 
 //As a reminder, the FXML file is pointing to this controller class.
 
@@ -34,6 +36,7 @@ public class LoginWindowController {
     //I'm including it here as a reminder to myself that it is something I can use.
     public void initialize(){
     //initialization here
+        timezoneLabel.setText(ZoneId.systemDefault().toString());
     }
 
 

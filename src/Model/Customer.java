@@ -8,11 +8,11 @@ public class Customer {
     private String firstLevelDivision;
     private String name;
     private String address;
-    private int postalCode;
-    private long phoneNumber;
+    private String postalCode;
+    private String phoneNumber;
 
     //constructor
-    public Customer(int customerId, String country, String firstLevelDivision, String name, String address, int postalCode, long phoneNumber) {
+    public Customer(int customerId, String country, String firstLevelDivision, String name, String address, String postalCode, String phoneNumber) {
         this.customerId = customerId;
         this.country = country;
         this.firstLevelDivision = firstLevelDivision;
@@ -43,11 +43,11 @@ public class Customer {
         return address;
     }
 
-    public int getPostalCode() {
+    public String getPostalCode() {
         return postalCode;
     }
 
-    public long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -73,11 +73,11 @@ public class Customer {
         this.address = address;
     }
 
-    public void setPostalCode(int postalCode) {
+    public void setPostalCode(String postalCode) {
         this.postalCode = postalCode;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 }

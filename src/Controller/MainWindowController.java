@@ -6,147 +6,105 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import java.util.TimeZone;
+
+import static javafx.scene.paint.Color.BLACK;
+import static javafx.scene.paint.Color.RED;
 
 
 public class MainWindowController {
 
     //This section is for linking the FXML file to this controller class
     //all appointments table
-    @FXML
-    private TableView<Appointment> allAppointmentsTable;
-    @FXML
-    private TableColumn<Appointment, Integer> appointmentIdColumn;
-    @FXML
-    private TableColumn<Appointment, String> titleColumn;
-    @FXML
-    private TableColumn<Appointment, String> descriptionColumn;
-    @FXML
-    private TableColumn<Appointment, String> locationColumn;
-    @FXML
-    private TableColumn<Appointment, String> contactColumn;
-    @FXML
-    private TableColumn<Appointment, String> typeColumn;
-    @FXML
-    private TableColumn<Appointment, String> startColumn;
-    @FXML
-    private TableColumn<Appointment, String> endColumn;
-    @FXML
-    private TableColumn<Appointment, Integer> customerIdColumn;
+    @FXML private TableView<Appointment> allAppointmentsTable;
+    @FXML private TableColumn<Appointment, Integer> appointmentIdColumn;
+    @FXML private TableColumn<Appointment, String> titleColumn;
+    @FXML private TableColumn<Appointment, String> descriptionColumn;
+    @FXML private TableColumn<Appointment, String> locationColumn;
+    @FXML private TableColumn<Appointment, String> contactColumn;
+    @FXML private TableColumn<Appointment, String> typeColumn;
+    @FXML private TableColumn<Appointment, String> startColumn;
+    @FXML private TableColumn<Appointment, String> endColumn;
+    @FXML private TableColumn<Appointment, Integer> customerIdColumn;
 
     //all customers table
-    @FXML
-    private TableView<Customer> allCustomersTable;
-    @FXML
-    private TableColumn<Customer, Integer> customerIdColumn2;
-    @FXML
-    private TableColumn<Customer, String> nameColumn;
-    @FXML
-    private TableColumn<Customer, Long> phoneNumberColumn;
-    @FXML
-    private TableColumn<Customer, String> addressColumn;
-    @FXML
-    private TableColumn<Customer, Integer> postalCodeColumn;
-    @FXML
-    private TableColumn<Customer, String> firstLevelDivisionColumn;
-    @FXML
-    private TableColumn<Customer, String> countryColumn;
+    @FXML private TableView<Customer> allCustomersTable;
+    @FXML private TableColumn<Customer, Integer> customerIdColumn2;
+    @FXML private TableColumn<Customer, String> nameColumn;
+    @FXML private TableColumn<Customer, Long> phoneNumberColumn;
+    @FXML private TableColumn<Customer, String> addressColumn;
+    @FXML private TableColumn<Customer, Integer> postalCodeColumn;
+    @FXML private TableColumn<Customer, String> firstLevelDivisionColumn;
+    @FXML private TableColumn<Customer, String> countryColumn;
 
     //New Appointment Form
-    @FXML
-    private TextField idField;
-    @FXML
-    private TextField titleField;
-    @FXML
-    private TextField descriptionField;
-    @FXML
-    private TextField locationField;
-    @FXML
-    private ComboBox<String> contactSelector;
-    @FXML
-    private TextField typeField;
-    @FXML
-    private DatePicker startDateField;
-    @FXML
-    private DatePicker endDateField;
-    @FXML
-    private TextField startTimeField;
-    @FXML
-    private TextField endTimeField;
-    @FXML
-    private ChoiceBox<String> startAmOrPm;
-    @FXML
-    private ChoiceBox<String> endAmOrPm;
-    @FXML
-    private TextField customerIdField;
-    @FXML
-    private Button saveButton;
-    @FXML
-    private Label titleErrorMessage;
-    @FXML
-    private Label descriptionErrorMessage;
-    @FXML
-    private Label locationErrorMessage;
-    @FXML
-    private Label typeErrorMessage;
-    @FXML
-    private Label contactErrorMessage;
-    @FXML
-    private Label startErrorMessage;
-    @FXML
-    private Label endErrorMessage;
+    @FXML private TextField titleField;
+    @FXML private TextField descriptionField;
+    @FXML private TextField locationField;
+    @FXML private ComboBox<String> contactSelector;
+    @FXML private TextField typeField;
+    @FXML private DatePicker startDateField;
+    @FXML private DatePicker endDateField;
+    @FXML private TextField startTimeField;
+    @FXML private TextField endTimeField;
+    @FXML private ChoiceBox<String> startAmOrPm;
+    @FXML private ChoiceBox<String> endAmOrPm;
+    @FXML private TextField customerIdField;
+    @FXML private Button saveButton;
+    @FXML private Label titleErrorMessage;
+    @FXML private Label descriptionErrorMessage;
+    @FXML private Label locationErrorMessage;
+    @FXML private Label typeErrorMessage;
+    @FXML private Label contactErrorMessage;
+    @FXML private Label startErrorMessage;
+    @FXML private Label endErrorMessage;
 
     //Modify Appointment Form
-    @FXML
-    private Tab modifyAppointmentTab;
-    @FXML
-    private TextField mIdField;
-    @FXML
-    private TextField mTitleField;
-    @FXML
-    private TextField mDescriptionField;
-    @FXML
-    private TextField mLocationField;
-    @FXML
-    private ComboBox<Customer> mContactSelector;
-    @FXML
-    private TextField mTypeField;
-    @FXML
-    private DatePicker mStartDateField;
-    @FXML
-    private DatePicker mEndDateField;
-    @FXML
-    private TextField mStartTimeField;
-    @FXML
-    private TextField mEndTimeField;
-    @FXML
-    private ChoiceBox<String> mStartAmOrPm;
-    @FXML
-    private ChoiceBox<String> mEndAmOrPm;
-    @FXML
-    private Button mSaveButton;
-    @FXML
-    private Label mTitleErrorMessage;
-    @FXML
-    private Label mDescriptionErrorMessage;
-    @FXML
-    private Label mLocationErrorMessage;
-    @FXML
-    private Label mContactErrorMessage;
-    @FXML
-    private Label mTypeErrorMessage;
-    @FXML
-    private Label mStartErrorMessage;
-    @FXML
-    private Label mEndErrorMessage;
+    @FXML private Tab modifyAppointmentTab;
+    @FXML private TextField mIdField;
+    @FXML private TextField mTitleField;
+    @FXML private TextField mDescriptionField;
+    @FXML private TextField mLocationField;
+    @FXML private ComboBox<String> mContactSelector;
+    @FXML private TextField mTypeField;
+    @FXML private DatePicker mStartDateField;
+    @FXML private DatePicker mEndDateField;
+    @FXML private TextField mStartTimeField;
+    @FXML private TextField mEndTimeField;
+    @FXML private ChoiceBox<String> mStartAmOrPm;
+    @FXML private ChoiceBox<String> mEndAmOrPm;
+    @FXML private Button mSaveButton;
+    @FXML private Label mTitleErrorMessage;
+    @FXML private Label mDescriptionErrorMessage;
+    @FXML private Label mLocationErrorMessage;
+    @FXML private Label mContactErrorMessage;
+    @FXML private Label mTypeErrorMessage;
+    @FXML private Label mStartErrorMessage;
+    @FXML private Label mEndErrorMessage;
+
+    //new customer form
+    @FXML private TextField nameField;
+    @FXML private TextField phoneNumberField;
+    @FXML private TextField addressField;
+    @FXML private TextField postalCodeField;
+    @FXML private ComboBox<String> countrySelector;
+    @FXML private ComboBox<String> firstLevelDivisionSelector;
+    @FXML private Button customerSaveButton;
+    @FXML private Label nameErrorLabel;
+    @FXML private Label phoneNumberErrorLabel;
+    @FXML private Label addressErrorLabel;
+    @FXML private Label postalCodeErrorLabel;
+    @FXML private Label countryErrorLabel;
+    @FXML private Label firstLevelDivisionErrorLabel;
 
     //other
     @FXML
@@ -159,6 +117,9 @@ public class MainWindowController {
     //init
     public void initialize() {
         System.out.println("Successfully began MainWindowController instantiation");
+        ZoneId userTimeZone = ZoneId.systemDefault();
+        String startupMessage = "Welcome!  Alerts will be displayed in this window.  All times are in local time(Your timezone is: " + userTimeZone.toString() + ").";
+        addMessage(startupMessage, BLACK);
 
         //Create links between table columns and model
         //appointment table
@@ -182,14 +143,16 @@ public class MainWindowController {
         countryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
 
 
-        //build the lists of customers and appointments
+        //build the model lists of customers and appointments
         CustomerList customerList = new CustomerList();
         AppointmentList appointmentList = new AppointmentList();
+        CountryList countryList = new CountryList();
 
 
         //load demo data into lists
         CustomerList.addCustomerList(Model.DemoData.getDemoCustomerList());
         AppointmentList.addAppointmentList(Model.DemoData.getDemoAppointmentList());
+        CountryList.addCountryList(Model.DemoData.getDemoCountryList());
 
 
         //TODO load database data into lists
@@ -204,9 +167,23 @@ public class MainWindowController {
         ObservableList<String> amPm = FXCollections.observableArrayList("AM", "PM");
         startAmOrPm.setItems(amPm);
         endAmOrPm.setItems(amPm);
+        mStartAmOrPm.setItems(amPm);
+        mEndAmOrPm.setItems(amPm);
 
-        //Contact Drop Down Menu
+        //Contact Drop Down Menus
         contactSelector.setItems(CustomerList.getCustomerNames());
+        mContactSelector.setItems(CustomerList.getCustomerNames());
+
+        //Country Drop Down Menus
+        countrySelector.setItems(CountryList.getCountryNames());
+        countrySelector.setOnAction(e -> {
+            String selectedCountry = countrySelector.getValue();
+            for (Country country : CountryList.getCountryList()) {
+                if (country.getCountryName().equals(selectedCountry)) {
+                    firstLevelDivisionSelector.setItems(country.getFirstLevelDivisions());
+                }
+            }
+        });
 
         //New Appointment Save Button
         saveButton.setOnAction(e -> {
@@ -316,7 +293,7 @@ public class MainWindowController {
                     );
                     AppointmentList.addAppointment(appointmentToAdd);
                     System.out.println("appointment saved");
-                    addMessage("appointment " + appointmentId + " saved.");
+                    addMessage("appointment " + appointmentId + " saved.", BLACK);
 
                     //reset all fields to be empty
                     titleField.setText("");
@@ -331,19 +308,19 @@ public class MainWindowController {
                     endTimeField.setText("");
                     endAmOrPm.getSelectionModel().clearSelection();
                 } else {
-                    addMessage("Appointment was NOT saved.  Check your entries on the 'Add Appointment' page.");
+                    addMessage("Appointment was NOT saved.  Check your entries on the 'Add Appointment' page.", RED);
                 }
             } catch (DateTimeException dateTimeException) {
                 startErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
                 endErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
                 System.out.println("dateTimeException during 'add Appointment' save.");
-                addMessage("Appointment was NOT saved.  Exception occurred.");
+                addMessage("Appointment was NOT saved.  Exception occurred.", RED);
             } catch (NullPointerException nullPointerException) {
                 System.out.println("nullPointerException during 'add Appointment' save.");
-                addMessage("Appointment was NOT saved.  Exception occurred.");
+                addMessage("Appointment was NOT saved.  Exception occurred.", RED);
             } catch (Exception exception) {
                 System.out.println("Unknown exception during 'add Appointment' save.");
-                addMessage("Appointment was NOT saved.  Exception occurred.");
+                addMessage("Appointment was NOT saved.  Exception occurred.", RED);
             } finally {
                 System.out.println("startDate is " + startDate);
                 System.out.println("startTime is " + startTime);
@@ -352,14 +329,115 @@ public class MainWindowController {
             }
 
         });
-        addMessage("MainWindowController instantiated");
-        System.out.println("Successfully completed MainWindowController instance");
+
+        //New Customer Save Button
+        customerSaveButton.setOnAction(e -> {
+            //declare local variables
+            boolean validationError = false;
+
+            //validation
+            try {
+                if (nameField.getText().length() > 50 || nameField.getText().length() < 1) {
+                    validationError = true;
+                    nameErrorLabel.setText("Name length must be between 1-50.");
+                }
+                else {
+                    nameErrorLabel.setText("");
+                }
+
+                if (phoneNumberField.getText().length() > 50 || phoneNumberField.getText().length() < 1) {
+                    validationError = true;
+                    phoneNumberErrorLabel.setText("Phone length must be between 1-50.");
+                }
+                else {
+                    phoneNumberErrorLabel.setText("");
+                }
+
+                if (addressField.getText().length() > 100 || addressField.getText().length() < 1) {
+                    validationError = true;
+                    addressErrorLabel.setText("Address length must be between 1-100.");
+                }
+                else {
+                    addressErrorLabel.setText("");
+                }
+
+                if (postalCodeField.getText().length() > 50 || postalCodeField.getText().length() < 1) {
+                    validationError = true;
+                    postalCodeErrorLabel.setText("Postal Code length must be between 1-50.");
+                }
+                else {
+                    postalCodeErrorLabel.setText("");
+                }
+
+                if (countrySelector.getValue() == null) {
+                    validationError = true;
+                    countryErrorLabel.setText("Please select a country.");
+                }
+                else {
+                    countryErrorLabel.setText("");
+                }
+
+                if (firstLevelDivisionSelector.getValue() == null) {
+                    validationError = true;
+                    firstLevelDivisionErrorLabel.setText("Please select a region.");
+                }
+                else {
+                    firstLevelDivisionErrorLabel.setText("");
+                }
+                int newCustomerId = -1;
+                if (!validationError) {
+                    for (int i = 0; i < CustomerList.getCustomerList().size(); i++) {
+                        if (newCustomerId <= CustomerList.getCustomerList().get(i).getCustomerId()) {
+                            newCustomerId = CustomerList.getCustomerList().get(i).getCustomerId() + 1;
+                        }
+                    }
+
+                    Customer customerToAdd = new Customer(
+                            newCustomerId,
+                            countrySelector.getValue(),
+                            firstLevelDivisionSelector.getValue(),
+                            nameField.getText(),
+                            addressField.getText(),
+                            postalCodeField.getText(),
+                            phoneNumberField.getText()
+                    );
+                    CustomerList.addCustomer(customerToAdd);
+                    addMessage("New customer '" + nameField.getText() + "' was added successfully." + " (id: " + newCustomerId + ")", BLACK);
+
+                    //empty out all the fields
+                    nameField.setText("");
+                    phoneNumberField.setText("");
+                    addressField.setText("");
+                    postalCodeField.setText("");
+                    countrySelector.getSelectionModel().clearSelection();
+                    firstLevelDivisionSelector.getSelectionModel().clearSelection();
+                }
+                else {
+                    addMessage("New customer was NOT added.  Please check your entries.", RED);
+                }
+
+            } catch (Exception exception) {
+                System.out.println("Exception " + exception + " during save new customer.");
+                addMessage("New customer was NOT added.  Exception occurred.", RED);
+            }
+        });
     }
 
     //methods
-    public void addMessage(String message) {
+    public void addMessage(String message, Paint color) {
         Label messageToAddLabel = new Label(message);
+        Label currentTimeLabel = new Label();
+        DateTimeFormatter timestampFormatter = DateTimeFormatter.ofPattern("hh:mm:ss a");
+        LocalTime currentTime = LocalTime.now();
+        String currentTimeString = "";
+        currentTimeString = currentTime.format(timestampFormatter);
+        currentTimeLabel.setText(currentTimeString + "     ");
+
+        HBox fullMessage = new HBox(currentTimeLabel, messageToAddLabel);
+
+        messageToAddLabel.setTextFill(color);
         System.out.println("alertMessage added");
-        alertMessages.getChildren().add(messageToAddLabel);
+        alertMessages.getChildren().add(fullMessage);
+        alertScrollPane.vvalueProperty().bind(alertMessages.heightProperty()); //this causes the scrollbar to snap to bottom
     }
 }

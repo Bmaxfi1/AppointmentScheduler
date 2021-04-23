@@ -16,6 +16,7 @@ import javafx.stage.Stage;
  * 3. Searchable contact list for adding/modifying appointments.
  * 4. Typable dates in appointment form.
  * 5. Flexible time input formats.  Current format must be 'hh:mm'.
+ * 6. Select am/pm with letter input.
  *
  *
  * This Application is organized based on the MVC Structure and also uses the Data Access Object Pattern (DAO) for

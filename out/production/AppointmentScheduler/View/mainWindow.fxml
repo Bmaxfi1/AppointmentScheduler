@@ -51,10 +51,10 @@
                                     <TextField fx:id="locationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
                                     <ComboBox fx:id="contactSelector" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
                                     <TextField fx:id="typeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <DatePicker fx:id="startDateField" editable="false" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <DatePicker fx:id="startDateField" editable="false" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" promptText="Use button -&gt;" />
                                     <TextField fx:id="startTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
                                     <ChoiceBox fx:id="startAmOrPm" layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />
-                                    <DatePicker fx:id="endDateField" editable="false" layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" />
+                                    <DatePicker fx:id="endDateField" editable="false" layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" promptText="Use button -&gt;" />
                                     <TextField fx:id="endTimeField" layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
                                     <ChoiceBox fx:id="endAmOrPm" layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
                                     <TextField fx:id="customerIdField" disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
@@ -142,34 +142,36 @@
                                     </TableView>
                                     <Button disable="true" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Modify Customer" />
                                     <Button disable="true" layoutX="132.0" layoutY="14.0" mnemonicParsing="false" text="Delete Customer" />
-                                    <TextField layoutX="505.0" layoutY="14.0" prefHeight="25.0" prefWidth="215.0" promptText="Search by ID or Name..." />
+                                    <TextField layoutX="505.0" layoutY="14.0" prefHeight="25.0" prefWidth="215.0" promptText="Search by ID or Name" />
                                  </children>
                               </AnchorPane>
                         </content>
                       </Tab>
-                      <Tab text="New Customer">
+                      <Tab fx:id="newCustomerTab" text="New Customer">
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <Label layoutX="21.0" layoutY="22.0" text="Customer ID" />
                                     <TextField disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
-                                    <TextField layoutX="146.0" layoutY="57.0" />
+                                    <TextField fx:id="nameField" layoutX="146.0" layoutY="57.0" prefHeight="25.0" prefWidth="219.0" />
                                     <Label layoutX="22.0" layoutY="61.0" text="Name" />
-                                    <TextField layoutX="146.0" layoutY="99.0" />
-                                    <TextField layoutX="146.0" layoutY="139.0" />
-                                    <TextField layoutX="146.0" layoutY="180.0" />
-                                    <ComboBox layoutX="146.0" layoutY="224.0" prefWidth="150.0" />
-                                    <ComboBox layoutX="146.0" layoutY="268.0" prefWidth="150.0" />
+                                    <TextField fx:id="phoneNumberField" layoutX="146.0" layoutY="99.0" prefHeight="25.0" prefWidth="148.0" promptText="Letters/Symbols allowed" />
+                                    <TextField fx:id="addressField" layoutX="146.0" layoutY="139.0" prefHeight="25.0" prefWidth="219.0" promptText="ex: 123 ABC Street, White Plains" />
+                                    <TextField fx:id="postalCodeField" layoutX="146.0" layoutY="180.0" promptText="Letters/Symbols allowed" />
+                                    <ComboBox fx:id="countrySelector" layoutX="146.0" layoutY="224.0" prefHeight="25.0" prefWidth="217.0" promptText="Select a country" />
+                                    <ComboBox fx:id="firstLevelDivisionSelector" layoutX="146.0" layoutY="268.0" prefHeight="25.0" prefWidth="216.0" promptText="Select a region" />
                                     <Label layoutX="24.0" layoutY="103.0" text="Phone Number" />
                                     <Label layoutX="24.0" layoutY="143.0" text="Address" />
                                     <Label layoutX="22.0" layoutY="184.0" text="Postal Code" />
                                     <Label layoutX="24.0" layoutY="272.0" text="First-Level Division" />
                                     <Label layoutX="24.0" layoutY="228.0" text="Country" />
-                                    <Button layoutX="20.0" layoutY="313.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Customer" />
-                                    <Label disable="true" layoutX="317.0" layoutY="61.0" text="Please use a valid character" textFill="RED" />
-                                    <Label disable="true" layoutX="317.0" layoutY="103.0" text="Please use a valid character" textFill="RED" />
-                                    <Label disable="true" layoutX="317.0" layoutY="143.0" text="Please use a valid character" textFill="RED" />
-                                    <Label disable="true" layoutX="317.0" layoutY="184.0" text="Please use a valid character" textFill="RED" />
+                                    <Button fx:id="customerSaveButton" layoutX="20.0" layoutY="313.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="342.0" text="Save and Add New Customer" />
+                                    <Label fx:id="nameErrorLabel" disable="true" layoutX="390.0" layoutY="61.0" textFill="RED" />
+                                    <Label fx:id="phoneNumberErrorLabel" disable="true" layoutX="390.0" layoutY="103.0" textFill="RED" />
+                                    <Label fx:id="addressErrorLabel" disable="true" layoutX="390.0" layoutY="143.0" textFill="RED" />
+                                    <Label fx:id="postalCodeErrorLabel" disable="true" layoutX="390.0" layoutY="184.0" textFill="RED" />
+                                    <Label fx:id="countryErrorLabel" disable="true" layoutX="390.0" layoutY="228.0" textFill="RED" />
+                                    <Label fx:id="firstLevelDivisionErrorLabel" disable="true" layoutX="390.0" layoutY="272.0" textFill="RED" />
                                  </children>
                               </AnchorPane>
                         </content>
@@ -209,11 +211,7 @@
       </TabPane>
       <ScrollPane fx:id="alertScrollPane" fitToWidth="true" layoutX="11.0" layoutY="428.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="64.0" prefWidth="711.0">
         <content>
-            <VBox fx:id="alertMessages" prefHeight="18.0" prefWidth="709.0">
-               <children>
-                  <Label fx:id="initialAlertMessage" text="Hello, &lt;User&gt;.  Alerts will be displayed in this window.  All times throughout this application are in local user's time zone." textFill="#616161" AnchorPane.leftAnchor="3.0" AnchorPane.topAnchor="1.0" />
-               </children>
-            </VBox>
+            <VBox fx:id="alertMessages" prefHeight="18.0" prefWidth="709.0" />
         </content>
       </ScrollPane>
    </children>
