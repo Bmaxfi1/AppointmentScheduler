@@ -4,11 +4,16 @@ import Model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -25,86 +30,160 @@ public class MainWindowController {
 
     //This section is for linking the FXML file to this controller class
     //all appointments table
-    @FXML private TableView<Appointment> allAppointmentsTable;
-    @FXML private TableColumn<Appointment, Integer> appointmentIdColumn;
-    @FXML private TableColumn<Appointment, String> titleColumn;
-    @FXML private TableColumn<Appointment, String> descriptionColumn;
-    @FXML private TableColumn<Appointment, String> locationColumn;
-    @FXML private TableColumn<Appointment, String> contactColumn;
-    @FXML private TableColumn<Appointment, String> typeColumn;
-    @FXML private TableColumn<Appointment, String> startColumn;
-    @FXML private TableColumn<Appointment, String> endColumn;
-    @FXML private TableColumn<Appointment, Integer> customerIdColumn;
+    @FXML
+    private TableView<Appointment> allAppointmentsTable;
+    @FXML
+    private TableColumn<Appointment, Integer> appointmentIdColumn;
+    @FXML
+    private TableColumn<Appointment, String> titleColumn;
+    @FXML
+    private TableColumn<Appointment, String> descriptionColumn;
+    @FXML
+    private TableColumn<Appointment, String> locationColumn;
+    @FXML
+    private TableColumn<Appointment, String> contactColumn;
+    @FXML
+    private TableColumn<Appointment, String> typeColumn;
+    @FXML
+    private TableColumn<Appointment, String> startColumn;
+    @FXML
+    private TableColumn<Appointment, String> endColumn;
+    @FXML
+    private TableColumn<Appointment, Integer> customerIdColumn;
 
     //all customers table
-    @FXML private TableView<Customer> allCustomersTable;
-    @FXML private TableColumn<Customer, Integer> customerIdColumn2;
-    @FXML private TableColumn<Customer, String> nameColumn;
-    @FXML private TableColumn<Customer, Long> phoneNumberColumn;
-    @FXML private TableColumn<Customer, String> addressColumn;
-    @FXML private TableColumn<Customer, Integer> postalCodeColumn;
-    @FXML private TableColumn<Customer, String> firstLevelDivisionColumn;
-    @FXML private TableColumn<Customer, String> countryColumn;
+    @FXML
+    private TableView<Customer> allCustomersTable;
+    @FXML
+    private TableColumn<Customer, Integer> customerIdColumn2;
+    @FXML
+    private TableColumn<Customer, String> nameColumn;
+    @FXML
+    private TableColumn<Customer, Long> phoneNumberColumn;
+    @FXML
+    private TableColumn<Customer, String> addressColumn;
+    @FXML
+    private TableColumn<Customer, Integer> postalCodeColumn;
+    @FXML
+    private TableColumn<Customer, String> firstLevelDivisionColumn;
+    @FXML
+    private TableColumn<Customer, String> countryColumn;
 
     //New Appointment Form
-    @FXML private TextField titleField;
-    @FXML private TextField descriptionField;
-    @FXML private TextField locationField;
-    @FXML private ComboBox<String> contactSelector;
-    @FXML private TextField typeField;
-    @FXML private DatePicker startDateField;
-    @FXML private DatePicker endDateField;
-    @FXML private TextField startTimeField;
-    @FXML private TextField endTimeField;
-    @FXML private ChoiceBox<String> startAmOrPm;
-    @FXML private ChoiceBox<String> endAmOrPm;
-    @FXML private TextField customerIdField;
-    @FXML private Button saveButton;
-    @FXML private Label titleErrorMessage;
-    @FXML private Label descriptionErrorMessage;
-    @FXML private Label locationErrorMessage;
-    @FXML private Label typeErrorMessage;
-    @FXML private Label contactErrorMessage;
-    @FXML private Label startErrorMessage;
-    @FXML private Label endErrorMessage;
+    @FXML
+    private TextField titleField;
+    @FXML
+    private TextField descriptionField;
+    @FXML
+    private TextField locationField;
+    @FXML
+    private ComboBox<String> contactSelector;
+    @FXML
+    private TextField typeField;
+    @FXML
+    private DatePicker startDateField;
+    @FXML
+    private DatePicker endDateField;
+    @FXML
+    private TextField startTimeField;
+    @FXML
+    private TextField endTimeField;
+    @FXML
+    private ChoiceBox<String> startAmOrPm;
+    @FXML
+    private ChoiceBox<String> endAmOrPm;
+    @FXML
+    private TextField customerIdField;
+    @FXML
+    private Button saveButton;
+    @FXML
+    private Label titleErrorMessage;
+    @FXML
+    private Label descriptionErrorMessage;
+    @FXML
+    private Label locationErrorMessage;
+    @FXML
+    private Label typeErrorMessage;
+    @FXML
+    private Label contactErrorMessage;
+    @FXML
+    private Label startErrorMessage;
+    @FXML
+    private Label endErrorMessage;
+    @FXML
+    private Label customerIdErrorMessage;
 
     //Modify Appointment Form
-    @FXML private Tab modifyAppointmentTab;
-    @FXML private TextField mIdField;
-    @FXML private TextField mTitleField;
-    @FXML private TextField mDescriptionField;
-    @FXML private TextField mLocationField;
-    @FXML private ComboBox<String> mContactSelector;
-    @FXML private TextField mTypeField;
-    @FXML private DatePicker mStartDateField;
-    @FXML private DatePicker mEndDateField;
-    @FXML private TextField mStartTimeField;
-    @FXML private TextField mEndTimeField;
-    @FXML private ChoiceBox<String> mStartAmOrPm;
-    @FXML private ChoiceBox<String> mEndAmOrPm;
-    @FXML private Button mSaveButton;
-    @FXML private Label mTitleErrorMessage;
-    @FXML private Label mDescriptionErrorMessage;
-    @FXML private Label mLocationErrorMessage;
-    @FXML private Label mContactErrorMessage;
-    @FXML private Label mTypeErrorMessage;
-    @FXML private Label mStartErrorMessage;
-    @FXML private Label mEndErrorMessage;
+    @FXML
+    private Tab modifyAppointmentTab;
+    @FXML
+    private TextField mIdField;
+    @FXML
+    private TextField mTitleField;
+    @FXML
+    private TextField mDescriptionField;
+    @FXML
+    private TextField mLocationField;
+    @FXML
+    private ComboBox<String> mContactSelector;
+    @FXML
+    private TextField mTypeField;
+    @FXML
+    private DatePicker mStartDateField;
+    @FXML
+    private DatePicker mEndDateField;
+    @FXML
+    private TextField mStartTimeField;
+    @FXML
+    private TextField mEndTimeField;
+    @FXML
+    private ChoiceBox<String> mStartAmOrPm;
+    @FXML
+    private ChoiceBox<String> mEndAmOrPm;
+    @FXML
+    private Button mSaveButton;
+    @FXML
+    private Label mTitleErrorMessage;
+    @FXML
+    private Label mDescriptionErrorMessage;
+    @FXML
+    private Label mLocationErrorMessage;
+    @FXML
+    private Label mContactErrorMessage;
+    @FXML
+    private Label mTypeErrorMessage;
+    @FXML
+    private Label mStartErrorMessage;
+    @FXML
+    private Label mEndErrorMessage;
 
     //new customer form
-    @FXML private TextField nameField;
-    @FXML private TextField phoneNumberField;
-    @FXML private TextField addressField;
-    @FXML private TextField postalCodeField;
-    @FXML private ComboBox<String> countrySelector;
-    @FXML private ComboBox<String> firstLevelDivisionSelector;
-    @FXML private Button customerSaveButton;
-    @FXML private Label nameErrorLabel;
-    @FXML private Label phoneNumberErrorLabel;
-    @FXML private Label addressErrorLabel;
-    @FXML private Label postalCodeErrorLabel;
-    @FXML private Label countryErrorLabel;
-    @FXML private Label firstLevelDivisionErrorLabel;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField phoneNumberField;
+    @FXML
+    private TextField addressField;
+    @FXML
+    private TextField postalCodeField;
+    @FXML
+    private ComboBox<String> countrySelector;
+    @FXML
+    private ComboBox<String> firstLevelDivisionSelector;
+    @FXML
+    private Button customerSaveButton;
+    @FXML
+    private Label nameErrorLabel;
+    @FXML
+    private Label phoneNumberErrorLabel;
+    @FXML
+    private Label addressErrorLabel;
+    @FXML
+    private Label postalCodeErrorLabel;
+    @FXML
+    private Label countryErrorLabel;
+    @FXML
+    private Label firstLevelDivisionErrorLabel;
 
     //other
     @FXML
@@ -154,7 +233,6 @@ public class MainWindowController {
         AppointmentList.addAppointmentList(Model.DemoData.getDemoAppointmentList());
         CountryList.addCountryList(Model.DemoData.getDemoCountryList());
 
-
         //TODO load database data into lists
         //
         //
@@ -181,6 +259,72 @@ public class MainWindowController {
             for (Country country : CountryList.getCountryList()) {
                 if (country.getCountryName().equals(selectedCountry)) {
                     firstLevelDivisionSelector.setItems(country.getFirstLevelDivisions());
+                }
+            }
+        });
+
+        //New Appointment Contact Selector Value Change event - used to put the customer id into its field
+        contactSelector.setOnAction(e -> {
+
+            if (contactSelector.getSelectionModel().getSelectedItem() != null) {
+                ObservableList<Customer> listOfClientsSharingName = FXCollections.observableArrayList();
+                String nameOfSelectedContact = contactSelector.getValue();
+                for (Customer customer : CustomerList.getCustomerList()) {
+                    if (nameOfSelectedContact.equals(customer.getName())) {
+                        listOfClientsSharingName.add(customer);
+                    }
+                }
+                if (listOfClientsSharingName.size() == 1) {
+                    customerIdField.setText(String.valueOf(listOfClientsSharingName.get(0).getCustomerId()));
+                }
+                //handle matching customer names
+                if (listOfClientsSharingName.size() > 1) {
+                    Stage multiContactSelectorStage = new Stage();
+                    multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                    multiContactSelectorStage.setResizable(false);
+                    multiContactSelectorStage.setTitle("Multiple contacts found");
+                    Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
+                    TableView<Customer> duplicatesTable = new TableView<>();
+                    TableColumn<Customer, String> multiCustomerNameColumn = new TableColumn<>("Name");
+                    TableColumn<Customer, Integer> multiCustomerIdColumn = new TableColumn<>("Id");
+                    TableColumn<Customer, String> multiCustomerAddressColumn = new TableColumn<>("Address");
+                    TableColumn<Customer, String> multiCustomerFLDColumn = new TableColumn<>("First-Level Division");
+                    TableColumn<Customer, String> multiCustomerCountryColumn = new TableColumn<>("Country");
+                    TableColumn<Customer, String> multiCustomerPhoneColumn = new TableColumn<>("Phone");
+                    multiCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+                    multiCustomerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                    multiCustomerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+                    multiCustomerFLDColumn.setCellValueFactory(new PropertyValueFactory<>("firstLevelDivision"));
+                    multiCustomerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+                    multiCustomerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+                    duplicatesTable.getColumns().addAll(multiCustomerNameColumn, multiCustomerIdColumn, multiCustomerAddressColumn, multiCustomerFLDColumn, multiCustomerCountryColumn, multiCustomerPhoneColumn);
+                    duplicatesTable.setItems(listOfClientsSharingName);
+                    Button confirmButton = new Button("Confirm");
+                    Button cancelButton = new Button("Cancel");
+                    confirmButton.setOnAction(e2 -> {
+                        if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
+                            customerIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getCustomerId()));
+                            multiContactSelectorStage.close();
+                        } else {
+                            multiContactSelectorStage.close();
+                            addMessage("No contact selected.  Please try again.", RED);
+                            contactSelector.getSelectionModel().clearSelection();
+                            customerIdField.setText("");
+                        }
+                    });
+                    cancelButton.setOnAction(e2 -> {
+                        multiContactSelectorStage.close();
+                        contactSelector.getSelectionModel().clearSelection();
+                        customerIdField.setText("");
+                    });
+                    HBox buttonRow = new HBox(10);
+                    VBox layout = new VBox(10);
+                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                    layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
+                    layout.setPadding(new Insets(20));
+                    Scene multiContactSelectorScene = new Scene(layout, 570, 300);
+                    multiContactSelectorStage.setScene(multiContactSelectorScene);
+                    multiContactSelectorStage.show();
                 }
             }
         });
@@ -221,18 +365,8 @@ public class MainWindowController {
                 }
 
                 if (contactSelector.getValue() != null) {
-                    boolean foundACustomer = false;
-                    for (int i = 0; i < CustomerList.getCustomerNames().size(); i++) {
-                        if (contactSelector.getValue().equalsIgnoreCase(CustomerList.getCustomerNames().get(i))) {
-                            foundACustomer = true;
-                        }
-                    }
-                    if (!foundACustomer) {
-                        validationError = true;
-                        contactErrorMessage.setText("That contact does not exist.");
-                    } else {
-                        contactErrorMessage.setText("");
-                    }
+                    contactErrorMessage.setText("");
+
                 } else {
                     validationError = true;
                     contactErrorMessage.setText("No contact selected.");
@@ -271,6 +405,24 @@ public class MainWindowController {
                     endErrorMessage.setText("Please enter an ending time/date.");
                 }
 
+                if (customerIdField.getText() != null) {
+                    customerIdErrorMessage.setText("");
+                } else {
+                    validationError = true;
+                    customerIdErrorMessage.setText("Please try re-selecting the contact.");
+                }
+
+                if (startDateTime != null && endDateTime != null) {
+                    if (startDateTime.isAfter(endDateTime)) {
+                        validationError = true;
+                        startErrorMessage.setText("Start time cannot be after end time.");
+                        endErrorMessage.setText("End time cannot be before start time.");
+                    } else {
+                        startErrorMessage.setText("");
+                        endErrorMessage.setText("");
+                    }
+                }
+
                 //validation complete, time to add the appointment
                 int appointmentId = -1;
                 if (!validationError) {
@@ -289,7 +441,7 @@ public class MainWindowController {
                             this.typeField.getText(),
                             startDateTime,
                             endDateTime,
-                            -1  //todo add customer id generator
+                            Integer.parseInt(this.customerIdField.getText())
                     );
                     AppointmentList.addAppointment(appointmentToAdd);
                     System.out.println("appointment saved");
@@ -307,6 +459,7 @@ public class MainWindowController {
                     endDateField.setValue(null);
                     endTimeField.setText("");
                     endAmOrPm.getSelectionModel().clearSelection();
+                    customerIdField.setText("");
                 } else {
                     addMessage("Appointment was NOT saved.  Check your entries on the 'Add Appointment' page.", RED);
                 }
@@ -340,48 +493,42 @@ public class MainWindowController {
                 if (nameField.getText().length() > 50 || nameField.getText().length() < 1) {
                     validationError = true;
                     nameErrorLabel.setText("Name length must be between 1-50.");
-                }
-                else {
+                } else {
                     nameErrorLabel.setText("");
                 }
 
                 if (phoneNumberField.getText().length() > 50 || phoneNumberField.getText().length() < 1) {
                     validationError = true;
                     phoneNumberErrorLabel.setText("Phone length must be between 1-50.");
-                }
-                else {
+                } else {
                     phoneNumberErrorLabel.setText("");
                 }
 
                 if (addressField.getText().length() > 100 || addressField.getText().length() < 1) {
                     validationError = true;
                     addressErrorLabel.setText("Address length must be between 1-100.");
-                }
-                else {
+                } else {
                     addressErrorLabel.setText("");
                 }
 
                 if (postalCodeField.getText().length() > 50 || postalCodeField.getText().length() < 1) {
                     validationError = true;
                     postalCodeErrorLabel.setText("Postal Code length must be between 1-50.");
-                }
-                else {
+                } else {
                     postalCodeErrorLabel.setText("");
                 }
 
                 if (countrySelector.getValue() == null) {
                     validationError = true;
                     countryErrorLabel.setText("Please select a country.");
-                }
-                else {
+                } else {
                     countryErrorLabel.setText("");
                 }
 
                 if (firstLevelDivisionSelector.getValue() == null) {
                     validationError = true;
                     firstLevelDivisionErrorLabel.setText("Please select a region.");
-                }
-                else {
+                } else {
                     firstLevelDivisionErrorLabel.setText("");
                 }
                 int newCustomerId = -1;
@@ -411,8 +558,7 @@ public class MainWindowController {
                     postalCodeField.setText("");
                     countrySelector.getSelectionModel().clearSelection();
                     firstLevelDivisionSelector.getSelectionModel().clearSelection();
-                }
-                else {
+                } else {
                     addMessage("New customer was NOT added.  Please check your entries.", RED);
                 }
 

@@ -75,6 +75,7 @@
                                     <Label fx:id="typeErrorMessage" disable="true" layoutX="460.0" layoutY="177.0" textFill="RED" />
                                     <Label fx:id="startErrorMessage" disable="true" layoutX="460.0" layoutY="208.0" textFill="RED" />
                                     <Label fx:id="endErrorMessage" disable="true" layoutX="460.0" layoutY="239.0" textFill="RED" />
+                                    <Label fx:id="customerIdErrorMessage" disable="true" layoutX="460.0" layoutY="270.0" textFill="RED" />
                                  </children>
                               </AnchorPane>
                            </content>

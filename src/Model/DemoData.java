@@ -32,13 +32,33 @@ public abstract class DemoData {
         Customer c = new Customer(10003,
                 "USA",
                 "Alaska",
-                "Corn cob",
+                "Corn Cob",
                 "123 Hypothetical Street",
                 "24000",
                 "4001234567");
 
+        Customer d = new Customer(
+                10004,
+                "USA",
+                "Arkansas",
+                "Corn Cob",
+                "789 Non-Existing Road",
+                "78000",
+                "600-123-4567"
+        );
+
+        Customer e = new Customer(
+                10005,
+                "USA",
+                "California",
+                "Billy Bob",
+                "100 pretend avenue",
+                "96000",
+                "7011113333"
+        );
+
         ObservableList<Customer> demoCustomerList = FXCollections.observableArrayList();
-        demoCustomerList.addAll(a, b, c);
+        demoCustomerList.addAll(a, b, c, d, e);
         return demoCustomerList;
 
     }
