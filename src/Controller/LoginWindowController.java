@@ -55,7 +55,7 @@ public class LoginWindowController {
                 Parent mainScene = FXMLLoader.load(getClass().getResource("../View/mainWindow.fxml"));
                 System.out.println("Successfully loaded mainWindow.fxml");
                 System.out.println("about to set the scene to mainWindow.fxml");
-                thisStage.setScene(new Scene(mainScene, 734, 500));
+                thisStage.setScene(new Scene(mainScene, 923, 505));
                 System.out.println("Successfully set the scene to mainWindow.fxml");
 
                 //create the main window controller

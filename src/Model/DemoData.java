@@ -77,26 +77,45 @@ public abstract class DemoData {
                 LocalDateTime.now(),
                 customerList.get(0).getCustomerId());
         Appointment b = new Appointment(100002,
-                "Meet Customer",
-                "An appointment to get to know the customer",
-                "Phone",
-                customerList.get(0).getName(),
-                "Phone",
-                LocalDateTime.now(),
-                LocalDateTime.now(),
-                customerList.get(0).getCustomerId());
+                "New product offering",
+                "Suggesting solutions to the client.",
+                "His address",
+                customerList.get(1).getName(),
+                "In Person",
+                LocalDateTime.now().plusDays(50),
+                LocalDateTime.now().plusDays(50),
+                customerList.get(1).getCustomerId());
         Appointment c = new Appointment(100003,
-                "Meet Customer",
-                "An appointment to get to know the customer",
+                "Meeting",
+                "n/a",
                 "Phone",
+                customerList.get(2).getName(),
+                "Phone",
+                LocalDateTime.now().plusMinutes(11),
+                LocalDateTime.now().plusMinutes(31),
+                customerList.get(2).getCustomerId());
+        Appointment d = new Appointment(100004,
+                "Follow up about purchase",
+                "need to discuss what went wrong during recent order",
+                "Phone",
+                customerList.get(3).getName(),
+                "Phone",
+                LocalDateTime.now().plusMinutes(4),
+                LocalDateTime.now().plusMinutes(14),
+                customerList.get(3).getCustomerId());
+        Appointment e = new Appointment(100005,
+                "Lunch",
+                "Lunch meeting",
+                "The Taco Store",
                 customerList.get(0).getName(),
-                "Phone",
-                LocalDateTime.now(),
-                LocalDateTime.now(),
+                "Meal",
+                LocalDateTime.now().plusDays(7),
+                LocalDateTime.now().plusDays(7),
                 customerList.get(0).getCustomerId());
 
+
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
-        appointmentList.addAll(a, b, c);
+        appointmentList.addAll(a, b, c, d, e);
         return appointmentList;
     }
 

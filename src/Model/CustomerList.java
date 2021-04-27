@@ -5,9 +5,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
- * A list of customers obtained from the database at startup, plus any locally added customers.
+ * The list of customers.
  */
 public class CustomerList {
 
@@ -44,6 +45,40 @@ public class CustomerList {
         }
         return customerNames;
     }
+    /*
+    public static Customer lookupCustomer(int customerId) {
+        int customerIndex = -1;
+        for (Customer customer:customerList) {
+            if(
+                    customerId == customer.getCustomerId())
+            {
+                customerIndex = customerList.indexOf(customer);
+            }
+        }
+        return customerList.get(customerIndex);
+    }
+    */
 
-    //public static ObservableList<String> searchResults(String searchText) { }
+    public static ObservableList<Customer> lookupCustomer(int customerId) {
+        ObservableList<Customer> filteredList = FXCollections.observableArrayList();
+        for (Customer customer: customerList) {
+            String customerIdAsString = String.valueOf(customerId);
+            String existingIdAsString = String.valueOf(customer.getCustomerId());
+            if (customerIdAsString.contains(existingIdAsString)) {
+                filteredList.add(customer);
+            }
+        }
+        return filteredList;
+    }
+
+    public static ObservableList<Customer> lookupCustomer(String searchText) {
+        ObservableList<Customer> filteredList = FXCollections.observableArrayList();
+        for(Customer customer: customerList) {
+            if(
+                    customer.getName().toLowerCase().contains(searchText.toLowerCase())
+            )
+                filteredList.add(customer);
+        }
+        return filteredList;
+    }
 }

@@ -1,5 +1,7 @@
 package Controller;
 
+import MiscTools.MiscTools;
+
 import Model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,15 +15,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 
+import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.RED;
 
@@ -29,6 +30,28 @@ import static javafx.scene.paint.Color.RED;
 public class MainWindowController {
 
     //This section is for linking the FXML file to this controller class
+    //all appointments tab
+    @FXML
+    private ComboBox<String> viewSelector;
+    @FXML
+    private DatePicker datePicker;
+    @FXML
+    private Label filterSelectionLabel;
+    @FXML
+    private Button modifyButton;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private TextField searchBox;
+
+    //all customers tab
+    @FXML
+    private Button modifyCustomerButton;
+    @FXML
+    private Button deleteCustomerButton;
+    @FXML
+    private TextField customerSearchBox;
+
     //all appointments table
     @FXML
     private TableView<Appointment> allAppointmentsTable;
@@ -45,9 +68,9 @@ public class MainWindowController {
     @FXML
     private TableColumn<Appointment, String> typeColumn;
     @FXML
-    private TableColumn<Appointment, String> startColumn;
+    private TableColumn<Appointment, LocalDateTime> startColumn;
     @FXML
-    private TableColumn<Appointment, String> endColumn;
+    private TableColumn<Appointment, LocalDateTime> endColumn;
     @FXML
     private TableColumn<Appointment, Integer> customerIdColumn;
 
@@ -229,9 +252,9 @@ public class MainWindowController {
 
 
         //load demo data into lists
-        CustomerList.addCustomerList(Model.DemoData.getDemoCustomerList());
-        AppointmentList.addAppointmentList(Model.DemoData.getDemoAppointmentList());
-        CountryList.addCountryList(Model.DemoData.getDemoCountryList());
+        CustomerList.addCustomerList(DemoData.getDemoCustomerList());
+        AppointmentList.addAppointmentList(DemoData.getDemoAppointmentList());
+        CountryList.addCountryList(DemoData.getDemoCountryList());
 
         //TODO load database data into lists
         //
@@ -241,12 +264,129 @@ public class MainWindowController {
         allCustomersTable.setItems(CustomerList.getCustomerList());
         allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
 
+        //Format the appointment table time columns
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a, MM/dd/yyyy");
+        startColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>() {
+            @Override
+            protected void updateItem(LocalDateTime dateTime, boolean empty) {
+                super.updateItem(dateTime, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(formatter.format(dateTime));
+                }
+            }
+        });
+        endColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>(){
+            @Override
+            protected void updateItem(LocalDateTime dateTime, boolean empty) {
+                super.updateItem(dateTime, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(formatter.format(dateTime));
+                }
+            }
+        });
+
         //AM or PM Selectors
         ObservableList<String> amPm = FXCollections.observableArrayList("AM", "PM");
         startAmOrPm.setItems(amPm);
         endAmOrPm.setItems(amPm);
         mStartAmOrPm.setItems(amPm);
         mEndAmOrPm.setItems(amPm);
+
+        //viewSelection button
+        ObservableList<String> weekOrMonth = FXCollections.observableArrayList("Week of", "Month of", "All");
+        viewSelector.setItems(weekOrMonth);
+        viewSelector.setOnAction(e -> {
+            if (viewSelector.getValue().equals("Week of")) {
+                datePicker.setPromptText("Select a week ->");
+                datePicker.setDisable(false);
+                datePicker.setValue(null);
+            }
+            if (viewSelector.getValue().equals("Month of")) {
+                datePicker.setPromptText("Select a month ->");
+                datePicker.setDisable(false);
+                datePicker.setValue(null);
+            }
+            if (viewSelector.getValue().equals("All")) {
+                datePicker.setPromptText("<- pick one");
+                datePicker.setValue(null);
+                datePicker.setDisable(true);
+                allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
+                filterSelectionLabel.setText("Showing all appointments");
+            }
+        });
+
+        //appointment datePicker - used to filter appointments
+        datePicker.setOnAction(e -> {
+            if (viewSelector.getValue().equals("Week of") && datePicker.getValue() != null) {
+                filterSelectionLabel.setText("Showing appointments in week " + datePicker.getValue().get(WEEK_OF_WEEK_BASED_YEAR) + " of " + datePicker.getValue().getYear());
+                //filtering mechanism
+                ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
+                for (Appointment appointment:AppointmentList.getAppointmentList()) {
+                    if (appointment.getStartInstant().get(WEEK_OF_WEEK_BASED_YEAR) == datePicker.getValue().get(WEEK_OF_WEEK_BASED_YEAR)) {
+                        filteredList.add(appointment);
+                    }
+                }
+                allAppointmentsTable.setItems(filteredList);
+            }
+            if (viewSelector.getValue().equals("Month of") && datePicker.getValue() != null) {
+                filterSelectionLabel.setText("Showing appointments in " +datePicker.getValue().getMonth()+ " of " +datePicker.getValue().getYear());
+                //filtering mechanism
+                ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
+                for (Appointment appointment:AppointmentList.getAppointmentList()) {
+                    if (appointment.getStartInstant().getMonth() == datePicker.getValue().getMonth() && appointment.getStartInstant().getYear() == datePicker.getValue().getYear()) {
+                        filteredList.add(appointment);
+                    }
+                }
+                allAppointmentsTable.setItems(filteredList);
+            }
+        });
+
+        //appointment searchBox
+        searchBox.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (searchBox.getText().equals("")) {
+                allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
+                filterSelectionLabel.setText("Showing all appointments");
+            } else if (MiscTools.isInteger(searchBox.getText())) {
+                try {
+                    allAppointmentsTable.setItems(AppointmentList.lookupAppointment(Integer.parseInt(newValue)));
+                }
+                catch (NumberFormatException numberFormatException) {
+                    addMessage("The number you entered is too long to be an Id.", BLACK);
+                }
+                filterSelectionLabel.setText("Showing search by Id results");
+            } else {
+                allAppointmentsTable.setItems(AppointmentList.lookupAppointment(newValue));
+                filterSelectionLabel.setText("Showing search by name results");
+            }
+            if (allAppointmentsTable.getItems().isEmpty()) {
+                allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
+                filterSelectionLabel.setText("Showing all appointments");
+            }
+        });
+
+        //Customer search box
+        customerSearchBox.textProperty().addListener((observable, oldValue, newValue) -> {
+                    if (customerSearchBox.getText().equals("")) {
+                        allCustomersTable.setItems(CustomerList.getCustomerList());
+                    } else if (MiscTools.isInteger(customerSearchBox.getText())) {
+                        try {
+                            allCustomersTable.setItems(CustomerList.lookupCustomer(Integer.parseInt(newValue)));
+                        }
+                        catch (NumberFormatException numberFormatException) {
+                            addMessage("The number you entered is too long to be an Id.", BLACK);
+                        }
+                    } else {
+                        allCustomersTable.setItems(CustomerList.lookupCustomer(newValue));
+                    }
+                    if (allCustomersTable.getItems().isEmpty()) {
+                        allCustomersTable.setItems(CustomerList.getCustomerList());
+                    }
+                }
+        );
 
         //Contact Drop Down Menus
         contactSelector.setItems(CustomerList.getCustomerNames());
