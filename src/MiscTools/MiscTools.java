@@ -1,5 +1,8 @@
 package MiscTools;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 public abstract class MiscTools {
 
     public static boolean isInteger(String str) {
@@ -24,5 +27,13 @@ public abstract class MiscTools {
             }
         }
         return true;
+    }
+
+    public static String getAmOrPm(LocalTime timeToCheck) {
+        if (timeToCheck.getHour() >= 12) {
+            return "PM";
+        } else {
+            return "AM";
+        }
     }
 }

@@ -53,5 +53,10 @@ public class AppointmentList {
         }
         return filteredList;
     }
+
+    public static void deleteAppointment(int idToDelete) {
+        appointmentList.removeIf(appointment -> idToDelete == appointment.getAppointmentId());  //this is the first time I've used this sort of Lambda
     }
+
+}
 

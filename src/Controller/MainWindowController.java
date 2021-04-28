@@ -7,6 +7,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -30,6 +31,20 @@ import static javafx.scene.paint.Color.RED;
 public class MainWindowController {
 
     //This section is for linking the FXML file to this controller class
+    //Appointments tab
+    @FXML
+    private TabPane appointmentsTabPane;
+    @FXML
+    private Tab allAppointmentsTab;
+
+    //Customers tab
+    @FXML
+    private TabPane customersTabPane;
+    @FXML
+    private Tab allCustomersTab;
+    @FXML
+    private Tab modifyCustomerTab;
+
     //all appointments tab
     @FXML
     private ComboBox<String> viewSelector;
@@ -164,6 +179,8 @@ public class MainWindowController {
     @FXML
     private ChoiceBox<String> mEndAmOrPm;
     @FXML
+    private TextField mCustomerIdField;
+    @FXML
     private Button mSaveButton;
     @FXML
     private Label mTitleErrorMessage;
@@ -179,6 +196,10 @@ public class MainWindowController {
     private Label mStartErrorMessage;
     @FXML
     private Label mEndErrorMessage;
+    @FXML
+    private Label mCustomerIdErrorMessage;
+    @FXML
+    private Button mCancelButton;
 
     //new customer form
     @FXML
@@ -207,6 +228,38 @@ public class MainWindowController {
     private Label countryErrorLabel;
     @FXML
     private Label firstLevelDivisionErrorLabel;
+
+    //modify customer form
+    @FXML
+    private TextField mcCustomerIdField;
+    @FXML
+    private TextField mcNameField;
+    @FXML
+    private TextField mcPhoneNumberField;
+    @FXML
+    private TextField mcAddressField;
+    @FXML
+    private TextField mcPostalCodeField;
+    @FXML
+    private ComboBox<String> mcCountryField;
+    @FXML
+    private ComboBox<String> mcFirstLevelDivisionField;
+    @FXML
+    private Label mcNameErrorMessage;
+    @FXML
+    private Label mcPhoneNumberErrorMessage;
+    @FXML
+    private Label mcAddressErrorMessage;
+    @FXML
+    private Label mcPostalCodeErrorMessage;
+    @FXML
+    private Label mcCountryErrorMessage;
+    @FXML
+    private Label mcFirstLevelDivisionErrorMessage;
+    @FXML
+    private Button mcSaveButton;
+    @FXML
+    private Button mcCancelButton;
 
     //other
     @FXML
@@ -402,6 +455,15 @@ public class MainWindowController {
                 }
             }
         });
+        mcCountryField.setItems(CountryList.getCountryNames());
+        mcCountryField.setOnAction(e -> {
+            String selectedCountry = mcCountryField.getValue();
+            for (Country country : CountryList.getCountryList()) {
+                if (country.getCountryName().equals(selectedCountry)) {
+                    mcFirstLevelDivisionField.setItems(country.getFirstLevelDivisions());
+                }
+            }
+        });
 
         //New Appointment Contact Selector Value Change event - used to put the customer id into its field
         contactSelector.setOnAction(e -> {
@@ -506,7 +568,6 @@ public class MainWindowController {
 
                 if (contactSelector.getValue() != null) {
                     contactErrorMessage.setText("");
-
                 } else {
                     validationError = true;
                     contactErrorMessage.setText("No contact selected.");
@@ -623,7 +684,284 @@ public class MainWindowController {
 
         });
 
-        //New Customer Save Button
+        //All Appointments tab - Modify Button
+        modifyButton.setOnAction(e -> {
+            if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && modifyAppointmentTab.isDisabled()) {
+                Appointment selectedAppointment = allAppointmentsTable.getSelectionModel().getSelectedItem();
+                DateTimeFormatter.ofPattern("hh:mm a");
+                modifyAppointmentTab.setDisable(false);
+                appointmentsTabPane.getSelectionModel().select(modifyAppointmentTab);
+                mIdField.setText(String.valueOf(selectedAppointment.getAppointmentId()));
+                mTitleField.setText(selectedAppointment.getTitle());
+                mDescriptionField.setText(selectedAppointment.getDescription());
+                mLocationField.setText(selectedAppointment.getLocation());
+                mContactSelector.setValue(selectedAppointment.getContactName());
+                mTypeField.setText(selectedAppointment.getType());
+                mStartDateField.setValue(selectedAppointment.getStartInstant().toLocalDate());
+                mStartTimeField.setText(LocalTime.parse(selectedAppointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
+                mStartAmOrPm.setValue(MiscTools.getAmOrPm(selectedAppointment.getStartInstant().toLocalTime()));
+                mEndDateField.setValue(selectedAppointment.getEndInstant().toLocalDate());
+                mEndTimeField.setText(LocalTime.parse(selectedAppointment.getEndInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
+                mEndAmOrPm.setValue(MiscTools.getAmOrPm(selectedAppointment.getEndInstant().toLocalTime()));
+                mCustomerIdField.setText(String.valueOf(selectedAppointment.getContactId()));
+            }
+            else if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
+                addMessage("There is already an appointment modification in progress.  Please save or cancel the pending changes on the 'Modify Appointment' tab.", RED);
+            }
+            else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
+                addMessage("Please select an appointment to change.", BLACK);
+            }
+        });
+
+        //All Appointments tab - Delete Button
+        deleteButton.setOnAction(e -> {
+            if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null) {
+                Stage confirmWindow = new Stage();
+                confirmWindow.initModality(Modality.APPLICATION_MODAL);
+                confirmWindow.setResizable(false);
+                confirmWindow.setTitle("Delete Confirmation");
+                Label infoLabel = new Label("Delete appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getContactName() + "?");
+                Button confirmButton = new Button("Confirm");
+                Button cancelButton = new Button("Cancel");
+                confirmButton.setOnAction(e2 -> {
+                    int appointmentToDelete = allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId();
+                    addMessage("Appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getContactName() + " deleted.", BLACK);
+                    if (Integer.parseInt(mIdField.getText()) == allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId()) {
+                        modifyAppointmentTab.setDisable(true);
+                    }
+                    AppointmentList.deleteAppointment(appointmentToDelete);
+                    confirmWindow.close();
+                });
+                cancelButton.setOnAction(e2 -> {
+                    addMessage("Delete canceled.  No changes made.", BLACK);
+                    confirmWindow.close();
+                });
+                HBox buttonRow = new HBox(10);
+                buttonRow.setAlignment(Pos.CENTER);
+                VBox layout = new VBox(10);
+                layout.setAlignment(Pos.CENTER);
+                buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                layout.getChildren().addAll(infoLabel, buttonRow);
+                layout.setPadding(new Insets(20));
+                Scene multiContactSelectorScene = new Scene(layout, 300, 150);
+                confirmWindow.setScene(multiContactSelectorScene);
+                confirmWindow.show();
+            }
+            else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
+                addMessage("Please select an appointment to delete.", BLACK);
+            }
+
+        });
+
+        //Modify Appointment Tab - Save Button
+        mSaveButton.setOnAction(e -> {
+            //declare needed variables
+            LocalTime startTime = null;
+            LocalDate startDate = null;
+            LocalDateTime startDateTime = null;
+            LocalTime endTime = null;
+            LocalDate endDate = null;
+            LocalDateTime endDateTime = null;
+
+            //validation section
+            try {
+                boolean validationError = false;
+
+                if (mTitleField.getLength() > 50 || mTitleField.getLength() < 1) {
+                    validationError = true;
+                    mTitleErrorMessage.setText("Title character length must be between 1-50.");
+                } else {
+                    mTitleErrorMessage.setText("");
+                }
+
+                if (mDescriptionField.getLength() > 50 || mDescriptionField.getLength() < 1) {
+                    validationError = true;
+                    mDescriptionErrorMessage.setText("Description character length must be between 1-50.");
+                } else {
+                    mDescriptionErrorMessage.setText("");
+                }
+
+                if (mLocationField.getLength() > 50 || mLocationField.getLength() < 1) {
+                    validationError = true;
+                    mLocationErrorMessage.setText("Location character length must be between 1-50.");
+                } else {
+                    mLocationErrorMessage.setText("");
+                }
+
+                if (mContactSelector.getValue() != null) {
+                    mContactErrorMessage.setText("");
+                } else {
+                    validationError = true;
+                    mContactErrorMessage.setText("No contact selected.");
+                }
+
+                if (mTypeField.getLength() > 50 || mTypeField.getLength() < 1) {
+                    validationError = true;
+                    mTypeErrorMessage.setText("Type character length must be between 1-50.");
+                } else {
+                    mTypeErrorMessage.setText("");
+                }
+
+                if (mStartDateField.getValue() != null && mStartTimeField.getText() != null && mStartAmOrPm.getValue() != null) {
+                    startDate = mStartDateField.getValue();
+                    String startTimeString = mStartTimeField.getText() + " " + mStartAmOrPm.getValue();
+                    System.out.println("startTimeString is " + startTimeString);
+                    startTime = LocalTime.parse(startTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
+                    startDateTime = LocalDateTime.of(startDate, startTime);
+                    System.out.println("start time is " + startTime);
+                    mStartErrorMessage.setText("");
+                } else {
+                    validationError = true;
+                    mStartErrorMessage.setText("Please enter a starting time/date.");
+                }
+
+                if (mEndDateField.getValue() != null && mEndTimeField.getText() != null && mEndAmOrPm.getValue() != null) {
+                    endDate = mEndDateField.getValue();
+                    String endTimeString = mEndTimeField.getText() + " " + mEndAmOrPm.getValue();
+                    System.out.println("endTimeString is " + endTimeString);
+                    endTime = LocalTime.parse(endTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
+                    endDateTime = LocalDateTime.of(endDate, endTime);
+                    System.out.println("end time is " + endTime);
+                    mEndErrorMessage.setText("");
+                } else {
+                    validationError = true;
+                    mEndErrorMessage.setText("Please enter an ending time/date.");
+                }
+
+                if (mCustomerIdField.getText() != null) {
+                    mCustomerIdErrorMessage.setText("");
+                } else {
+                    validationError = true;
+                    mCustomerIdErrorMessage.setText("Please try re-selecting the contact.");
+                }
+
+                if (startDateTime != null && endDateTime != null) {
+                    if (startDateTime.isAfter(endDateTime)) {
+                        validationError = true;
+                        mStartErrorMessage.setText("Start time cannot be after end time.");
+                        mEndErrorMessage.setText("End time cannot be before start time.");
+                    } else {
+                        mStartErrorMessage.setText("");
+                        mEndErrorMessage.setText("");
+                    }
+                }
+
+                //validation complete, time to change the appointment
+                if (!validationError) {
+                    Appointment appointmentToChange = AppointmentList.lookupAppointment(Integer.parseInt(mIdField.getText())).get(0);
+                    appointmentToChange.setTitle(this.mTitleField.getText());
+                    appointmentToChange.setDescription(mDescriptionField.getText());
+                    appointmentToChange.setLocation(mLocationField.getText());
+                    appointmentToChange.setContactName(mContactSelector.getValue());
+                    appointmentToChange.setType(mTypeField.getText());
+                    appointmentToChange.setStartInstant(startDateTime);
+                    appointmentToChange.setEndInstant(endDateTime);
+                    appointmentToChange.setContactId(Integer.parseInt(mCustomerIdField.getText()));
+                    allAppointmentsTable.refresh();
+                    System.out.println("appointment changes saved");
+                    addMessage("Appointment modification to " + Integer.parseInt(this.mIdField.getText()) + " saved.", BLACK);
+                    appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
+                    modifyAppointmentTab.setDisable(true);
+
+                } else {
+                    addMessage("Appointment changes NOT saved.  Check your entries on the 'Modify Appointment' tab.", RED);
+                }
+            } catch (DateTimeException dateTimeException) {
+                mStartErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
+                mEndErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
+                System.out.println("dateTimeException during 'add Appointment' save.");
+                addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
+            } catch (NullPointerException nullPointerException) {
+                System.out.println("nullPointerException during 'modify Appointment' save.");
+                addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
+            } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+                System.out.println("indexOutOfBoundsException during 'modify Appointment' save.");
+                addMessage("Appointment change was NOT saved.  This appointment no longer exists.", RED);
+                appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
+                modifyAppointmentTab.setDisable(true);
+            }
+
+            catch (Exception exception) {
+                System.out.println("Unknown exception during 'modify Appointment' save.");
+                System.out.println(exception);
+                addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
+            }
+        });
+
+        //Modify Appointment Tab - Cancel Button
+        mCancelButton.setOnAction(e -> {
+            appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
+            modifyAppointmentTab.setDisable(true);
+            addMessage("Appointment modification canceled.", BLACK);
+        });
+
+        //All Customers Tab - Modify Button
+        modifyCustomerButton.setOnAction(e -> {
+            if (allCustomersTable.getSelectionModel().getSelectedItem() != null && modifyCustomerTab.isDisabled()) {
+                Customer selectedCustomer = allCustomersTable.getSelectionModel().getSelectedItem();
+                modifyCustomerTab.setDisable(false);
+                customersTabPane.getSelectionModel().select(modifyCustomerTab);
+                mcCustomerIdField.setText(String.valueOf(selectedCustomer.getCustomerId()));
+                mcNameField.setText(selectedCustomer.getName());
+                mcPhoneNumberField.setText(selectedCustomer.getPhoneNumber());
+                mcAddressField.setText(selectedCustomer.getAddress());
+                mcPostalCodeField.setText(selectedCustomer.getPostalCode());
+                mcCountryField.setValue(selectedCustomer.getCountry());
+                mcFirstLevelDivisionField.setValue(selectedCustomer.getFirstLevelDivision());
+            }
+            else if (allCustomersTable.getSelectionModel().getSelectedItem() != null && !modifyCustomerTab.isDisabled()) {
+                addMessage("There is already a customer modification in progress.  Please save or cancel the pending changes on the 'Modify Customer' tab.", RED);
+            }
+            else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
+                addMessage("Please select a customer to change.", BLACK);
+            }
+        });
+
+        //All Customers Tab - Delete Button
+        deleteCustomerButton.setOnAction(e -> {
+            if (allCustomersTable.getSelectionModel().getSelectedItem() != null) {
+                Stage confirmWindow = new Stage();
+                confirmWindow.initModality(Modality.APPLICATION_MODAL);
+                confirmWindow.setResizable(false);
+                confirmWindow.setTitle("Delete Confirmation");
+                Label infoLabel = new Label("Delete customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + " , " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + "?");
+                Button confirmButton = new Button("Confirm");
+                Button cancelButton = new Button("Cancel");
+                confirmButton.setOnAction(e2 -> {
+                    int customerToDelete = allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId();
+                    addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", deleted.", BLACK);
+                    if (!modifyCustomerTab.isDisabled()) {
+                        if (Integer.parseInt(mcCustomerIdField.getText()) == allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId()) {
+                            modifyCustomerTab.setDisable(true);
+                        }
+                    }
+                    CustomerList.deleteCustomer(customerToDelete);
+                    contactSelector.setItems(CustomerList.getCustomerNames());
+                    mContactSelector.setItems(CustomerList.getCustomerNames());
+                    confirmWindow.close();
+                });
+                cancelButton.setOnAction(e2 -> {
+                    addMessage("Delete canceled.  No changes made.", BLACK);
+                    confirmWindow.close();
+                });
+                HBox buttonRow = new HBox(10);
+                buttonRow.setAlignment(Pos.CENTER);
+                VBox layout = new VBox(10);
+                layout.setAlignment(Pos.CENTER);
+                buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                layout.getChildren().addAll(infoLabel, buttonRow);
+                layout.setPadding(new Insets(20));
+                Scene multiContactSelectorScene = new Scene(layout, 300, 150);
+                confirmWindow.setScene(multiContactSelectorScene);
+                confirmWindow.show();
+            }
+            else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
+                addMessage("Please select a customer to delete.", BLACK);
+            }
+
+        });
+
+        //New Customer Tab - Save Button
         customerSaveButton.setOnAction(e -> {
             //declare local variables
             boolean validationError = false;
@@ -689,6 +1027,8 @@ public class MainWindowController {
                             phoneNumberField.getText()
                     );
                     CustomerList.addCustomer(customerToAdd);
+                    contactSelector.setItems(CustomerList.getCustomerNames());
+                    mContactSelector.setItems(CustomerList.getCustomerNames());
                     addMessage("New customer '" + nameField.getText() + "' was added successfully." + " (id: " + newCustomerId + ")", BLACK);
 
                     //empty out all the fields
@@ -707,6 +1047,86 @@ public class MainWindowController {
                 addMessage("New customer was NOT added.  Exception occurred.", RED);
             }
         });
+
+        //Modify Customer Tab - Save Button
+        mcSaveButton.setOnAction(e -> {
+            //declare local variables
+            boolean validationError = false;
+
+            //validation
+            try {
+                if (mcNameField.getText().length() > 50 || mcNameField.getText().length() < 1) {
+                    validationError = true;
+                    mcNameErrorMessage.setText("Name length must be between 1-50.");
+                } else {
+                    mcNameErrorMessage.setText("");
+                }
+
+                if (mcPhoneNumberField.getText().length() > 50 || mcPhoneNumberField.getText().length() < 1) {
+                    validationError = true;
+                    mcPhoneNumberErrorMessage.setText("Phone length must be between 1-50.");
+                } else {
+                    mcPhoneNumberErrorMessage.setText("");
+                }
+
+                if (mcAddressField.getText().length() > 100 || mcAddressField.getText().length() < 1) {
+                    validationError = true;
+                    mcAddressErrorMessage.setText("Address length must be between 1-100.");
+                } else {
+                    mcAddressErrorMessage.setText("");
+                }
+
+                if (mcPostalCodeField.getText().length() > 50 || mcPostalCodeField.getText().length() < 1) {
+                    validationError = true;
+                    mcPostalCodeErrorMessage.setText("Postal Code length must be between 1-50.");
+                } else {
+                    mcPostalCodeErrorMessage.setText("");
+                }
+
+                if (mcCountryField.getValue() == null) {
+                    validationError = true;
+                    mcCountryErrorMessage.setText("Please select a country.");
+                } else {
+                    mcCountryErrorMessage.setText("");
+                }
+
+                if (mcFirstLevelDivisionField.getValue() == null) {
+                    validationError = true;
+                    mcFirstLevelDivisionErrorMessage.setText("Please select a region.");
+                } else {
+                    mcFirstLevelDivisionErrorMessage.setText("");
+                }
+                if (!validationError) {
+                    Customer customerToChange = CustomerList.lookupCustomer(Integer.parseInt(mcCustomerIdField.getText())).get(0);
+                    customerToChange.setName(mcNameField.getText());
+                    customerToChange.setAddress(mcAddressField.getText());
+                    customerToChange.setPhoneNumber(mcPhoneNumberField.getText());
+                    customerToChange.setPostalCode(mcPostalCodeField.getText());
+                    customerToChange.setCountry(mcCountryField.getValue());
+                    customerToChange.setFirstLevelDivision(mcFirstLevelDivisionField.getValue());
+                    allCustomersTable.refresh();
+                    contactSelector.setItems(CustomerList.getCustomerNames());
+                    mContactSelector.setItems(CustomerList.getCustomerNames());
+                    addMessage("Customer '" + mcNameField.getText() + "' was modified successfully." + " (id: " + mcCustomerIdField.getText() + ")", BLACK);
+                    customersTabPane.getSelectionModel().select(allCustomersTab);
+                    modifyCustomerTab.setDisable(true);
+                } else {
+                    addMessage("New customer was NOT added.  Please check your entries.", RED);
+                }
+
+            } catch (Exception exception) {
+                System.out.println("Exception " + exception + " during save new customer.");
+                addMessage("New customer was NOT added.  Exception occurred.", RED);
+            }
+        });
+
+        //Modify Customer Tab - Cancel Button
+        mcCancelButton.setOnAction(e -> {
+            customersTabPane.getSelectionModel().select(allCustomersTab);
+            modifyCustomerTab.setDisable(true);
+            addMessage("Customer modification canceled.", BLACK);
+        });
+
     }
 
     //methods

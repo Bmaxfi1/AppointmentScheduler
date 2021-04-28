@@ -23,7 +23,7 @@ public abstract class DemoData {
 
         Customer b = new Customer(10002,
                 "USA",
-                "NY",
+                "Texas",
                 "Snoop Dog",
                 "123 phony Street",
                 "14000",
@@ -40,7 +40,7 @@ public abstract class DemoData {
         Customer d = new Customer(
                 10004,
                 "USA",
-                "Arkansas",
+                "Texas",
                 "Corn Cob",
                 "789 Non-Existing Road",
                 "78000",
@@ -50,7 +50,7 @@ public abstract class DemoData {
         Customer e = new Customer(
                 10005,
                 "USA",
-                "California",
+                "Florida",
                 "Billy Bob",
                 "100 pretend avenue",
                 "96000",

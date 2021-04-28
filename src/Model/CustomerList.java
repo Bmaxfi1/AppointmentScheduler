@@ -81,4 +81,9 @@ public class CustomerList {
         }
         return filteredList;
     }
+
+    public static void deleteCustomer(int idToDelete) {
+        customerList.removeIf(customer -> idToDelete == customer.getCustomerId());  //this is the first time I've used this sort of Lambda
+    }
+
 }
