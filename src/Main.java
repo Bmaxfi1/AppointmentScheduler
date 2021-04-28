@@ -1,3 +1,4 @@
+import MiscTools.MiscTools;
 import Model.*;
 import Controller.*;
 
@@ -6,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import java.time.LocalDateTime;
 
 /**
  * @author Brandon Maxfield
@@ -38,6 +41,10 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(loginWindow, 387, 253));
         primaryStage.setResizable(false);
         primaryStage.show();
+
+        //todo just test stuff, delete later
+        MiscTools.isOutsideBusinessHours(LocalDateTime.now(), LocalDateTime.now().plusMinutes(30));
+
 
 
 

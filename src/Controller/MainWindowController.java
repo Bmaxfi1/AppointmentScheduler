@@ -684,10 +684,18 @@ public class MainWindowController {
                         startErrorMessage.setText("Start time cannot be after end time.");
                         endErrorMessage.setText("End time cannot be before start time.");
                     } else {
-                        startErrorMessage.setText("");
-                        endErrorMessage.setText("");
+                        if (MiscTools.isOutsideBusinessHours(startDateTime, endDateTime)) {
+                            validationError = true;
+                            startErrorMessage.setText("That time/date is outside of the standard business hours.");
+                            endErrorMessage.setText("That time/date is outside of the standard business hours.");
+                        }
+                        else {
+                            startErrorMessage.setText("");
+                            endErrorMessage.setText("");
+                        }
                     }
                 }
+
 
                 //validation complete, time to add the appointment
                 int appointmentId = -1;
@@ -740,11 +748,6 @@ public class MainWindowController {
             } catch (Exception exception) {
                 System.out.println("Unknown exception during 'add Appointment' save.");
                 addMessage("Appointment was NOT saved.  Exception occurred.", RED);
-            } finally {
-                System.out.println("startDate is " + startDate);
-                System.out.println("startTime is " + startTime);
-                System.out.println("startDateTime is " + startDateTime);
-
             }
 
         });
@@ -906,8 +909,15 @@ public class MainWindowController {
                         mStartErrorMessage.setText("Start time cannot be after end time.");
                         mEndErrorMessage.setText("End time cannot be before start time.");
                     } else {
-                        mStartErrorMessage.setText("");
-                        mEndErrorMessage.setText("");
+                        if (MiscTools.isOutsideBusinessHours(startDateTime, endDateTime)) {
+                            validationError = true;
+                            mStartErrorMessage.setText("That time/date is outside of the standard business hours.");
+                            mEndErrorMessage.setText("That time/date is outside of the standard business hours.");
+                        }
+                        else {
+                            mStartErrorMessage.setText("");
+                            mEndErrorMessage.setText("");
+                        }
                     }
                 }
 
