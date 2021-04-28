@@ -313,6 +313,13 @@ public class MainWindowController {
         //
         //
 
+        //Check to see if there is an upcoming appointment within 15 minutes.
+        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+            if (appointment.getStartInstant().minusMinutes(15).isBefore(LocalDateTime.now())) {
+                addMessage("There is an upcoming appointment with " + appointment.getContactName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) +". (Appointment Id: " + appointment.getAppointmentId() +")", RED);
+            }
+        }
+
         //Insert the lists into the tables
         allCustomersTable.setItems(CustomerList.getCustomerList());
         allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
