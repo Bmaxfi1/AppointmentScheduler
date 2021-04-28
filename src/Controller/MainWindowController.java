@@ -690,8 +690,15 @@ public class MainWindowController {
                             endErrorMessage.setText("That time/date is outside of the standard business hours.");
                         }
                         else {
-                            startErrorMessage.setText("");
-                            endErrorMessage.setText("");
+                            if (MiscTools.appointmentOverlaps(Integer.parseInt(customerIdField.getText()), startDateTime, endDateTime)) {
+                                validationError = true;
+                                startErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                                endErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                            }
+                            else {
+                                startErrorMessage.setText("");
+                                endErrorMessage.setText("");
+                            }
                         }
                     }
                 }
@@ -915,8 +922,15 @@ public class MainWindowController {
                             mEndErrorMessage.setText("That time/date is outside of the standard business hours.");
                         }
                         else {
-                            mStartErrorMessage.setText("");
-                            mEndErrorMessage.setText("");
+                            if (MiscTools.appointmentOverlaps(Integer.parseInt(mCustomerIdField.getText()), startDateTime, endDateTime, Integer.parseInt(mIdField.getText()))) {
+                                validationError = true;
+                                mStartErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                                mEndErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                            }
+                            else {
+                                mStartErrorMessage.setText("");
+                                mEndErrorMessage.setText("");
+                            }
                         }
                     }
                 }

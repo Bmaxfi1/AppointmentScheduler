@@ -1,5 +1,9 @@
 package MiscTools;
 
+import Model.Appointment;
+import Model.AppointmentList;
+import Model.Customer;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -41,9 +45,6 @@ public abstract class MiscTools {
     }
 
     public static boolean isOutsideBusinessHours(LocalDateTime startTimeToCheck, LocalDateTime endTimeToCheck) {
-        String date_format = "M-dd-yyyy hh:mm a";
-        DateTimeFormatter format = DateTimeFormatter.ofPattern(date_format);
-
         ZoneId myZone = ZoneId.systemDefault();
         ZoneId EST = ZoneId.of("America/New_York");
 
@@ -52,11 +53,6 @@ public abstract class MiscTools {
 
         ZonedDateTime endTimeToCheckLocalZone = endTimeToCheck.atZone(myZone);
         ZonedDateTime endTimeToCheckEST = endTimeToCheckLocalZone.withZoneSameInstant(EST);
-
-        //System.out.println("start time in current time zone is: " + startTimeToCheckLocalZone.format(format));
-        //System.out.println("start time in EST is: " + startTimeToCheckEST.format(format));
-        //System.out.println("end time in current time zone is: " + endTimeToCheckLocalZone.format(format));
-        //System.out.println("end time in EST is: " + endTimeToCheckEST.format(format));
 
         LocalTime startOfBusinessHours =  LocalTime.of(8,0);
         LocalTime endOfBusinessHours = LocalTime.of(22, 0);
@@ -67,4 +63,30 @@ public abstract class MiscTools {
                 endTimeToCheckEST.toLocalTime().isAfter(endOfBusinessHours) ||
                 !startTimeToCheckEST.toLocalDate().toString().equals(endTimeToCheckEST.toLocalDate().toString());
     }
+
+    public static boolean appointmentOverlaps(int customerId, LocalDateTime start, LocalDateTime end) {
+        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+            if (customerId == appointment.getContactId()) {
+                if (appointment.getStartInstant().isAfter(start) && appointment.getEndInstant().isBefore(end)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    //when modifying an appointment, it is important to ignore the appointment we are changing.
+    public static boolean appointmentOverlaps(int customerId, LocalDateTime start, LocalDateTime end, int appointmentIdToDisregard) {
+        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+            if (appointment.getAppointmentId() != appointmentIdToDisregard) {
+                if (customerId == appointment.getContactId()) {
+                    if (appointment.getStartInstant().isAfter(start) && appointment.getEndInstant().isBefore(end)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
 }
