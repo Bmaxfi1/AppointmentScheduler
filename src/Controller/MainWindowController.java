@@ -465,7 +465,7 @@ public class MainWindowController {
             }
         });
 
-        //New Appointment Contact Selector Value Change event - used to put the customer id into its field
+        //New Appointment tab - Contact Selector Value Change event - used to put the customer id into its field
         contactSelector.setOnAction(e -> {
 
             if (contactSelector.getSelectionModel().getSelectedItem() != null) {
@@ -531,7 +531,72 @@ public class MainWindowController {
             }
         });
 
-        //New Appointment Save Button
+        //Modify Appointment tab - contact selector value change event
+        mContactSelector.setOnAction(e -> {
+            if (mContactSelector.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
+                ObservableList<Customer> listOfClientsSharingName = FXCollections.observableArrayList();
+                String nameOfSelectedContact = mContactSelector.getValue();
+                for (Customer customer : CustomerList.getCustomerList()) {
+                    if (nameOfSelectedContact.equals(customer.getName())) {
+                        listOfClientsSharingName.add(customer);
+                    }
+                }
+                if (listOfClientsSharingName.size() == 1) {
+                    mCustomerIdField.setText(String.valueOf(listOfClientsSharingName.get(0).getCustomerId()));
+                }
+                //handle matching customer names
+                if (listOfClientsSharingName.size() > 1) {
+                    Stage multiContactSelectorStage = new Stage();
+                    multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                    multiContactSelectorStage.setResizable(false);
+                    multiContactSelectorStage.setTitle("Multiple contacts found");
+                    Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
+                    TableView<Customer> duplicatesTable = new TableView<>();
+                    TableColumn<Customer, String> multiCustomerNameColumn = new TableColumn<>("Name");
+                    TableColumn<Customer, Integer> multiCustomerIdColumn = new TableColumn<>("Id");
+                    TableColumn<Customer, String> multiCustomerAddressColumn = new TableColumn<>("Address");
+                    TableColumn<Customer, String> multiCustomerFLDColumn = new TableColumn<>("First-Level Division");
+                    TableColumn<Customer, String> multiCustomerCountryColumn = new TableColumn<>("Country");
+                    TableColumn<Customer, String> multiCustomerPhoneColumn = new TableColumn<>("Phone");
+                    multiCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+                    multiCustomerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                    multiCustomerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+                    multiCustomerFLDColumn.setCellValueFactory(new PropertyValueFactory<>("firstLevelDivision"));
+                    multiCustomerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+                    multiCustomerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+                    duplicatesTable.getColumns().addAll(multiCustomerNameColumn, multiCustomerIdColumn, multiCustomerAddressColumn, multiCustomerFLDColumn, multiCustomerCountryColumn, multiCustomerPhoneColumn);
+                    duplicatesTable.setItems(listOfClientsSharingName);
+                    Button confirmButton = new Button("Confirm");
+                    Button cancelButton = new Button("Cancel");
+                    confirmButton.setOnAction(e2 -> {
+                        if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
+                            mCustomerIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getCustomerId()));
+                            multiContactSelectorStage.close();
+                        } else {
+                            multiContactSelectorStage.close();
+                            addMessage("No contact selected.  Please try again.", RED);
+                            mContactSelector.getSelectionModel().clearSelection();
+                            mCustomerIdField.setText("");
+                        }
+                    });
+                    cancelButton.setOnAction(e2 -> {
+                        multiContactSelectorStage.close();
+                        mContactSelector.getSelectionModel().clearSelection();
+                        mCustomerIdField.setText("");
+                    });
+                    HBox buttonRow = new HBox(10);
+                    VBox layout = new VBox(10);
+                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                    layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
+                    layout.setPadding(new Insets(20));
+                    Scene multiContactSelectorScene = new Scene(layout, 570, 300);
+                    multiContactSelectorStage.setScene(multiContactSelectorScene);
+                    multiContactSelectorStage.show();
+                }
+            }
+        });
+
+        //New Appointment tab - Save Button
         saveButton.setOnAction(e -> {
             //declare needed variables
             LocalTime startTime = null;
@@ -689,7 +754,6 @@ public class MainWindowController {
             if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && modifyAppointmentTab.isDisabled()) {
                 Appointment selectedAppointment = allAppointmentsTable.getSelectionModel().getSelectedItem();
                 DateTimeFormatter.ofPattern("hh:mm a");
-                modifyAppointmentTab.setDisable(false);
                 appointmentsTabPane.getSelectionModel().select(modifyAppointmentTab);
                 mIdField.setText(String.valueOf(selectedAppointment.getAppointmentId()));
                 mTitleField.setText(selectedAppointment.getTitle());
@@ -704,6 +768,7 @@ public class MainWindowController {
                 mEndTimeField.setText(LocalTime.parse(selectedAppointment.getEndInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
                 mEndAmOrPm.setValue(MiscTools.getAmOrPm(selectedAppointment.getEndInstant().toLocalTime()));
                 mCustomerIdField.setText(String.valueOf(selectedAppointment.getContactId()));
+                modifyAppointmentTab.setDisable(false);
             }
             else if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
                 addMessage("There is already an appointment modification in progress.  Please save or cancel the pending changes on the 'Modify Appointment' tab.", RED);

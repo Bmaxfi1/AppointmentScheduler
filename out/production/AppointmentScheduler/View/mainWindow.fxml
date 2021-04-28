@@ -101,7 +101,7 @@
                                     <TextField fx:id="mTitleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
                                     <TextField fx:id="mDescriptionField" layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
                                     <TextField fx:id="mLocationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <ComboBox fx:id="mContactSelector" disable="true" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
+                                    <ComboBox fx:id="mContactSelector" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
                                     <TextField fx:id="mTypeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
                                     <DatePicker fx:id="mStartDateField" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" promptText="Use button -&gt;" />
                                     <TextField fx:id="mStartTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
