@@ -1016,40 +1016,44 @@ public class MainWindowController {
         //All Customers Tab - Delete Button
         deleteCustomerButton.setOnAction(e -> {
             if (allCustomersTable.getSelectionModel().getSelectedItem() != null) {
-                Stage confirmWindow = new Stage();
-                confirmWindow.initModality(Modality.APPLICATION_MODAL);
-                confirmWindow.setResizable(false);
-                confirmWindow.setTitle("Delete Confirmation");
-                Label infoLabel = new Label("Delete customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + " , " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + "?");
-                Button confirmButton = new Button("Confirm");
-                Button cancelButton = new Button("Cancel");
-                confirmButton.setOnAction(e2 -> {
-                    int customerToDelete = allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId();
-                    addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", deleted.", BLACK);
-                    if (!modifyCustomerTab.isDisabled()) {
-                        if (Integer.parseInt(mcCustomerIdField.getText()) == allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId()) {
-                            modifyCustomerTab.setDisable(true);
+                if (allCustomersTable.getSelectionModel().getSelectedItem().hasExistingAppointments()) {
+                    addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", cannot be deleted without first deleting all of the customer's existing appointments.", RED);
+                } else {
+                    Stage confirmWindow = new Stage();
+                    confirmWindow.initModality(Modality.APPLICATION_MODAL);
+                    confirmWindow.setResizable(false);
+                    confirmWindow.setTitle("Delete Confirmation");
+                    Label infoLabel = new Label("Delete customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + " , " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + "?");
+                    Button confirmButton = new Button("Confirm");
+                    Button cancelButton = new Button("Cancel");
+                    confirmButton.setOnAction(e2 -> {
+                        int customerToDelete = allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId();
+                        addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", deleted.", BLACK);
+                        if (!modifyCustomerTab.isDisabled()) {
+                            if (Integer.parseInt(mcCustomerIdField.getText()) == allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId()) {
+                                modifyCustomerTab.setDisable(true);
+                            }
                         }
-                    }
-                    CustomerList.deleteCustomer(customerToDelete);
-                    contactSelector.setItems(CustomerList.getCustomerNames());
-                    mContactSelector.setItems(CustomerList.getCustomerNames());
-                    confirmWindow.close();
-                });
-                cancelButton.setOnAction(e2 -> {
-                    addMessage("Delete canceled.  No changes made.", BLACK);
-                    confirmWindow.close();
-                });
-                HBox buttonRow = new HBox(10);
-                buttonRow.setAlignment(Pos.CENTER);
-                VBox layout = new VBox(10);
-                layout.setAlignment(Pos.CENTER);
-                buttonRow.getChildren().addAll(confirmButton, cancelButton);
-                layout.getChildren().addAll(infoLabel, buttonRow);
-                layout.setPadding(new Insets(20));
-                Scene multiContactSelectorScene = new Scene(layout, 300, 150);
-                confirmWindow.setScene(multiContactSelectorScene);
-                confirmWindow.show();
+                        CustomerList.deleteCustomer(customerToDelete);
+                        contactSelector.setItems(CustomerList.getCustomerNames());
+                        mContactSelector.setItems(CustomerList.getCustomerNames());
+                        confirmWindow.close();
+                    });
+                    cancelButton.setOnAction(e2 -> {
+                        addMessage("Delete canceled.  No changes made.", BLACK);
+                        confirmWindow.close();
+                    });
+                    HBox buttonRow = new HBox(10);
+                    buttonRow.setAlignment(Pos.CENTER);
+                    VBox layout = new VBox(10);
+                    layout.setAlignment(Pos.CENTER);
+                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                    layout.getChildren().addAll(infoLabel, buttonRow);
+                    layout.setPadding(new Insets(20));
+                    Scene multiContactSelectorScene = new Scene(layout, 300, 150);
+                    confirmWindow.setScene(multiContactSelectorScene);
+                    confirmWindow.show();
+                }
             }
             else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
                 addMessage("Please select a customer to delete.", BLACK);

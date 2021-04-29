@@ -19,7 +19,7 @@
       </Label>
       <Label fx:id="errorLabel" layoutX="69.0" layoutY="240.0" textFill="RED" />
       <Label fx:id="timezoneHeaderLabel" layoutX="69.0" layoutY="73.0" text="Your time zone was identified as " />
-      <Label fx:id="timezoneLabel" layoutX="71.0" layoutY="96.0" text="&lt;Timezone Here&gt;" />
+      <Label fx:id="timezoneLabel" layoutX="71.0" layoutY="90.0" text="&lt;Timezone Here&gt;" />
       <Button fx:id="loginButton" defaultButton="true" layoutX="69.0" layoutY="202.0" mnemonicParsing="false" onAction="#loginButtonListener" prefHeight="25.0" prefWidth="240.0" text="Log In" />
    </children>
 </AnchorPane>

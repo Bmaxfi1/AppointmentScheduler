@@ -81,4 +81,13 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
+    //methods
+    public boolean hasExistingAppointments() {
+        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+            if (appointment.getContactId() == this.getCustomerId()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
