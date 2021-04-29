@@ -10,6 +10,8 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.time.ZoneId;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 //As a reminder, the FXML file is pointing to this controller class.
@@ -26,6 +28,15 @@ public class LoginWindowController {
     private TextField passwordField;
 
     @FXML
+    private Label userIdLabel;
+
+    @FXML
+    private Label passwordLabel;
+
+    @FXML
+    private Label timezoneHeaderLabel;
+
+    @FXML
     private Label errorLabel;
 
     @FXML
@@ -36,14 +47,28 @@ public class LoginWindowController {
     //I'm including it here as a reminder to myself that it is something I can use.
     public void initialize(){
     //initialization here
+        //Set the language
+        String userLocale = Locale.getDefault().toString();
+        System.out.println(userLocale);
+        System.out.println("user language was detected as " + Locale.getDefault().getDisplayLanguage());
+
+        ResourceBundle labels = ResourceBundle.getBundle("Internationalization.ResourceBundle", Locale.getDefault());
+
+        timezoneHeaderLabel.setText(labels.getString("timezoneHeaderLabel"));
+        userIdLabel.setText(labels.getString("userIdLabel"));
+        passwordLabel.setText(labels.getString("passwordLabel"));
+        loginButton.setText(labels.getString("loginButton"));
+
+        //Set the local time zone
         timezoneLabel.setText(ZoneId.systemDefault().toString());
     }
-
 
     //Event Listeners - Note that the listener is linked to the view by the FXML file itself.
     public void loginButtonListener() throws Exception{
         System.out.println("login button clicked");
-        //TODO user login validation
+        ResourceBundle labels = ResourceBundle.getBundle("Internationalization.ResourceBundle", Locale.getDefault());
+
+        //login validation with actual users is beyond the scope of this project.
         try {
             if (userIdField.getText().equals("test") && passwordField.getText().equals("test")) {
 
@@ -64,7 +89,7 @@ public class LoginWindowController {
             }
             else {
                 System.out.println("invalid credentials");
-                errorLabel.setText("Invalid credentials.  Check your user ID and password.");
+                errorLabel.setText(labels.getString("errorLabel"));
             }
         } catch (Exception exception){
             System.out.println(exception);

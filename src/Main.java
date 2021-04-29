@@ -38,7 +38,7 @@ public class Main extends Application {
         //load login window
         Parent loginWindow = FXMLLoader.load(getClass().getResource("View/loginWindow.fxml"));
         primaryStage.setTitle("AppointmentScheduler");
-        primaryStage.setScene(new Scene(loginWindow, 387, 253));
+        primaryStage.setScene(new Scene(loginWindow, 387, 285));
         primaryStage.setResizable(false);
         primaryStage.show();
 

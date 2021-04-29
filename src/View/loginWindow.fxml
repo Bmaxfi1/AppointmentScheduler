@@ -8,18 +8,18 @@
 
 <AnchorPane fx:id="MainScene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="288.0" prefWidth="404.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.LoginWindowController">
    <children>
-      <Label layoutX="69.0" layoutY="113.0" prefHeight="24.0" prefWidth="90.0" text="User ID" />
-      <Label layoutX="69.0" layoutY="149.0" text="Password" />
-      <TextField fx:id="userIdField" layoutX="159.0" layoutY="113.0" text="test" />
-      <TextField fx:id="passwordField" layoutX="159.0" layoutY="145.0" text="test" />
+      <Label fx:id="userIdLabel" layoutX="69.0" layoutY="133.0" prefHeight="24.0" prefWidth="90.0" text="User ID" />
+      <Label fx:id="passwordLabel" layoutX="69.0" layoutY="170.0" text="Password" />
+      <TextField fx:id="userIdField" layoutX="159.0" layoutY="133.0" text="test" />
+      <TextField fx:id="passwordField" layoutX="159.0" layoutY="166.0" text="test" />
       <Label layoutX="69.0" layoutY="33.0" prefHeight="25.0" prefWidth="240.0" text="AppointmentScheduler" textAlignment="CENTER">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <Label fx:id="errorLabel" layoutX="69.0" layoutY="214.0" textFill="RED" />
-      <Label layoutX="69.0" layoutY="73.0" text="Your time zone was identified as " />
-      <Label fx:id="timezoneLabel" layoutX="244.0" layoutY="73.0" text="&lt;Timezone Here&gt;" />
-      <Button fx:id="loginButton" defaultButton="true" layoutX="69.0" layoutY="183.0" mnemonicParsing="false" onAction="#loginButtonListener" prefHeight="25.0" prefWidth="240.0" text="Log In" />
+      <Label fx:id="errorLabel" layoutX="69.0" layoutY="240.0" textFill="RED" />
+      <Label fx:id="timezoneHeaderLabel" layoutX="69.0" layoutY="73.0" text="Your time zone was identified as " />
+      <Label fx:id="timezoneLabel" layoutX="71.0" layoutY="96.0" text="&lt;Timezone Here&gt;" />
+      <Button fx:id="loginButton" defaultButton="true" layoutX="69.0" layoutY="202.0" mnemonicParsing="false" onAction="#loginButtonListener" prefHeight="25.0" prefWidth="240.0" text="Log In" />
    </children>
 </AnchorPane>
