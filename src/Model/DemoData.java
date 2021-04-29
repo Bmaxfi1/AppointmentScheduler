@@ -63,6 +63,32 @@ public abstract class DemoData {
 
     }
 
+    public static ObservableList<Contact> getDemoContactList() {
+        ObservableList<Contact> contactList;
+
+        Contact a = new Contact(
+                101,
+                "Stanley Yelnats",
+                "stanleyyelnats@fakecompany.com"
+        );
+
+        Contact b = new Contact(
+                102,
+                "Sally Johnson",
+                "sallyjohnson@fakecompany.com"
+        );
+
+        Contact c = new Contact(
+                103,
+                "Mary Lamb",
+                "marylamb@fakecompany.com"
+        );
+
+        contactList = FXCollections.observableArrayList();
+        contactList.addAll(a, b, c);
+        return contactList;
+    }
+
     public static ObservableList<Appointment> getDemoAppointmentList(){
         ObservableList<Customer> customerList;
         customerList = Model.DemoData.getDemoCustomerList();

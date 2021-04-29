@@ -46,11 +46,11 @@
                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
                                     <TextField fx:id="idField" disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
-                                    <TextField fx:id="titleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <TextField fx:id="descriptionField" layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <TextField fx:id="locationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="titleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" promptText="Max length is 50 characters" />
+                                    <TextField fx:id="descriptionField" layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" promptText="Max length is 50 characters" />
+                                    <TextField fx:id="locationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" promptText="Max length is 50 characters" />
                                     <ComboBox fx:id="contactSelector" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
-                                    <TextField fx:id="typeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
+                                    <TextField fx:id="typeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" promptText="Max length is 50 characters" />
                                     <DatePicker fx:id="startDateField" editable="false" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" promptText="Use button -&gt;" />
                                     <TextField fx:id="startTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
                                     <ChoiceBox fx:id="startAmOrPm" layoutX="363.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" />

@@ -1226,7 +1226,6 @@ public class MainWindowController {
             modifyCustomerTab.setDisable(true);
             addMessage("Customer modification canceled.", BLACK);
         });
-
     }
 
     //methods
