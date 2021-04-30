@@ -3,8 +3,7 @@ package Model;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 /**
  * A list of all appointments received from the database, plus any locally added appointments.
@@ -47,11 +46,68 @@ public class AppointmentList {
     public static ObservableList<Appointment> lookupAppointment(String customerName) {
         ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
         for (Appointment appointment:appointmentList){
-            if (appointment.getContactName().toLowerCase().contains(customerName.toLowerCase())) {
+            if (appointment.getCustomerName().toLowerCase().contains(customerName.toLowerCase()) || appointment.getContact().getContactName().toLowerCase().contains(customerName.toLowerCase())) {
                 filteredList.add(appointment);
             }
         }
         return filteredList;
+    }
+
+    public static ObservableList<String> getDifferentTypes() {
+        ObservableList<String> listOfTypes = FXCollections.observableArrayList();
+        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+            boolean thisTypeAlreadyExists = false;
+            for (String type:listOfTypes) {
+                if (appointment.getType().equals(type)) {
+                    thisTypeAlreadyExists = true;
+                    break;
+                }
+            }
+            if (!thisTypeAlreadyExists) {
+                listOfTypes.add(appointment.getType());
+            }
+
+        }
+        return listOfTypes;
+    }
+
+    public static ObservableList<Integer> getAllAppointmentsForYearByMonth(int year) {
+        ObservableList<Integer> appointmentTotalsByMonth= FXCollections.observableArrayList();
+        int jan = 0;
+        int feb = 0;
+        int mar = 0;
+        int apr = 0;
+        int may = 0;
+        int jun = 0;
+        int jul = 0;
+        int aug = 0;
+        int sep = 0;
+        int oct = 0;
+        int nov = 0;
+        int dec = 0;
+
+        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+            if (appointment.getStartInstant().getYear() == year) {
+                int monthNum = appointment.getStartInstant().getMonthValue();
+                //this is an "enhanced switch"
+                switch (monthNum) {
+                    case 1 -> jan++;
+                    case 2 -> feb++;
+                    case 3 -> mar++;
+                    case 4 -> apr++;
+                    case 5 -> may++;
+                    case 6 -> jun++;
+                    case 7 -> jul++;
+                    case 8 -> aug++;
+                    case 9 -> sep++;
+                    case 10 -> oct++;
+                    case 11 -> nov++;
+                    case 12 -> dec++;
+                }
+            }
+        }
+        appointmentTotalsByMonth.addAll(jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec);
+        return appointmentTotalsByMonth;
     }
 
     public static void deleteAppointment(int idToDelete) {

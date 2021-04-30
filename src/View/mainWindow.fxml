@@ -24,13 +24,14 @@
                                       <columns>
                                         <TableColumn fx:id="appointmentIdColumn" prefWidth="97.0" text="Appointment ID" />
                                         <TableColumn fx:id="titleColumn" prefWidth="105.0" text="Title" />
-                                          <TableColumn fx:id="descriptionColumn" prefWidth="137.0" text="Description" />
-                                          <TableColumn fx:id="locationColumn" prefWidth="73.0" text="Location" />
-                                          <TableColumn fx:id="contactColumn" prefWidth="96.0" text="Contact" />
-                                          <TableColumn fx:id="typeColumn" prefWidth="67.0" text="Type" />
-                                          <TableColumn fx:id="startColumn" prefWidth="141.0" text="Start Date/Time" />
-                                          <TableColumn fx:id="endColumn" prefWidth="131.0" text="End Date/Time" />
-                                          <TableColumn fx:id="customerIdColumn" prefWidth="75.0" text="Customer Id" />
+                                          <TableColumn fx:id="descriptionColumn" prefWidth="122.0" text="Description" />
+                                          <TableColumn fx:id="locationColumn" prefWidth="72.0" text="Location" />
+                                          <TableColumn fx:id="typeColumn" prefWidth="63.0" text="Type" />
+                                          <TableColumn fx:id="contactColumn" prefWidth="75.0" text="Contact" />
+                                          <TableColumn fx:id="startColumn" prefWidth="107.0" text="Start Date/Time" />
+                                          <TableColumn fx:id="endColumn" prefWidth="113.0" text="End Date/Time" />
+                                          <TableColumn fx:id="customerColumn" minWidth="0.0" prefWidth="94.0" text="Customer" />
+                                          <TableColumn fx:id="customerIdColumn" prefWidth="74.0" text="Customer Id" />
                                       </columns>
                                     </TableView>
                                     <TextField fx:id="searchBox" layoutX="719.0" layoutY="14.0" prefHeight="25.0" prefWidth="190.0" promptText="Search by ID or Name" />
@@ -49,7 +50,7 @@
                                     <TextField fx:id="titleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" promptText="Max length is 50 characters" />
                                     <TextField fx:id="descriptionField" layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" promptText="Max length is 50 characters" />
                                     <TextField fx:id="locationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" promptText="Max length is 50 characters" />
-                                    <ComboBox fx:id="contactSelector" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
+                                    <ComboBox fx:id="customerSelector" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Customer" />
                                     <TextField fx:id="typeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" promptText="Max length is 50 characters" />
                                     <DatePicker fx:id="startDateField" editable="false" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" promptText="Use button -&gt;" />
                                     <TextField fx:id="startTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
@@ -57,25 +58,27 @@
                                     <DatePicker fx:id="endDateField" editable="false" layoutX="146.0" layoutY="235.0" prefHeight="25.0" prefWidth="130.0" promptText="Use button -&gt;" />
                                     <TextField fx:id="endTimeField" layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
                                     <ChoiceBox fx:id="endAmOrPm" layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
-                                    <TextField fx:id="customerIdField" disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
+                                    <TextField fx:id="customerIdField" disable="true" layoutX="358.0" layoutY="142.0" prefHeight="25.0" prefWidth="67.0" promptText="&lt;Cust ID&gt;" />
                                     <Button fx:id="saveButton" defaultButton="true" layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
                                     <Label layoutX="21.0" layoutY="22.0" text="Appointment ID" />
                                     <Label layoutX="21.0" layoutY="53.0" text="Title" />
                                     <Label layoutX="21.0" layoutY="115.0" text="Location" />
-                                    <Label layoutX="21.0" layoutY="146.0" text="Contact" />
+                                    <Label layoutX="21.0" layoutY="146.0" prefHeight="17.0" prefWidth="62.0" text="Customer" />
                                     <Label layoutX="21.0" layoutY="208.0" text="Start Date and Time" />
                                     <Label layoutX="21.0" layoutY="177.0" text="Type" />
                                     <Label fx:id="titleErrorMessage" disable="true" layoutX="460.0" layoutY="53.0" textFill="RED" />
                                     <Label fx:id="descriptionErrorMessage" disable="true" layoutX="460.0" layoutY="84.0" textFill="RED" />
                                     <Label fx:id="locationErrorMessage" disable="true" layoutX="460.0" layoutY="115.0" textFill="RED" />
-                                    <Label fx:id="contactErrorMessage" disable="true" layoutX="460.0" layoutY="146.0" textFill="RED" />
+                                    <Label fx:id="customerErrorMessage" disable="true" layoutX="460.0" layoutY="146.0" textFill="RED" />
                                     <Label layoutX="21.0" layoutY="84.0" text="Description" />
                                     <Label layoutX="21.0" layoutY="239.0" text="End Date and Time" />
-                                    <Label layoutX="21.0" layoutY="270.0" text="Customer ID" />
+                                    <Label layoutX="21.0" layoutY="270.0" text="Contact" />
                                     <Label fx:id="typeErrorMessage" disable="true" layoutX="460.0" layoutY="177.0" textFill="RED" />
                                     <Label fx:id="startErrorMessage" disable="true" layoutX="460.0" layoutY="208.0" textFill="RED" />
                                     <Label fx:id="endErrorMessage" disable="true" layoutX="460.0" layoutY="239.0" textFill="RED" />
-                                    <Label fx:id="customerIdErrorMessage" disable="true" layoutX="460.0" layoutY="270.0" textFill="RED" />
+                                    <Label fx:id="contactErrorMessage" disable="true" layoutX="460.0" layoutY="270.0" textFill="RED" />
+                                    <ComboBox fx:id="contactSelector" layoutX="146.0" layoutY="266.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
+                                    <TextField fx:id="contactIdField" disable="true" layoutX="361.0" layoutY="266.0" prefHeight="25.0" prefWidth="67.0" promptText="&lt;Cont ID&gt;" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -88,20 +91,20 @@
                                     <TextField fx:id="mIdField" disable="true" layoutX="146.0" layoutY="18.0" promptText="Auto Generated" />
                                     <Label layoutX="21.0" layoutY="53.0" text="Title" />
                                     <Label layoutX="21.0" layoutY="115.0" text="Location" />
-                                    <Label layoutX="21.0" layoutY="146.0" text="Contact" />
+                                    <Label layoutX="21.0" layoutY="146.0" text="Customer" />
                                     <Label layoutX="21.0" layoutY="208.0" text="Start Date and Time" />
                                     <Label layoutX="21.0" layoutY="177.0" text="Type" />
                                     <Label fx:id="mTitleErrorMessage" disable="true" layoutX="460.0" layoutY="53.0" textFill="RED" />
                                     <Label fx:id="mDescriptionErrorMessage" disable="true" layoutX="460.0" layoutY="84.0" textFill="RED" />
                                     <Label fx:id="mLocationErrorMessage" disable="true" layoutX="460.0" layoutY="115.0" textFill="RED" />
-                                    <Label fx:id="mContactErrorMessage" disable="true" layoutX="460.0" layoutY="146.0" textFill="RED" />
+                                    <Label fx:id="mCustomerErrorMessage" disable="true" layoutX="460.0" layoutY="146.0" textFill="RED" />
                                     <Label layoutX="21.0" layoutY="84.0" text="Description" />
                                     <Label layoutX="21.0" layoutY="239.0" text="End Date and Time" />
-                                    <Label layoutX="21.0" layoutY="270.0" text="Customer ID" />
+                                    <Label layoutX="21.0" layoutY="270.0" text="Contact" />
                                     <TextField fx:id="mTitleField" layoutX="146.0" layoutY="49.0" prefHeight="25.0" prefWidth="279.0" />
                                     <TextField fx:id="mDescriptionField" layoutX="146.0" layoutY="80.0" prefHeight="25.0" prefWidth="279.0" />
                                     <TextField fx:id="mLocationField" layoutX="146.0" layoutY="111.0" prefHeight="25.0" prefWidth="279.0" />
-                                    <ComboBox fx:id="mContactSelector" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
+                                    <ComboBox fx:id="mCustomerSelector" layoutX="146.0" layoutY="142.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Customer" />
                                     <TextField fx:id="mTypeField" layoutX="146.0" layoutY="173.0" prefHeight="25.0" prefWidth="279.0" />
                                     <DatePicker fx:id="mStartDateField" layoutX="146.0" layoutY="204.0" prefHeight="25.0" prefWidth="130.0" promptText="Use button -&gt;" />
                                     <TextField fx:id="mStartTimeField" layoutX="287.0" layoutY="204.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
@@ -110,12 +113,14 @@
                                     <TextField fx:id="mEndTimeField" layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
                                     <ChoiceBox fx:id="mEndAmOrPm" layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
                                     <Label fx:id="mEndErrorMessage" disable="true" layoutX="460.0" layoutY="239.0" textFill="RED" />
-                                    <TextField fx:id="mCustomerIdField" disable="true" layoutX="146.0" layoutY="266.0" promptText="&lt;Customer ID Here&gt;" />
+                                    <TextField fx:id="mCustomerIdField" disable="true" layoutX="357.0" layoutY="142.0" prefHeight="25.0" prefWidth="69.0" promptText="&lt;Cust Id&gt;" />
                                     <Label fx:id="mTypeErrorMessage" disable="true" layoutX="460.0" layoutY="177.0" textFill="RED" />
                                     <Label fx:id="mStartErrorMessage" disable="true" layoutX="460.0" layoutY="208.0" textFill="RED" />
                                     <Button fx:id="mSaveButton" defaultButton="true" layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="218.0" text="Save Appointment Changes" />
                                     <Button fx:id="mCancelButton" layoutX="254.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="173.0" text="Cancel/Discard Changes" />
-                                    <Label fx:id="mCustomerIdErrorMessage" disable="true" layoutX="460.0" layoutY="270.0" textFill="RED" />
+                                    <Label fx:id="mContactErrorMessage" disable="true" layoutX="460.0" layoutY="270.0" textFill="RED" />
+                                    <ComboBox fx:id="mContactSelector" layoutX="146.0" layoutY="266.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
+                                    <TextField fx:id="mContactIdField" disable="true" layoutX="357.0" layoutY="266.0" prefHeight="25.0" prefWidth="69.0" promptText="&lt;Cont Id&gt;" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -168,7 +173,7 @@
                                     <Label layoutX="22.0" layoutY="184.0" text="Postal Code" />
                                     <Label layoutX="24.0" layoutY="272.0" text="First-Level Division" />
                                     <Label layoutX="24.0" layoutY="228.0" text="Country" />
-                                    <Button fx:id="customerSaveButton" layoutX="20.0" layoutY="313.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="342.0" text="Save and Add New Customer" />
+                                    <Button fx:id="customerSaveButton" defaultButton="true" layoutX="20.0" layoutY="313.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="342.0" text="Save and Add New Customer" />
                                     <Label fx:id="nameErrorLabel" disable="true" layoutX="390.0" layoutY="61.0" textFill="RED" />
                                     <Label fx:id="phoneNumberErrorLabel" disable="true" layoutX="390.0" layoutY="103.0" textFill="RED" />
                                     <Label fx:id="addressErrorLabel" disable="true" layoutX="390.0" layoutY="143.0" textFill="RED" />
@@ -212,6 +217,58 @@
                     </tabs>
                   </TabPane>
                </content>
+            </Tab>
+            <Tab fx:id="reportsTab" text="Reports">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TabPane prefHeight="388.0" prefWidth="923.0" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Total Appointments">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <ComboBox fx:id="rtaTypeSelector" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="178.0" promptText="Pick an appointment type" />
+                                          <TextField fx:id="rtaYearTextField" layoutX="198.0" layoutY="14.0" prefHeight="25.0" prefWidth="116.0" promptText="Enter a 4-digit year (YYYY)" />
+                                          <Button fx:id="rtaRetrieveButton" layoutX="324.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="114.0" text="Retrieve/Refresh" />
+                                          <Label layoutX="14.0" layoutY="60.0" text="January" />
+                                          <Label layoutX="14.0" layoutY="80.0" text="February" />
+                                          <Label layoutX="14.0" layoutY="100.0" text="March" />
+                                          <Label layoutX="14.0" layoutY="120.0" text="April" />
+                                          <Label layoutX="14.0" layoutY="140.0" text="May" />
+                                          <Label layoutX="14.0" layoutY="160.0" text="June" />
+                                          <Label layoutX="14.0" layoutY="180.0" text="July" />
+                                          <Label layoutX="14.0" layoutY="200.0" text="August" />
+                                          <Label layoutX="14.0" layoutY="220.0" text="September" />
+                                          <Label layoutX="14.0" layoutY="240.0" text="October" />
+                                          <Label layoutX="14.0" layoutY="260.0" text="November" />
+                                          <Label layoutX="14.0" layoutY="280.0" text="December" />
+                                          <Label fx:id="janResults" layoutX="127.0" layoutY="60.0" text="&lt;&gt;" />
+                                          <Label fx:id="febResults" layoutX="127.0" layoutY="80.0" text="&lt;&gt;" />
+                                          <Label fx:id="marResults" layoutX="127.0" layoutY="100.0" text="&lt;&gt;" />
+                                          <Label fx:id="aprResults" layoutX="127.0" layoutY="120.0" text="&lt;&gt;" />
+                                          <Label fx:id="mayResults" layoutX="127.0" layoutY="140.0" text="&lt;&gt;" />
+                                          <Label fx:id="junResults" layoutX="127.0" layoutY="160.0" text="&lt;&gt;" />
+                                          <Label fx:id="julResults" layoutX="127.0" layoutY="180.0" text="&lt;&gt;" />
+                                          <Label fx:id="augResults" layoutX="127.0" layoutY="200.0" text="&lt;&gt;" />
+                                          <Label fx:id="sepResults" layoutX="127.0" layoutY="220.0" text="&lt;&gt;" />
+                                          <Label fx:id="octResults" layoutX="127.0" layoutY="240.0" text="&lt;&gt;" />
+                                          <Label fx:id="novResults" layoutX="127.0" layoutY="260.0" text="&lt;&gt;" />
+                                          <Label fx:id="decResults" layoutX="127.0" layoutY="280.0" text="&lt;&gt;" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                            <Tab text="Untitled Tab 2">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
+                     </children>
+                  </AnchorPane>
+              </content>
             </Tab>
         </tabs>
       </TabPane>

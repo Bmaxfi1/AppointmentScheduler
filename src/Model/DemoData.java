@@ -84,14 +84,22 @@ public abstract class DemoData {
                 "marylamb@fakecompany.com"
         );
 
+        Contact d = new Contact(
+                104,
+                "Sally Johnson",
+                "sallyjohnson2@fakecompany.com"
+        );
+
         contactList = FXCollections.observableArrayList();
-        contactList.addAll(a, b, c);
+        contactList.addAll(a, b, c, d);
         return contactList;
     }
 
     public static ObservableList<Appointment> getDemoAppointmentList(){
         ObservableList<Customer> customerList;
         customerList = Model.DemoData.getDemoCustomerList();
+        ObservableList<Contact> contactList;
+        contactList = Model.DemoData.getDemoContactList();
 
         Appointment a = new Appointment(100001,
                 "Meet Customer",
@@ -101,7 +109,8 @@ public abstract class DemoData {
                 "Phone",
                 LocalDateTime.now(),
                 LocalDateTime.now(),
-                customerList.get(0).getCustomerId());
+                customerList.get(0).getCustomerId(),
+                contactList.get(0));
         Appointment b = new Appointment(100002,
                 "New product offering",
                 "Suggesting solutions to the client.",
@@ -110,7 +119,8 @@ public abstract class DemoData {
                 "In Person",
                 LocalDateTime.now().plusDays(50),
                 LocalDateTime.now().plusDays(50),
-                customerList.get(1).getCustomerId());
+                customerList.get(1).getCustomerId(),
+                contactList.get(2));
         Appointment c = new Appointment(100003,
                 "Meeting",
                 "n/a",
@@ -119,7 +129,8 @@ public abstract class DemoData {
                 "Phone",
                 LocalDateTime.now().plusMinutes(11),
                 LocalDateTime.now().plusMinutes(31),
-                customerList.get(2).getCustomerId());
+                customerList.get(2).getCustomerId(),
+                contactList.get(1));
         Appointment d = new Appointment(100004,
                 "Follow up about purchase",
                 "need to discuss what went wrong during recent order",
@@ -128,7 +139,8 @@ public abstract class DemoData {
                 "Phone",
                 LocalDateTime.now().plusMinutes(4),
                 LocalDateTime.now().plusMinutes(14),
-                customerList.get(3).getCustomerId());
+                customerList.get(3).getCustomerId(),
+        contactList.get(0));
         Appointment e = new Appointment(100005,
                 "Lunch",
                 "Lunch meeting",
@@ -137,7 +149,8 @@ public abstract class DemoData {
                 "Meal",
                 LocalDateTime.now().plusDays(7),
                 LocalDateTime.now().plusDays(7),
-                customerList.get(0).getCustomerId());
+                customerList.get(0).getCustomerId(),
+                contactList.get(1));
 
 
         ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();

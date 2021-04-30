@@ -2,13 +2,11 @@ package MiscTools;
 
 import Model.Appointment;
 import Model.AppointmentList;
-import Model.Customer;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 public abstract class MiscTools {
 
@@ -66,7 +64,7 @@ public abstract class MiscTools {
 
     public static boolean appointmentOverlaps(int customerId, LocalDateTime start, LocalDateTime end) {
         for (Appointment appointment: AppointmentList.getAppointmentList()) {
-            if (customerId == appointment.getContactId()) {
+            if (customerId == appointment.getCustomerId()) {
                 if (appointment.getStartInstant().isAfter(start) && appointment.getEndInstant().isBefore(end)) {
                     return true;
                 }
@@ -79,7 +77,7 @@ public abstract class MiscTools {
     public static boolean appointmentOverlaps(int customerId, LocalDateTime start, LocalDateTime end, int appointmentIdToDisregard) {
         for (Appointment appointment: AppointmentList.getAppointmentList()) {
             if (appointment.getAppointmentId() != appointmentIdToDisregard) {
-                if (customerId == appointment.getContactId()) {
+                if (customerId == appointment.getCustomerId()) {
                     if (appointment.getStartInstant().isAfter(start) && appointment.getEndInstant().isBefore(end)) {
                         return true;
                     }

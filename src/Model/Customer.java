@@ -84,7 +84,7 @@ public class Customer {
     //methods
     public boolean hasExistingAppointments() {
         for (Appointment appointment: AppointmentList.getAppointmentList()) {
-            if (appointment.getContactId() == this.getCustomerId()) {
+            if (appointment.getCustomerId() == this.getCustomerId()) {
                 return true;
             }
         }

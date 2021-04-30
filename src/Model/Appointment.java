@@ -9,30 +9,33 @@ public class Appointment {
     private String title;
     private String description;
     private String location;
-    private String contactName;
+    private String customerName;
     private String type;
     private LocalDateTime startInstant;
     private LocalDateTime endInstant;
-    private int contactId;
+    private int customerId;
+    private Contact contact;
 
     public Appointment(int appointmentId,
                        String title,
                        String description,
                        String location,
-                       String contactName,
+                       String customerName,
                        String type,
                        LocalDateTime startInstant,
                        LocalDateTime endInstant,
-                       int contactId) {
+                       int customerId,
+                        Contact contact) {
         this.appointmentId = appointmentId;
         this.title = title;
         this.description = description;
         this.location = location;
-        this.contactName = contactName;
+        this.customerName = customerName;
         this.type = type;
         this.startInstant = startInstant;
         this.endInstant = endInstant;
-        this.contactId = contactId;
+        this.customerId = customerId;
+        this.contact = contact;
     }
 
     public int getAppointmentId() {
@@ -67,12 +70,12 @@ public class Appointment {
         this.location = location;
     }
 
-    public String getContactName() {
-        return contactName;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setContactName(String contactName) {
-        this.contactName = contactName;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public String getType() {
@@ -99,11 +102,19 @@ public class Appointment {
         this.endInstant = endInstant;
     }
 
-    public int getContactId() {
-        return contactId;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setContactId(int contactId) {
-        this.contactId = contactId;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }

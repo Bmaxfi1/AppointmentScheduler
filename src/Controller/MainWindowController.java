@@ -19,8 +19,6 @@ import javafx.stage.Stage;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
@@ -79,7 +77,7 @@ public class MainWindowController {
     @FXML
     private TableColumn<Appointment, String> locationColumn;
     @FXML
-    private TableColumn<Appointment, String> contactColumn;
+    private TableColumn<Appointment, String> customerColumn;
     @FXML
     private TableColumn<Appointment, String> typeColumn;
     @FXML
@@ -88,6 +86,8 @@ public class MainWindowController {
     private TableColumn<Appointment, LocalDateTime> endColumn;
     @FXML
     private TableColumn<Appointment, Integer> customerIdColumn;
+    @FXML
+    private TableColumn<Appointment, Contact> contactColumn;
 
     //all customers table
     @FXML
@@ -115,7 +115,7 @@ public class MainWindowController {
     @FXML
     private TextField locationField;
     @FXML
-    private ComboBox<String> contactSelector;
+    private ComboBox<String> customerSelector;
     @FXML
     private TextField typeField;
     @FXML
@@ -133,6 +133,10 @@ public class MainWindowController {
     @FXML
     private TextField customerIdField;
     @FXML
+    private ComboBox<String> contactSelector;
+    @FXML
+    private TextField contactIdField;
+    @FXML
     private Button saveButton;
     @FXML
     private Label titleErrorMessage;
@@ -143,13 +147,13 @@ public class MainWindowController {
     @FXML
     private Label typeErrorMessage;
     @FXML
-    private Label contactErrorMessage;
+    private Label customerErrorMessage;
     @FXML
     private Label startErrorMessage;
     @FXML
     private Label endErrorMessage;
     @FXML
-    private Label customerIdErrorMessage;
+    private Label contactErrorMessage;
 
     //Modify Appointment Form
     @FXML
@@ -163,7 +167,7 @@ public class MainWindowController {
     @FXML
     private TextField mLocationField;
     @FXML
-    private ComboBox<String> mContactSelector;
+    private ComboBox<String> mCustomerSelector;
     @FXML
     private TextField mTypeField;
     @FXML
@@ -181,6 +185,10 @@ public class MainWindowController {
     @FXML
     private TextField mCustomerIdField;
     @FXML
+    private ComboBox<String> mContactSelector;
+    @FXML
+    private TextField mContactIdField;
+    @FXML
     private Button mSaveButton;
     @FXML
     private Label mTitleErrorMessage;
@@ -189,7 +197,7 @@ public class MainWindowController {
     @FXML
     private Label mLocationErrorMessage;
     @FXML
-    private Label mContactErrorMessage;
+    private Label mCustomerErrorMessage;
     @FXML
     private Label mTypeErrorMessage;
     @FXML
@@ -197,7 +205,7 @@ public class MainWindowController {
     @FXML
     private Label mEndErrorMessage;
     @FXML
-    private Label mCustomerIdErrorMessage;
+    private Label mContactErrorMessage;
     @FXML
     private Button mCancelButton;
 
@@ -261,6 +269,39 @@ public class MainWindowController {
     @FXML
     private Button mcCancelButton;
 
+    //reports
+    @FXML
+    private ComboBox<String> rtaTypeSelector;
+    @FXML
+    private TextField rtaYearTextField;
+    @FXML
+    private Button rtaRetrieveButton;
+    @FXML
+    private Label janResults;
+    @FXML
+    private Label febResults;
+    @FXML
+    private Label marResults;
+    @FXML
+    private Label aprResults;
+    @FXML
+    private Label mayResults;
+    @FXML
+    private Label junResults;
+    @FXML
+    private Label julResults;
+    @FXML
+    private Label augResults;
+    @FXML
+    private Label sepResults;
+    @FXML
+    private Label octResults;
+    @FXML
+    private Label novResults;
+    @FXML
+    private Label decResults;
+
+
     //other
     @FXML
     private ScrollPane alertScrollPane;
@@ -282,11 +323,24 @@ public class MainWindowController {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
-        contactColumn.setCellValueFactory(new PropertyValueFactory<>("contactName"));
+        customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
         typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
         startColumn.setCellValueFactory(new PropertyValueFactory<>("startInstant"));
         endColumn.setCellValueFactory(new PropertyValueFactory<>("endInstant"));
-        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
+        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+        contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
+
+        contactColumn.setCellFactory(tc -> new TableCell<Appointment, Contact>() {
+            @Override
+            protected void updateItem(Contact contact, boolean empty) {
+                super.updateItem(contact, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(contact.getContactName());
+                }
+            }
+        });
 
         //customer table
         customerIdColumn2.setCellValueFactory(new PropertyValueFactory<>("customerId"));
@@ -298,14 +352,16 @@ public class MainWindowController {
         countryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
 
 
+        //todo figure out if I actually need this.
         //build the model lists of customers and appointments
         CustomerList customerList = new CustomerList();
+        ContactList contactList = new ContactList();
         AppointmentList appointmentList = new AppointmentList();
         CountryList countryList = new CountryList();
 
-
         //load demo data into lists
         CustomerList.addCustomerList(DemoData.getDemoCustomerList());
+        ContactList.addContactList(DemoData.getDemoContactList());
         AppointmentList.addAppointmentList(DemoData.getDemoAppointmentList());
         CountryList.addCountryList(DemoData.getDemoCountryList());
 
@@ -316,7 +372,7 @@ public class MainWindowController {
         //Check to see if there is an upcoming appointment within 15 minutes.
         for (Appointment appointment: AppointmentList.getAppointmentList()) {
             if (appointment.getStartInstant().minusMinutes(15).isBefore(LocalDateTime.now())) {
-                addMessage("There is an upcoming appointment with " + appointment.getContactName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) +". (Appointment Id: " + appointment.getAppointmentId() +")", RED);
+                addMessage("There is an upcoming appointment with " + appointment.getCustomerName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) +". (Appointment Id: " + appointment.getAppointmentId() +")", RED);
             }
         }
 
@@ -325,6 +381,7 @@ public class MainWindowController {
         allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
 
         //Format the appointment table time columns
+        //lambda addition
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a, MM/dd/yyyy");
         startColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>() {
             @Override
@@ -337,6 +394,7 @@ public class MainWindowController {
                 }
             }
         });
+        //lambda addition
         endColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>(){
             @Override
             protected void updateItem(LocalDateTime dateTime, boolean empty) {
@@ -348,6 +406,9 @@ public class MainWindowController {
                 }
             }
         });
+
+        //report misc
+        rtaYearTextField.setText(String.valueOf(LocalDateTime.now().getYear()));
 
         //AM or PM Selectors
         ObservableList<String> amPm = FXCollections.observableArrayList("AM", "PM");
@@ -412,7 +473,18 @@ public class MainWindowController {
                 filterSelectionLabel.setText("Showing all appointments");
             } else if (MiscTools.isInteger(searchBox.getText())) {
                 try {
-                    allAppointmentsTable.setItems(AppointmentList.lookupAppointment(Integer.parseInt(newValue)));
+                    ObservableList<Appointment> searchResults = FXCollections.observableArrayList();
+                    searchResults.addAll(AppointmentList.lookupAppointment(Integer.parseInt(newValue)));
+                    for (Appointment appointment:AppointmentList.getAppointmentList())
+                        if (appointment.getCustomerId() == Integer.parseInt(searchBox.getText())) {
+                            searchResults.add(appointment);
+                        }
+                    for (Appointment appointment:AppointmentList.getAppointmentList()) {
+                        if (appointment.getContact().getContactId() == Integer.parseInt(searchBox.getText())) {
+                            searchResults.add(appointment);
+                        }
+                    }
+                    allAppointmentsTable.setItems(searchResults);
                 }
                 catch (NumberFormatException numberFormatException) {
                     addMessage("The number you entered is too long to be an Id.", BLACK);
@@ -448,9 +520,13 @@ public class MainWindowController {
                 }
         );
 
+        //Customer Drop Down Menus
+        customerSelector.setItems(CustomerList.getCustomerNames());
+        mCustomerSelector.setItems(CustomerList.getCustomerNames());
+
         //Contact Drop Down Menus
-        contactSelector.setItems(CustomerList.getCustomerNames());
-        mContactSelector.setItems(CustomerList.getCustomerNames());
+        contactSelector.setItems(ContactList.getContactNames());
+        mContactSelector.setItems(ContactList.getContactNames());
 
         //Country Drop Down Menus
         countrySelector.setItems(CountryList.getCountryNames());
@@ -472,14 +548,17 @@ public class MainWindowController {
             }
         });
 
-        //New Appointment tab - Contact Selector Value Change event - used to put the customer id into its field
-        contactSelector.setOnAction(e -> {
+        //Appointment Type Drop Down Menus
+        rtaTypeSelector.setItems(AppointmentList.getDifferentTypes());
 
-            if (contactSelector.getSelectionModel().getSelectedItem() != null) {
+        //New Appointment tab - Customer Selector Value Change event - used to put the customer id into its field
+        customerSelector.setOnAction(e -> {
+
+            if (customerSelector.getSelectionModel().getSelectedItem() != null) {
                 ObservableList<Customer> listOfClientsSharingName = FXCollections.observableArrayList();
-                String nameOfSelectedContact = contactSelector.getValue();
+                String nameOfSelectedCustomer = customerSelector.getValue();
                 for (Customer customer : CustomerList.getCustomerList()) {
-                    if (nameOfSelectedContact.equals(customer.getName())) {
+                    if (nameOfSelectedCustomer.equals(customer.getName())) {
                         listOfClientsSharingName.add(customer);
                     }
                 }
@@ -488,11 +567,11 @@ public class MainWindowController {
                 }
                 //handle matching customer names
                 if (listOfClientsSharingName.size() > 1) {
-                    Stage multiContactSelectorStage = new Stage();
-                    multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
-                    multiContactSelectorStage.setResizable(false);
-                    multiContactSelectorStage.setTitle("Multiple contacts found");
-                    Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
+                    Stage multiCustomerSelectorStage = new Stage();
+                    multiCustomerSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                    multiCustomerSelectorStage.setResizable(false);
+                    multiCustomerSelectorStage.setTitle("Multiple customers found");
+                    Label infoLabel = new Label("There are multiple customers that share that name.  Which do you mean?");
                     TableView<Customer> duplicatesTable = new TableView<>();
                     TableColumn<Customer, String> multiCustomerNameColumn = new TableColumn<>("Name");
                     TableColumn<Customer, Integer> multiCustomerIdColumn = new TableColumn<>("Id");
@@ -513,18 +592,78 @@ public class MainWindowController {
                     confirmButton.setOnAction(e2 -> {
                         if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
                             customerIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getCustomerId()));
+                            multiCustomerSelectorStage.close();
+                        } else {
+                            multiCustomerSelectorStage.close();
+                            addMessage("No customer selected.  Please try again.", RED);
+                            customerSelector.getSelectionModel().clearSelection();
+                            customerIdField.setText("");
+                        }
+                    });
+                    cancelButton.setOnAction(e2 -> {
+                        multiCustomerSelectorStage.close();
+                        customerSelector.getSelectionModel().clearSelection();
+                        customerIdField.setText("");
+                    });
+                    HBox buttonRow = new HBox(10);
+                    VBox layout = new VBox(10);
+                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                    layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
+                    layout.setPadding(new Insets(20));
+                    Scene multiCustomerSelectorScene = new Scene(layout, 570, 300);
+                    multiCustomerSelectorStage.setScene(multiCustomerSelectorScene);
+                    multiCustomerSelectorStage.show();
+                }
+            }
+        });
+
+        //New Appointment tab - Contact Selector Value Change event - used to put the contact id into its field
+        contactSelector.setOnAction(e -> {
+
+            if (contactSelector.getSelectionModel().getSelectedItem() != null) {
+                ObservableList<Contact> listOfContactsSharingName = FXCollections.observableArrayList();
+                String nameOfSelectedContact = contactSelector.getValue();
+                for (Contact contact : ContactList.getContactList()) {
+                    if (nameOfSelectedContact.equals(contact.getContactName())) {
+                        listOfContactsSharingName.add(contact);
+                    }
+                }
+                if (listOfContactsSharingName.size() == 1) {
+                    contactIdField.setText(String.valueOf(listOfContactsSharingName.get(0).getContactId()));
+                }
+                //handle matching customer names
+                if (listOfContactsSharingName.size() > 1) {
+                    Stage multiContactSelectorStage = new Stage();
+                    multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                    multiContactSelectorStage.setResizable(false);
+                    multiContactSelectorStage.setTitle("Multiple contacts found");
+                    Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
+                    TableView<Contact> duplicatesTable = new TableView<>();
+                    TableColumn<Contact, String> multiContactNameColumn = new TableColumn<>("Name");
+                    TableColumn<Contact, Integer> multiContactIdColumn = new TableColumn<>("Id");
+                    TableColumn<Contact, String> multiContactAddressColumn = new TableColumn<>("E-mail");
+                    multiContactNameColumn.setCellValueFactory(new PropertyValueFactory<>("contactName"));
+                    multiContactIdColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
+                    multiContactAddressColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+                    duplicatesTable.getColumns().addAll(multiContactNameColumn, multiContactIdColumn, multiContactAddressColumn);
+                    duplicatesTable.setItems(listOfContactsSharingName);
+                    Button confirmButton = new Button("Confirm");
+                    Button cancelButton = new Button("Cancel");
+                    confirmButton.setOnAction(e2 -> {
+                        if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
+                            contactIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getContactId()));
                             multiContactSelectorStage.close();
                         } else {
                             multiContactSelectorStage.close();
                             addMessage("No contact selected.  Please try again.", RED);
                             contactSelector.getSelectionModel().clearSelection();
-                            customerIdField.setText("");
+                            contactIdField.setText("");
                         }
                     });
                     cancelButton.setOnAction(e2 -> {
                         multiContactSelectorStage.close();
                         contactSelector.getSelectionModel().clearSelection();
-                        customerIdField.setText("");
+                        contactIdField.setText("");
                     });
                     HBox buttonRow = new HBox(10);
                     VBox layout = new VBox(10);
@@ -538,13 +677,13 @@ public class MainWindowController {
             }
         });
 
-        //Modify Appointment tab - contact selector value change event
-        mContactSelector.setOnAction(e -> {
-            if (mContactSelector.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
+        //Modify Appointment tab - Customer selector value change event
+        mCustomerSelector.setOnAction(e -> {
+            if (mCustomerSelector.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
                 ObservableList<Customer> listOfClientsSharingName = FXCollections.observableArrayList();
-                String nameOfSelectedContact = mContactSelector.getValue();
+                String nameOfSelectedCustomer = mCustomerSelector.getValue();
                 for (Customer customer : CustomerList.getCustomerList()) {
-                    if (nameOfSelectedContact.equals(customer.getName())) {
+                    if (nameOfSelectedCustomer.equals(customer.getName())) {
                         listOfClientsSharingName.add(customer);
                     }
                 }
@@ -553,11 +692,11 @@ public class MainWindowController {
                 }
                 //handle matching customer names
                 if (listOfClientsSharingName.size() > 1) {
-                    Stage multiContactSelectorStage = new Stage();
-                    multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
-                    multiContactSelectorStage.setResizable(false);
-                    multiContactSelectorStage.setTitle("Multiple contacts found");
-                    Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
+                    Stage multiCustomerSelectorStage = new Stage();
+                    multiCustomerSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                    multiCustomerSelectorStage.setResizable(false);
+                    multiCustomerSelectorStage.setTitle("Multiple customers found");
+                    Label infoLabel = new Label("There are multiple customers that share that name.  Which do you mean?");
                     TableView<Customer> duplicatesTable = new TableView<>();
                     TableColumn<Customer, String> multiCustomerNameColumn = new TableColumn<>("Name");
                     TableColumn<Customer, Integer> multiCustomerIdColumn = new TableColumn<>("Id");
@@ -578,18 +717,78 @@ public class MainWindowController {
                     confirmButton.setOnAction(e2 -> {
                         if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
                             mCustomerIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getCustomerId()));
+                            multiCustomerSelectorStage.close();
+                        } else {
+                            multiCustomerSelectorStage.close();
+                            addMessage("No customer selected.  Please try again.", RED);
+                            mCustomerSelector.getSelectionModel().clearSelection();
+                            mCustomerIdField.setText("");
+                        }
+                    });
+                    cancelButton.setOnAction(e2 -> {
+                        multiCustomerSelectorStage.close();
+                        mCustomerSelector.getSelectionModel().clearSelection();
+                        mCustomerIdField.setText("");
+                    });
+                    HBox buttonRow = new HBox(10);
+                    VBox layout = new VBox(10);
+                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                    layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
+                    layout.setPadding(new Insets(20));
+                    Scene multiCustomerSelectorScene = new Scene(layout, 570, 300);
+                    multiCustomerSelectorStage.setScene(multiCustomerSelectorScene);
+                    multiCustomerSelectorStage.show();
+                }
+            }
+        });
+
+        //Modify Appointment tab - Contact selector value change event
+        mContactSelector.setOnAction(e -> {
+
+            if (mContactSelector.getSelectionModel().getSelectedItem() != null) {
+                ObservableList<Contact> listOfContactsSharingName = FXCollections.observableArrayList();
+                String nameOfSelectedContact = mContactSelector.getValue();
+                for (Contact contact : ContactList.getContactList()) {
+                    if (nameOfSelectedContact.equals(contact.getContactName())) {
+                        listOfContactsSharingName.add(contact);
+                    }
+                }
+                if (listOfContactsSharingName.size() == 1) {
+                    mContactIdField.setText(String.valueOf(listOfContactsSharingName.get(0).getContactId()));
+                }
+                //handle matching customer names
+                if (listOfContactsSharingName.size() > 1) {
+                    Stage multiContactSelectorStage = new Stage();
+                    multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                    multiContactSelectorStage.setResizable(false);
+                    multiContactSelectorStage.setTitle("Multiple contacts found");
+                    Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
+                    TableView<Contact> duplicatesTable = new TableView<>();
+                    TableColumn<Contact, String> multiContactNameColumn = new TableColumn<>("Name");
+                    TableColumn<Contact, Integer> multiContactIdColumn = new TableColumn<>("Id");
+                    TableColumn<Contact, String> multiContactAddressColumn = new TableColumn<>("E-mail");
+                    multiContactNameColumn.setCellValueFactory(new PropertyValueFactory<>("contactName"));
+                    multiContactIdColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
+                    multiContactAddressColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+                    duplicatesTable.getColumns().addAll(multiContactNameColumn, multiContactIdColumn, multiContactAddressColumn);
+                    duplicatesTable.setItems(listOfContactsSharingName);
+                    Button confirmButton = new Button("Confirm");
+                    Button cancelButton = new Button("Cancel");
+                    confirmButton.setOnAction(e2 -> {
+                        if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
+                            mContactIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getContactId()));
                             multiContactSelectorStage.close();
                         } else {
                             multiContactSelectorStage.close();
                             addMessage("No contact selected.  Please try again.", RED);
                             mContactSelector.getSelectionModel().clearSelection();
-                            mCustomerIdField.setText("");
+                            mContactIdField.setText("");
                         }
                     });
                     cancelButton.setOnAction(e2 -> {
                         multiContactSelectorStage.close();
                         mContactSelector.getSelectionModel().clearSelection();
-                        mCustomerIdField.setText("");
+                        mContactIdField.setText("");
                     });
                     HBox buttonRow = new HBox(10);
                     VBox layout = new VBox(10);
@@ -638,11 +837,11 @@ public class MainWindowController {
                     locationErrorMessage.setText("");
                 }
 
-                if (contactSelector.getValue() != null) {
-                    contactErrorMessage.setText("");
+                if (customerSelector.getValue() != null) {
+                    customerErrorMessage.setText("");
                 } else {
                     validationError = true;
-                    contactErrorMessage.setText("No contact selected.");
+                    customerErrorMessage.setText("No customer selected.");
                 }
 
                 if (typeField.getLength() > 50 || typeField.getLength() < 1) {
@@ -679,10 +878,10 @@ public class MainWindowController {
                 }
 
                 if (customerIdField.getText() != null) {
-                    customerIdErrorMessage.setText("");
+                    contactErrorMessage.setText("");
                 } else {
                     validationError = true;
-                    customerIdErrorMessage.setText("Please try re-selecting the contact.");
+                    contactErrorMessage.setText("Please try re-selecting the customer.");
                 }
 
                 if (startDateTime != null && endDateTime != null) {
@@ -710,6 +909,13 @@ public class MainWindowController {
                     }
                 }
 
+                if (contactSelector.getValue() != null) {
+                    contactErrorMessage.setText("");
+                } else {
+                    validationError = true;
+                    contactErrorMessage.setText("No contact selected.");
+                }
+
 
                 //validation complete, time to add the appointment
                 int appointmentId = -1;
@@ -725,11 +931,12 @@ public class MainWindowController {
                             this.titleField.getText(),
                             this.descriptionField.getText(),
                             this.locationField.getText(),
-                            this.contactSelector.getValue(),
+                            this.customerSelector.getValue(),
                             this.typeField.getText(),
                             startDateTime,
                             endDateTime,
-                            Integer.parseInt(this.customerIdField.getText())
+                            Integer.parseInt(this.customerIdField.getText()),
+                            ContactList.getContact(Integer.parseInt(this.contactIdField.getText()))
                     );
                     AppointmentList.addAppointment(appointmentToAdd);
                     System.out.println("appointment saved");
@@ -739,7 +946,7 @@ public class MainWindowController {
                     titleField.setText("");
                     descriptionField.setText("");
                     locationField.setText("");
-                    contactSelector.setValue("");
+                    customerSelector.setValue("");
                     typeField.setText("");
                     startDateField.setValue(null);
                     startTimeField.setText("");
@@ -748,6 +955,8 @@ public class MainWindowController {
                     endTimeField.setText("");
                     endAmOrPm.getSelectionModel().clearSelection();
                     customerIdField.setText("");
+                    contactSelector.setValue("");
+                    contactIdField.setText("");
                 } else {
                     addMessage("Appointment was NOT saved.  Check your entries on the 'Add Appointment' page.", RED);
                 }
@@ -776,7 +985,7 @@ public class MainWindowController {
                 mTitleField.setText(selectedAppointment.getTitle());
                 mDescriptionField.setText(selectedAppointment.getDescription());
                 mLocationField.setText(selectedAppointment.getLocation());
-                mContactSelector.setValue(selectedAppointment.getContactName());
+                mCustomerSelector.setValue(selectedAppointment.getCustomerName());
                 mTypeField.setText(selectedAppointment.getType());
                 mStartDateField.setValue(selectedAppointment.getStartInstant().toLocalDate());
                 mStartTimeField.setText(LocalTime.parse(selectedAppointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
@@ -784,7 +993,9 @@ public class MainWindowController {
                 mEndDateField.setValue(selectedAppointment.getEndInstant().toLocalDate());
                 mEndTimeField.setText(LocalTime.parse(selectedAppointment.getEndInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
                 mEndAmOrPm.setValue(MiscTools.getAmOrPm(selectedAppointment.getEndInstant().toLocalTime()));
-                mCustomerIdField.setText(String.valueOf(selectedAppointment.getContactId()));
+                mCustomerIdField.setText(String.valueOf(selectedAppointment.getCustomerId()));
+                mContactSelector.setValue(selectedAppointment.getContact().getContactName());
+                mContactIdField.setText(String.valueOf(selectedAppointment.getContact().getContactId()));
                 modifyAppointmentTab.setDisable(false);
             }
             else if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
@@ -802,12 +1013,12 @@ public class MainWindowController {
                 confirmWindow.initModality(Modality.APPLICATION_MODAL);
                 confirmWindow.setResizable(false);
                 confirmWindow.setTitle("Delete Confirmation");
-                Label infoLabel = new Label("Delete appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getContactName() + "?");
+                Label infoLabel = new Label("Delete appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getCustomerName() + "?");
                 Button confirmButton = new Button("Confirm");
                 Button cancelButton = new Button("Cancel");
                 confirmButton.setOnAction(e2 -> {
                     int appointmentToDelete = allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId();
-                    addMessage("Appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getContactName() + " deleted.", BLACK);
+                    addMessage("Appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getCustomerName() + " deleted.", BLACK);
                     if (Integer.parseInt(mIdField.getText()) == allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId()) {
                         modifyAppointmentTab.setDisable(true);
                     }
@@ -825,8 +1036,8 @@ public class MainWindowController {
                 buttonRow.getChildren().addAll(confirmButton, cancelButton);
                 layout.getChildren().addAll(infoLabel, buttonRow);
                 layout.setPadding(new Insets(20));
-                Scene multiContactSelectorScene = new Scene(layout, 300, 150);
-                confirmWindow.setScene(multiContactSelectorScene);
+                Scene multiCustomerSelectorScene = new Scene(layout, 300, 150);
+                confirmWindow.setScene(multiCustomerSelectorScene);
                 confirmWindow.show();
             }
             else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
@@ -870,11 +1081,11 @@ public class MainWindowController {
                     mLocationErrorMessage.setText("");
                 }
 
-                if (mContactSelector.getValue() != null) {
-                    mContactErrorMessage.setText("");
+                if (mCustomerSelector.getValue() != null) {
+                    mCustomerErrorMessage.setText("");
                 } else {
                     validationError = true;
-                    mContactErrorMessage.setText("No contact selected.");
+                    mCustomerErrorMessage.setText("No customer selected.");
                 }
 
                 if (mTypeField.getLength() > 50 || mTypeField.getLength() < 1) {
@@ -911,10 +1122,10 @@ public class MainWindowController {
                 }
 
                 if (mCustomerIdField.getText() != null) {
-                    mCustomerIdErrorMessage.setText("");
+                    mContactErrorMessage.setText("");
                 } else {
                     validationError = true;
-                    mCustomerIdErrorMessage.setText("Please try re-selecting the contact.");
+                    mContactErrorMessage.setText("Please try re-selecting the customer.");
                 }
 
                 if (startDateTime != null && endDateTime != null) {
@@ -942,17 +1153,26 @@ public class MainWindowController {
                     }
                 }
 
+                if (mContactSelector.getValue() != null) {
+                    mContactErrorMessage.setText("");
+                } else {
+                    validationError = true;
+                    mContactErrorMessage.setText("No customer selected.");
+                }
+
+
                 //validation complete, time to change the appointment
                 if (!validationError) {
                     Appointment appointmentToChange = AppointmentList.lookupAppointment(Integer.parseInt(mIdField.getText())).get(0);
                     appointmentToChange.setTitle(this.mTitleField.getText());
                     appointmentToChange.setDescription(mDescriptionField.getText());
                     appointmentToChange.setLocation(mLocationField.getText());
-                    appointmentToChange.setContactName(mContactSelector.getValue());
+                    appointmentToChange.setCustomerName(mCustomerSelector.getValue());
                     appointmentToChange.setType(mTypeField.getText());
                     appointmentToChange.setStartInstant(startDateTime);
                     appointmentToChange.setEndInstant(endDateTime);
-                    appointmentToChange.setContactId(Integer.parseInt(mCustomerIdField.getText()));
+                    appointmentToChange.setCustomerId(Integer.parseInt(mCustomerIdField.getText()));
+                    appointmentToChange.setContact(ContactList.getContact(Integer.parseInt(mContactIdField.getText())));
                     allAppointmentsTable.refresh();
                     System.out.println("appointment changes saved");
                     addMessage("Appointment modification to " + Integer.parseInt(this.mIdField.getText()) + " saved.", BLACK);
@@ -1035,8 +1255,8 @@ public class MainWindowController {
                             }
                         }
                         CustomerList.deleteCustomer(customerToDelete);
-                        contactSelector.setItems(CustomerList.getCustomerNames());
-                        mContactSelector.setItems(CustomerList.getCustomerNames());
+                        customerSelector.setItems(CustomerList.getCustomerNames());
+                        mCustomerSelector.setItems(CustomerList.getCustomerNames());
                         confirmWindow.close();
                     });
                     cancelButton.setOnAction(e2 -> {
@@ -1050,8 +1270,8 @@ public class MainWindowController {
                     buttonRow.getChildren().addAll(confirmButton, cancelButton);
                     layout.getChildren().addAll(infoLabel, buttonRow);
                     layout.setPadding(new Insets(20));
-                    Scene multiContactSelectorScene = new Scene(layout, 300, 150);
-                    confirmWindow.setScene(multiContactSelectorScene);
+                    Scene multiCustomerSelectorScene = new Scene(layout, 300, 150);
+                    confirmWindow.setScene(multiCustomerSelectorScene);
                     confirmWindow.show();
                 }
             }
@@ -1127,8 +1347,8 @@ public class MainWindowController {
                             phoneNumberField.getText()
                     );
                     CustomerList.addCustomer(customerToAdd);
-                    contactSelector.setItems(CustomerList.getCustomerNames());
-                    mContactSelector.setItems(CustomerList.getCustomerNames());
+                    customerSelector.setItems(CustomerList.getCustomerNames());
+                    mCustomerSelector.setItems(CustomerList.getCustomerNames());
                     addMessage("New customer '" + nameField.getText() + "' was added successfully." + " (id: " + newCustomerId + ")", BLACK);
 
                     //empty out all the fields
@@ -1198,15 +1418,29 @@ public class MainWindowController {
                 }
                 if (!validationError) {
                     Customer customerToChange = CustomerList.lookupCustomer(Integer.parseInt(mcCustomerIdField.getText())).get(0);
+                    if (customerToChange.hasExistingAppointments()) {
+                        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+                            if (customerToChange.getCustomerId() == appointment.getCustomerId()) {
+                                appointment.setCustomerName(mcNameField.getText());
+                            }
+                        }
+                    }
+
                     customerToChange.setName(mcNameField.getText());
                     customerToChange.setAddress(mcAddressField.getText());
                     customerToChange.setPhoneNumber(mcPhoneNumberField.getText());
                     customerToChange.setPostalCode(mcPostalCodeField.getText());
                     customerToChange.setCountry(mcCountryField.getValue());
                     customerToChange.setFirstLevelDivision(mcFirstLevelDivisionField.getValue());
+                    for (Appointment appointment: AppointmentList.getAppointmentList()) {
+                        if (customerToChange.getCustomerId() == appointment.getCustomerId());
+                    }
+
+
                     allCustomersTable.refresh();
-                    contactSelector.setItems(CustomerList.getCustomerNames());
-                    mContactSelector.setItems(CustomerList.getCustomerNames());
+                    allAppointmentsTable.refresh();
+                    customerSelector.setItems(CustomerList.getCustomerNames());
+                    mCustomerSelector.setItems(CustomerList.getCustomerNames());
                     addMessage("Customer '" + mcNameField.getText() + "' was modified successfully." + " (id: " + mcCustomerIdField.getText() + ")", BLACK);
                     customersTabPane.getSelectionModel().select(allCustomersTab);
                     modifyCustomerTab.setDisable(true);
@@ -1225,6 +1459,31 @@ public class MainWindowController {
             customersTabPane.getSelectionModel().select(allCustomersTab);
             modifyCustomerTab.setDisable(true);
             addMessage("Customer modification canceled.", BLACK);
+        });
+
+        //Reports Tab - Refresh Button
+        rtaRetrieveButton.setOnAction(e -> {
+
+            try {
+                if (rtaTypeSelector.getValue() != null || rtaYearTextField.getText() != null) {
+                    int selectedYear = Integer.parseInt(rtaYearTextField.getText());
+                    ObservableList<Integer> allAppointmentsForYear = AppointmentList.getAllAppointmentsForYearByMonth(selectedYear);
+                    janResults.setText(String.valueOf(allAppointmentsForYear.get(0)));
+                    febResults.setText(String.valueOf(allAppointmentsForYear.get(1)));
+                    marResults.setText(String.valueOf(allAppointmentsForYear.get(2)));
+                    aprResults.setText(String.valueOf(allAppointmentsForYear.get(3)));
+                    mayResults.setText(String.valueOf(allAppointmentsForYear.get(4)));
+                    junResults.setText(String.valueOf(allAppointmentsForYear.get(5)));
+                    julResults.setText(String.valueOf(allAppointmentsForYear.get(6)));
+                    augResults.setText(String.valueOf(allAppointmentsForYear.get(7)));
+                    sepResults.setText(String.valueOf(allAppointmentsForYear.get(8)));
+                    octResults.setText(String.valueOf(allAppointmentsForYear.get(9)));
+                    novResults.setText(String.valueOf(allAppointmentsForYear.get(10)));
+                    decResults.setText(String.valueOf(allAppointmentsForYear.get(11)));
+                }
+            } catch (NumberFormatException numberFormatException) {
+                addMessage("Please select an appointment type and enter a valid 4-digit year number.", BLACK);
+            }
         });
     }
 

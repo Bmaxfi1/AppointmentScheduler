@@ -16,6 +16,10 @@ public class ContactList {
         }
     }
 
+    public static ObservableList<Contact> getContactList() {
+        return contactList;
+    }
+
     public static Contact getContact(int contactId) {
         for (Contact contact: ContactList.contactList){
             if (contact.getContactId() == contactId) {
@@ -24,4 +28,13 @@ public class ContactList {
         }
         return null;
     }
+
+    public static ObservableList<String> getContactNames() {
+        ObservableList<String> namesOfContacts = FXCollections.observableArrayList();
+        for (Contact contact: ContactList.contactList) {
+            namesOfContacts.add(contact.getContactName());
+        }
+        return namesOfContacts;
+    }
+
 }
