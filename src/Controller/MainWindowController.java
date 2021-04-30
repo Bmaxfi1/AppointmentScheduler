@@ -370,9 +370,9 @@ public class MainWindowController {
         //
 
         //Check to see if there is an upcoming appointment within 15 minutes.
-        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+        for (Appointment appointment : AppointmentList.getAppointmentList()) {
             if (appointment.getStartInstant().minusMinutes(15).isBefore(LocalDateTime.now())) {
-                addMessage("There is an upcoming appointment with " + appointment.getCustomerName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) +". (Appointment Id: " + appointment.getAppointmentId() +")", RED);
+                addMessage("There is an upcoming appointment with " + appointment.getCustomerName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) + ". (Appointment Id: " + appointment.getAppointmentId() + ")", RED);
             }
         }
 
@@ -395,7 +395,7 @@ public class MainWindowController {
             }
         });
         //lambda addition
-        endColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>(){
+        endColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>() {
             @Override
             protected void updateItem(LocalDateTime dateTime, boolean empty) {
                 super.updateItem(dateTime, empty);
@@ -446,7 +446,7 @@ public class MainWindowController {
                 filterSelectionLabel.setText("Showing appointments in week " + datePicker.getValue().get(WEEK_OF_WEEK_BASED_YEAR) + " of " + datePicker.getValue().getYear());
                 //filtering mechanism
                 ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
-                for (Appointment appointment:AppointmentList.getAppointmentList()) {
+                for (Appointment appointment : AppointmentList.getAppointmentList()) {
                     if (appointment.getStartInstant().get(WEEK_OF_WEEK_BASED_YEAR) == datePicker.getValue().get(WEEK_OF_WEEK_BASED_YEAR)) {
                         filteredList.add(appointment);
                     }
@@ -454,10 +454,10 @@ public class MainWindowController {
                 allAppointmentsTable.setItems(filteredList);
             }
             if (viewSelector.getValue().equals("Month of") && datePicker.getValue() != null) {
-                filterSelectionLabel.setText("Showing appointments in " +datePicker.getValue().getMonth()+ " of " +datePicker.getValue().getYear());
+                filterSelectionLabel.setText("Showing appointments in " + datePicker.getValue().getMonth() + " of " + datePicker.getValue().getYear());
                 //filtering mechanism
                 ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
-                for (Appointment appointment:AppointmentList.getAppointmentList()) {
+                for (Appointment appointment : AppointmentList.getAppointmentList()) {
                     if (appointment.getStartInstant().getMonth() == datePicker.getValue().getMonth() && appointment.getStartInstant().getYear() == datePicker.getValue().getYear()) {
                         filteredList.add(appointment);
                     }
@@ -475,18 +475,17 @@ public class MainWindowController {
                 try {
                     ObservableList<Appointment> searchResults = FXCollections.observableArrayList();
                     searchResults.addAll(AppointmentList.lookupAppointment(Integer.parseInt(newValue)));
-                    for (Appointment appointment:AppointmentList.getAppointmentList())
+                    for (Appointment appointment : AppointmentList.getAppointmentList())
                         if (appointment.getCustomerId() == Integer.parseInt(searchBox.getText())) {
                             searchResults.add(appointment);
                         }
-                    for (Appointment appointment:AppointmentList.getAppointmentList()) {
+                    for (Appointment appointment : AppointmentList.getAppointmentList()) {
                         if (appointment.getContact().getContactId() == Integer.parseInt(searchBox.getText())) {
                             searchResults.add(appointment);
                         }
                     }
                     allAppointmentsTable.setItems(searchResults);
-                }
-                catch (NumberFormatException numberFormatException) {
+                } catch (NumberFormatException numberFormatException) {
                     addMessage("The number you entered is too long to be an Id.", BLACK);
                 }
                 filterSelectionLabel.setText("Showing search by Id results");
@@ -507,8 +506,7 @@ public class MainWindowController {
                     } else if (MiscTools.isInteger(customerSearchBox.getText())) {
                         try {
                             allCustomersTable.setItems(CustomerList.lookupCustomer(Integer.parseInt(newValue)));
-                        }
-                        catch (NumberFormatException numberFormatException) {
+                        } catch (NumberFormatException numberFormatException) {
                             addMessage("The number you entered is too long to be an Id.", BLACK);
                         }
                     } else {
@@ -894,14 +892,12 @@ public class MainWindowController {
                             validationError = true;
                             startErrorMessage.setText("That time/date is outside of the standard business hours.");
                             endErrorMessage.setText("That time/date is outside of the standard business hours.");
-                        }
-                        else {
+                        } else {
                             if (MiscTools.appointmentOverlaps(Integer.parseInt(customerIdField.getText()), startDateTime, endDateTime)) {
                                 validationError = true;
                                 startErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
                                 endErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
-                            }
-                            else {
+                            } else {
                                 startErrorMessage.setText("");
                                 endErrorMessage.setText("");
                             }
@@ -997,11 +993,9 @@ public class MainWindowController {
                 mContactSelector.setValue(selectedAppointment.getContact().getContactName());
                 mContactIdField.setText(String.valueOf(selectedAppointment.getContact().getContactId()));
                 modifyAppointmentTab.setDisable(false);
-            }
-            else if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
+            } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
                 addMessage("There is already an appointment modification in progress.  Please save or cancel the pending changes on the 'Modify Appointment' tab.", RED);
-            }
-            else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
+            } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
                 addMessage("Please select an appointment to change.", BLACK);
             }
         });
@@ -1039,8 +1033,7 @@ public class MainWindowController {
                 Scene multiCustomerSelectorScene = new Scene(layout, 300, 150);
                 confirmWindow.setScene(multiCustomerSelectorScene);
                 confirmWindow.show();
-            }
-            else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
+            } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
                 addMessage("Please select an appointment to delete.", BLACK);
             }
 
@@ -1138,14 +1131,12 @@ public class MainWindowController {
                             validationError = true;
                             mStartErrorMessage.setText("That time/date is outside of the standard business hours.");
                             mEndErrorMessage.setText("That time/date is outside of the standard business hours.");
-                        }
-                        else {
+                        } else {
                             if (MiscTools.appointmentOverlaps(Integer.parseInt(mCustomerIdField.getText()), startDateTime, endDateTime, Integer.parseInt(mIdField.getText()))) {
                                 validationError = true;
                                 mStartErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
                                 mEndErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
-                            }
-                            else {
+                            } else {
                                 mStartErrorMessage.setText("");
                                 mEndErrorMessage.setText("");
                             }
@@ -1195,9 +1186,7 @@ public class MainWindowController {
                 addMessage("Appointment change was NOT saved.  This appointment no longer exists.", RED);
                 appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
                 modifyAppointmentTab.setDisable(true);
-            }
-
-            catch (Exception exception) {
+            } catch (Exception exception) {
                 System.out.println("Unknown exception during 'modify Appointment' save.");
                 System.out.println(exception);
                 addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
@@ -1224,11 +1213,9 @@ public class MainWindowController {
                 mcPostalCodeField.setText(selectedCustomer.getPostalCode());
                 mcCountryField.setValue(selectedCustomer.getCountry());
                 mcFirstLevelDivisionField.setValue(selectedCustomer.getFirstLevelDivision());
-            }
-            else if (allCustomersTable.getSelectionModel().getSelectedItem() != null && !modifyCustomerTab.isDisabled()) {
+            } else if (allCustomersTable.getSelectionModel().getSelectedItem() != null && !modifyCustomerTab.isDisabled()) {
                 addMessage("There is already a customer modification in progress.  Please save or cancel the pending changes on the 'Modify Customer' tab.", RED);
-            }
-            else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
+            } else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
                 addMessage("Please select a customer to change.", BLACK);
             }
         });
@@ -1274,8 +1261,7 @@ public class MainWindowController {
                     confirmWindow.setScene(multiCustomerSelectorScene);
                     confirmWindow.show();
                 }
-            }
-            else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
+            } else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
                 addMessage("Please select a customer to delete.", BLACK);
             }
 
@@ -1419,7 +1405,7 @@ public class MainWindowController {
                 if (!validationError) {
                     Customer customerToChange = CustomerList.lookupCustomer(Integer.parseInt(mcCustomerIdField.getText())).get(0);
                     if (customerToChange.hasExistingAppointments()) {
-                        for (Appointment appointment: AppointmentList.getAppointmentList()) {
+                        for (Appointment appointment : AppointmentList.getAppointmentList()) {
                             if (customerToChange.getCustomerId() == appointment.getCustomerId()) {
                                 appointment.setCustomerName(mcNameField.getText());
                             }
@@ -1432,8 +1418,8 @@ public class MainWindowController {
                     customerToChange.setPostalCode(mcPostalCodeField.getText());
                     customerToChange.setCountry(mcCountryField.getValue());
                     customerToChange.setFirstLevelDivision(mcFirstLevelDivisionField.getValue());
-                    for (Appointment appointment: AppointmentList.getAppointmentList()) {
-                        if (customerToChange.getCustomerId() == appointment.getCustomerId());
+                    for (Appointment appointment : AppointmentList.getAppointmentList()) {
+                        if (customerToChange.getCustomerId() == appointment.getCustomerId()) ;
                     }
 
 
@@ -1465,9 +1451,15 @@ public class MainWindowController {
         rtaRetrieveButton.setOnAction(e -> {
 
             try {
-                if (rtaTypeSelector.getValue() != null || rtaYearTextField.getText() != null) {
+                if (rtaTypeSelector.getValue() != null && rtaYearTextField.getText() != null) {
+                    String selectedType = rtaTypeSelector.getValue();
                     int selectedYear = Integer.parseInt(rtaYearTextField.getText());
-                    ObservableList<Integer> allAppointmentsForYear = AppointmentList.getAllAppointmentsForYearByMonth(selectedYear);
+                    ObservableList<Integer> allAppointmentsForYear = FXCollections.observableArrayList();
+                    if (selectedType.equals("<All>")) {
+                        allAppointmentsForYear = AppointmentList.getAppointmentTotals(selectedYear);
+                    } else {
+                        allAppointmentsForYear = AppointmentList.getAppointmentTotals(selectedYear, selectedType);
+                    }
                     janResults.setText(String.valueOf(allAppointmentsForYear.get(0)));
                     febResults.setText(String.valueOf(allAppointmentsForYear.get(1)));
                     marResults.setText(String.valueOf(allAppointmentsForYear.get(2)));
@@ -1480,6 +1472,9 @@ public class MainWindowController {
                     octResults.setText(String.valueOf(allAppointmentsForYear.get(9)));
                     novResults.setText(String.valueOf(allAppointmentsForYear.get(10)));
                     decResults.setText(String.valueOf(allAppointmentsForYear.get(11)));
+                }
+                else {
+                    addMessage("Please select an appointment type and enter a valid 4-digit year number.", BLACK);
                 }
             } catch (NumberFormatException numberFormatException) {
                 addMessage("Please select an appointment type and enter a valid 4-digit year number.", BLACK);
