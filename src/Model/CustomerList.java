@@ -15,21 +15,20 @@ public class CustomerList {
     private static ObservableList<Customer> customerList = FXCollections.observableArrayList();
 
     /**
-     *
      * @param customerToAdd the customer to be added to the list
      */
-    public static void addCustomer(Customer customerToAdd){
+    public static void addCustomer(Customer customerToAdd) {
         customerList.add(customerToAdd);
     }
 
     public static void addCustomerList(ObservableList<Customer> listToAdd) {
-        for (Customer customer:
-             listToAdd) {
+        for (Customer customer :
+                listToAdd) {
             addCustomer(customer);
         }
     }
 
-    public static Customer getCustomer(int index){
+    public static Customer getCustomer(int index) {
         return customerList.get(index);
     }
 
@@ -37,31 +36,17 @@ public class CustomerList {
         return customerList;
     }
 
-    public static ObservableList<String> getCustomerNames(){
+    public static ObservableList<String> getCustomerNames() {
         ObservableList<String> customerNames = FXCollections.observableArrayList();
-        for (Customer customer : customerList)
-        {
+        for (Customer customer : customerList) {
             customerNames.add(customer.getName());
         }
         return customerNames;
     }
-    /*
-    public static Customer lookupCustomer(int customerId) {
-        int customerIndex = -1;
-        for (Customer customer:customerList) {
-            if(
-                    customerId == customer.getCustomerId())
-            {
-                customerIndex = customerList.indexOf(customer);
-            }
-        }
-        return customerList.get(customerIndex);
-    }
-    */
 
     public static ObservableList<Customer> lookupCustomer(int customerId) {
         ObservableList<Customer> filteredList = FXCollections.observableArrayList();
-        for (Customer customer: customerList) {
+        for (Customer customer : customerList) {
             String customerIdAsString = String.valueOf(customerId);
             String existingIdAsString = String.valueOf(customer.getCustomerId());
             if (customerIdAsString.contains(existingIdAsString)) {
@@ -73,8 +58,8 @@ public class CustomerList {
 
     public static ObservableList<Customer> lookupCustomer(String searchText) {
         ObservableList<Customer> filteredList = FXCollections.observableArrayList();
-        for(Customer customer: customerList) {
-            if(
+        for (Customer customer : customerList) {
+            if (
                     customer.getName().toLowerCase().contains(searchText.toLowerCase())
             )
                 filteredList.add(customer);
@@ -85,5 +70,32 @@ public class CustomerList {
     public static void deleteCustomer(int idToDelete) {
         customerList.removeIf(customer -> idToDelete == customer.getCustomerId());  //this is the first time I've used this sort of Lambda
     }
+
+    public static ObservableList<ObservableList<String>> getCustomersByCountry(Country country) {
+        ObservableList<ObservableList<String>> listOfFLDAndTotal = FXCollections.observableArrayList();
+        ObservableList<String> firstLevelDivisions = country.getFirstLevelDivisions();
+        ObservableList<Integer> totalsByDivision = FXCollections.observableArrayList();
+        for (String fld : firstLevelDivisions) {
+            totalsByDivision.add(0);
+        }
+        for (Customer customer : CustomerList.getCustomerList()) {
+            if (customer.getCountry().equals(country.getCountryName())) {
+                for (int i = 0; i < firstLevelDivisions.size(); i++) {
+                    if (firstLevelDivisions.get(i).equals(customer.getFirstLevelDivision())) {
+                        int totalToIncrease = totalsByDivision.get(i);
+                        totalToIncrease++;
+                        totalsByDivision.set(i, totalToIncrease);
+                    }
+                }
+            }
+        }
+        ObservableList<String> totalsByDivisionAsString = FXCollections.observableArrayList();
+        for (int n : totalsByDivision) {
+            totalsByDivisionAsString.add(String.valueOf(n));
+        }
+        listOfFLDAndTotal.addAll(firstLevelDivisions, totalsByDivisionAsString);
+        return listOfFLDAndTotal;
+    }
+
 
 }

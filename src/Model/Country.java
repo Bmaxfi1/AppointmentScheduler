@@ -36,4 +36,8 @@ public class Country {
     public void setFirstLevelDivisions(ObservableList<String> firstLevelDivisions) {
         this.firstLevelDivisions = firstLevelDivisions;
     }
+
+    public String toString() {
+        return this.countryName;
+    }
 }

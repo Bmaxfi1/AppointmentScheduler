@@ -12,6 +12,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
@@ -301,6 +303,12 @@ public class MainWindowController {
     @FXML
     private Label decResults;
 
+    @FXML
+    private ComboBox<Country> tccCountrySelector;
+    @FXML
+    private ScrollPane tccResultScrollPane;
+    @FXML
+    private VBox tccResultsVBox;
 
     //other
     @FXML
@@ -544,6 +552,30 @@ public class MainWindowController {
                     mcFirstLevelDivisionField.setItems(country.getFirstLevelDivisions());
                 }
             }
+        });
+        tccCountrySelector.setItems(CountryList.getCountryList());
+        tccCountrySelector.setOnAction(e -> {
+            tccResultsVBox.getChildren().clear();
+
+            ObservableList<ObservableList<String>> listOfFLDAndTotal = CustomerList.getCustomersByCountry(tccCountrySelector.getValue());
+            ObservableList<String> listOfFLDs = listOfFLDAndTotal.get(0);
+            ObservableList<String> listOfTotals = listOfFLDAndTotal.get(1);
+
+
+            for (int i = 0; i < listOfFLDs.size(); i++) {
+                //this "region" fills the void space in an hbox for alignment purposes.
+                Region region = new Region();
+                HBox.setHgrow(region, Priority.ALWAYS);
+
+                Label fldLabel = new Label(listOfFLDs.get(i));
+                Label totalLabel = new Label(listOfTotals.get(i));
+
+                HBox lineItem = new HBox(fldLabel, region, totalLabel);
+
+
+                tccResultsVBox.getChildren().add(lineItem);
+            }
+
         });
 
         //Appointment Type Drop Down Menus

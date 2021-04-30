@@ -259,9 +259,18 @@
                                     </AnchorPane>
                               </content>
                             </Tab>
-                            <Tab text="Untitled Tab 2">
+                            <Tab text="Total Customers by Country">
                               <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <ComboBox fx:id="tccCountrySelector" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="185.0" promptText="Select a Country" />
+                                          <ScrollPane fx:id="tccResultScrollPane" layoutX="14.0" layoutY="47.0" prefHeight="304.0" prefWidth="185.0">
+                                             <content>
+                                                <VBox fx:id="tccResultsVBox" prefHeight="18.0" prefWidth="183.0" />
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </AnchorPane>
                               </content>
                             </Tab>
                           </tabs>
