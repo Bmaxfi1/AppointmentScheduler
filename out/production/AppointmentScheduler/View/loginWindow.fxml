@@ -11,7 +11,7 @@
       <Label fx:id="userIdLabel" layoutX="69.0" layoutY="133.0" prefHeight="24.0" prefWidth="90.0" text="User ID" />
       <Label fx:id="passwordLabel" layoutX="69.0" layoutY="170.0" text="Password" />
       <TextField fx:id="userIdField" layoutX="159.0" layoutY="133.0" text="test" />
-      <TextField fx:id="passwordField" layoutX="159.0" layoutY="166.0" text="test" />
+      <PasswordField fx:id="passwordField" layoutX="159.0" layoutY="166.0" text="test" />
       <Label layoutX="69.0" layoutY="33.0" prefHeight="25.0" prefWidth="240.0" text="AppointmentScheduler" textAlignment="CENTER">
          <font>
             <Font size="20.0" />

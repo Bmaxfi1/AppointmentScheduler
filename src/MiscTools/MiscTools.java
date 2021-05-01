@@ -3,10 +3,16 @@ package MiscTools;
 import Model.Appointment;
 import Model.AppointmentList;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 
 public abstract class MiscTools {
 
@@ -87,4 +93,13 @@ public abstract class MiscTools {
         return false;
     }
 
-}
+    public static void recordLoginToFile(String loginDetails) throws IOException {
+        Files.writeString(
+                Path.of(System.getProperty("java.io.tmpdir"), "login_activity.txt"),
+                loginDetails + System.lineSeparator(),
+                CREATE, APPEND
+        );
+    }
+    }
+
+

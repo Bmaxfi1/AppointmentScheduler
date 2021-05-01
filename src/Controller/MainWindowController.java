@@ -382,6 +382,9 @@ public class MainWindowController {
             if (appointment.getStartInstant().minusMinutes(15).isBefore(LocalDateTime.now())) {
                 addMessage("There is an upcoming appointment with " + appointment.getCustomerName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) + ". (Appointment Id: " + appointment.getAppointmentId() + ")", RED);
             }
+            else {
+                addMessage("There are no upcoming appointments within 15 minutes", BLACK);
+            }
         }
 
         //Insert the lists into the tables

@@ -1,14 +1,17 @@
 package Controller;
 
+import MiscTools.MiscTools;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -25,7 +28,7 @@ public class LoginWindowController {
     private TextField userIdField;
 
     @FXML
-    private TextField passwordField;
+    private PasswordField passwordField;
 
     @FXML
     private Label userIdLabel;
@@ -65,12 +68,13 @@ public class LoginWindowController {
 
     //Event Listeners - Note that the listener is linked to the view by the FXML file itself.
     public void loginButtonListener() throws Exception{
-        System.out.println("login button clicked");
         ResourceBundle labels = ResourceBundle.getBundle("Internationalization.ResourceBundle", Locale.getDefault());
 
         //login validation with actual users is beyond the scope of this project.
         try {
+            boolean loginSuccessful;
             if (userIdField.getText().equals("test") && passwordField.getText().equals("test")) {
+                loginSuccessful = true;
 
                 //set a pointer to the current stage
                 Stage thisStage = (Stage) loginButton.getScene().getWindow();
@@ -88,9 +92,15 @@ public class LoginWindowController {
 
             }
             else {
+                loginSuccessful = false;
                 System.out.println("invalid credentials");
                 errorLabel.setText(labels.getString("errorLabel"));
             }
+            String loginDetails = "Login success = " + loginSuccessful+". Time = "+ LocalDateTime.now()+". UserId = "+userIdField.getText();
+
+            MiscTools.recordLoginToFile(loginDetails);
+
+
         } catch (Exception exception){
             System.out.println(exception);
         }
