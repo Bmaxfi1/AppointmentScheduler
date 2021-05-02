@@ -1,5 +1,11 @@
 package Controller;
 
+import DAO.DAO_appointments;
+import DAO.DAO_contacts;
+import DAO.DAO_countries;
+import DAO.DAO_customers;
+import DBConnectionClasses.DBConnection;
+import DBConnectionClasses.DBQuery;
 import MiscTools.MiscTools;
 
 import Model.*;
@@ -19,6 +25,7 @@ import javafx.scene.paint.Paint;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -319,7 +326,7 @@ public class MainWindowController {
     private Label initialAlertMessage;
 
     //init
-    public void initialize() {
+    public void initialize() throws SQLException {
         System.out.println("Successfully began MainWindowController instantiation");
         ZoneId userTimeZone = ZoneId.systemDefault();
         String startupMessage = "Welcome!  Alerts will be displayed in this window.  All times are in local time(Your timezone is: " + userTimeZone.toString() + ").";
@@ -360,31 +367,33 @@ public class MainWindowController {
         countryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
 
 
-        //todo figure out if I actually need this.
-        //build the model lists of customers and appointments
-        CustomerList customerList = new CustomerList();
-        ContactList contactList = new ContactList();
-        AppointmentList appointmentList = new AppointmentList();
-        CountryList countryList = new CountryList();
-
-        //load demo data into lists
-        CustomerList.addCustomerList(DemoData.getDemoCustomerList());
-        ContactList.addContactList(DemoData.getDemoContactList());
-        AppointmentList.addAppointmentList(DemoData.getDemoAppointmentList());
-        CountryList.addCountryList(DemoData.getDemoCountryList());
-
-        //TODO load database data into lists
-        //
-        //
+        if (DBConnection.getConnection() == null) {
+            //load demo data into lists
+            System.out.println("Could not connect to database.  Loading demo data into lists.");
+            CustomerList.addCustomerList(DemoData.getDemoCustomerList());
+            ContactList.addContactList(DemoData.getDemoContactList());
+            AppointmentList.addAppointmentList(DemoData.getDemoAppointmentList());
+            CountryList.addCountryList(DemoData.getDemoCountryList());
+        }
+        else {
+            //load database data into lists
+            System.out.println("Loading database items into lists.");
+            CustomerList.addCustomerList(DAO_customers.getAllCustomers());
+            ContactList.addContactList(DAO_contacts.getAllContacts());
+            AppointmentList.addAppointmentList(DAO_appointments.getAllAppointments());
+            CountryList.addCountryList(DAO_countries.getAllCountries());
+        }
 
         //Check to see if there is an upcoming appointment within 15 minutes.
+        boolean upcomingAppointment = false;
         for (Appointment appointment : AppointmentList.getAppointmentList()) {
-            if (appointment.getStartInstant().minusMinutes(15).isBefore(LocalDateTime.now())) {
+            if (appointment.getStartInstant().minusMinutes(15).isBefore(LocalDateTime.now()) && appointment.getStartInstant().isAfter(LocalDateTime.now())) {
+                upcomingAppointment = true;
                 addMessage("There is an upcoming appointment with " + appointment.getCustomerName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) + ". (Appointment Id: " + appointment.getAppointmentId() + ")", RED);
             }
-            else {
-                addMessage("There are no upcoming appointments within 15 minutes", BLACK);
-            }
+        }
+        if (!upcomingAppointment) {
+            addMessage("There are no upcoming appointments within 15 minutes.", BLACK);
         }
 
         //Insert the lists into the tables

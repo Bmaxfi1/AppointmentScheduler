@@ -1,3 +1,5 @@
+import DBConnectionClasses.DBConnection;
+import DBConnectionClasses.DBQuery;
 import MiscTools.MiscTools;
 import Model.*;
 import Controller.*;
@@ -8,11 +10,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * @author Brandon Maxfield
- *
+ * <p>
  * FUTURE ENHANCEMENTS
  * 1. Resizable window with element resizing.
  * 2. Duplicate names don't show up in the drop down menu when adding/modifying appointments.
@@ -22,16 +27,15 @@ import java.time.LocalDateTime;
  * 6. Select am/pm with letter input.
  * 7. Remove delete confirmation pop-up windows and replace with "undo" button added to alert messages.
  * 8. Reports can be saved to a file.
- *
- *
+ * <p>
+ * <p>
  * This Application is organized based on the MVC Structure and also uses the Data Access Object Pattern (DAO) for
  * accessing the database.
  */
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-
+    public void start(Stage primaryStage) throws Exception {
         //create test user
         User testUser = new User(1, "test", "test");
 
@@ -42,13 +46,16 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        //todo just test stuff, delete later
-        MiscTools.isOutsideBusinessHours(LocalDateTime.now(), LocalDateTime.now().plusMinutes(30));
 
+    }
 
+    public static void main(String[] args) throws SQLException {
+        DBConnection.startConnection();  //establishes db connection
 
+        launch(args);  //need this line to populate the application windows.  When all windows are closed, this thread continues.
 
-
+        DBConnection.closeConnection(); //close db connection
+        System.out.println("Database connection closed.");
 
     }
 }
