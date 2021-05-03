@@ -283,6 +283,8 @@ public class MainWindowController {
 
     //reports
     @FXML
+    private Tab reportsTab;
+    @FXML
     private ComboBox<String> rtaTypeSelector;
     @FXML
     private TextField rtaYearTextField;
@@ -1331,16 +1333,30 @@ public class MainWindowController {
                         }
                         if (!demoMode) {
                             DAO_customers customersDao = new DAOImpl_customers();
-                            try {
-                                customersDao.deleteCustomer(customerToDelete);
-                            } catch (SQLException e1) {
-                                e1.printStackTrace();
-                                addMessage("Something went horribly wrong while communicating with the database.  Customer was likely not deleted.", BLACK);
-                            }
+                                for (Appointment appointment: AppointmentList.getAppointmentList()) {
+                                    if (appointment.getCustomerId() == customerToDelete) {
+                                        addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", cannot be deleted without first deleting all of the customer's existing appointments.", RED);
+
+                                    }
+                                    else {
+                                        try {
+                                            customersDao.deleteCustomer(customerToDelete);
+                                        } catch (SQLException e1) {
+                                            e1.printStackTrace();
+                                            addMessage("Something went horribly wrong while communicating with the database.  Customer was likely not deleted.", RED);
+                                        }
+                                        CustomerList.deleteCustomer(customerToDelete);
+                                        customerSelector.setItems(CustomerList.getCustomerNames());
+                                        mCustomerSelector.setItems(CustomerList.getCustomerNames());
+                                    }
+                                }
+
                         }
-                        CustomerList.deleteCustomer(customerToDelete);
-                        customerSelector.setItems(CustomerList.getCustomerNames());
-                        mCustomerSelector.setItems(CustomerList.getCustomerNames());
+                        else {
+                            CustomerList.deleteCustomer(customerToDelete);
+                            customerSelector.setItems(CustomerList.getCustomerNames());
+                            mCustomerSelector.setItems(CustomerList.getCustomerNames());
+                        }
                         confirmWindow.close();
                     });
                     cancelButton.setOnAction(e2 -> {
@@ -1442,7 +1458,6 @@ public class MainWindowController {
                     mCustomerSelector.setItems(CustomerList.getCustomerNames());
                     addMessage("New customer '" + nameField.getText() + "' was added successfully." + " (id: " + newCustomerId + ")", BLACK);
 
-
                     //empty out all the fields
                     nameField.setText("");
                     phoneNumberField.setText("");
@@ -1524,9 +1539,7 @@ public class MainWindowController {
                     customerToChange.setPostalCode(mcPostalCodeField.getText());
                     customerToChange.setCountry(mcCountryField.getValue());
                     customerToChange.setFirstLevelDivision(mcFirstLevelDivisionField.getValue());
-                    for (Appointment appointment : AppointmentList.getAppointmentList()) {
-                        if (customerToChange.getCustomerId() == appointment.getCustomerId()) ; //todo do I still need this? not sure why its here.
-                    }
+
 
                     if (!demoMode) {
                         DAO_customers customersDao = new DAOImpl_customers();
@@ -1590,6 +1603,7 @@ public class MainWindowController {
                 addMessage("Please select an appointment type and enter a valid 4-digit year number.", BLACK);
             }
         });
+
     }
 
     //methods
