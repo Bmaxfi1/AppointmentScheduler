@@ -4,8 +4,11 @@ import DAO.DAO_appointments;
 import DAO.DAO_contacts;
 import DAO.DAO_countries;
 import DAO.DAO_customers;
+import DAOImpl.DAOImpl_appointments;
+import DAOImpl.DAOImpl_contacts;
+import DAOImpl.DAOImpl_countries;
+import DAOImpl.DAOImpl_customers;
 import DBConnectionClasses.DBConnection;
-import DBConnectionClasses.DBQuery;
 import MiscTools.MiscTools;
 
 import Model.*;
@@ -378,10 +381,16 @@ public class MainWindowController {
         else {
             //load database data into lists
             System.out.println("Loading database items into lists.");
-            CustomerList.addCustomerList(DAO_customers.getAllCustomers());
-            ContactList.addContactList(DAO_contacts.getAllContacts());
-            AppointmentList.addAppointmentList(DAO_appointments.getAllAppointments());
-            CountryList.addCountryList(DAO_countries.getAllCountries());
+
+            DAO_countries countriesDao=new DAOImpl_countries();
+            DAO_customers customersDao = new DAOImpl_customers();
+            DAO_contacts contactsDao = new DAOImpl_contacts();
+            DAO_appointments appointmentsDao = new DAOImpl_appointments();
+
+            CustomerList.addCustomerList(customersDao.getAllCustomers());
+            ContactList.addContactList(contactsDao.getAllContacts());
+            AppointmentList.addAppointmentList(appointmentsDao.getAllAppointments());
+            CountryList.addCountryList(countriesDao.getAllCountries());
         }
 
         //Check to see if there is an upcoming appointment within 15 minutes.

@@ -5,17 +5,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-//utilityClass
-public class DBQuery {
+public abstract class DBQuery {
     private static Statement statement; //statement reference
     private static PreparedStatement preparedStatement;
 
-    //create statement object
     public static void setStatement(Connection connection) throws SQLException {
         statement = connection.createStatement();
     }
 
-    //return statement object
     public static Statement getStatement() {
         return statement;
     }
