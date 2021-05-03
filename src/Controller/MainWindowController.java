@@ -370,7 +370,10 @@ public class MainWindowController {
         countryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
 
 
+        //this is where it is determined whether or not the demo list or DB will be used
+        boolean demoMode;
         if (DBConnection.getConnection() == null) {
+            demoMode = true;
             //load demo data into lists
             System.out.println("Could not connect to database.  Loading demo data into lists.");
             CustomerList.addCustomerList(DemoData.getDemoCustomerList());
@@ -379,10 +382,11 @@ public class MainWindowController {
             CountryList.addCountryList(DemoData.getDemoCountryList());
         }
         else {
+            demoMode = false;
             //load database data into lists
             System.out.println("Loading database items into lists.");
 
-            DAO_countries countriesDao=new DAOImpl_countries();
+            DAO_countries countriesDao = new DAOImpl_countries();
             DAO_customers customersDao = new DAOImpl_customers();
             DAO_contacts contactsDao = new DAOImpl_contacts();
             DAO_appointments appointmentsDao = new DAOImpl_appointments();
@@ -987,7 +991,14 @@ public class MainWindowController {
                             Integer.parseInt(this.customerIdField.getText()),
                             ContactList.getContact(Integer.parseInt(this.contactIdField.getText()))
                     );
-                    AppointmentList.addAppointment(appointmentToAdd);
+                    if (demoMode) {
+                        AppointmentList.addAppointment(appointmentToAdd);
+                    }
+                    else {
+                        DAO_appointments appointmentsDao = new DAOImpl_appointments();
+                        appointmentsDao.addAppointment(appointmentToAdd);
+                        allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
+                    }
                     System.out.println("appointment saved");
                     addMessage("appointment " + appointmentId + " saved.", BLACK);
 
@@ -1018,6 +1029,7 @@ public class MainWindowController {
                 System.out.println("nullPointerException during 'add Appointment' save.");
                 addMessage("Appointment was NOT saved.  Exception occurred.", RED);
             } catch (Exception exception) {
+                exception.printStackTrace();
                 System.out.println("Unknown exception during 'add Appointment' save.");
                 addMessage("Appointment was NOT saved.  Exception occurred.", RED);
             }
@@ -1071,7 +1083,19 @@ public class MainWindowController {
                             modifyAppointmentTab.setDisable(true);
                         }
                     }
-                    AppointmentList.deleteAppointment(appointmentToDelete);
+                    if (demoMode) {
+                        AppointmentList.deleteAppointment(appointmentToDelete);
+                    }
+                    else {
+                        DAO_appointments appointmentsDao = new DAOImpl_appointments();
+                        try {
+                            appointmentsDao.deleteAppointment(appointmentToDelete);
+                            allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
+                        } catch (SQLException e3) {
+                            e3.printStackTrace();
+                            addMessage("Something went wrong while processing the delete request.  Appointment likely was not deleted.", RED);
+                        }
+                    }
                     confirmWindow.close();
                 });
                 cancelButton.setOnAction(e2 -> {
@@ -1219,11 +1243,18 @@ public class MainWindowController {
                     appointmentToChange.setEndInstant(endDateTime);
                     appointmentToChange.setCustomerId(Integer.parseInt(mCustomerIdField.getText()));
                     appointmentToChange.setContact(ContactList.getContact(Integer.parseInt(mContactIdField.getText())));
-                    allAppointmentsTable.refresh();
-                    System.out.println("appointment changes saved");
-                    addMessage("Appointment modification to " + Integer.parseInt(this.mIdField.getText()) + " saved.", BLACK);
+                    if (demoMode) {
+                        allAppointmentsTable.refresh();
+                    }
+                    else {
+                        DAO_appointments appointmentsDao = new DAOImpl_appointments();
+                        appointmentsDao.modifyAppointment(appointmentToChange);
+                        allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
+                    }
                     appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
                     modifyAppointmentTab.setDisable(true);
+                    addMessage("Appointment modification to " + Integer.parseInt(this.mIdField.getText()) + " saved.", BLACK);
+
 
                 } else {
                     addMessage("Appointment changes NOT saved.  Check your entries on the 'Modify Appointment' tab.", RED);
