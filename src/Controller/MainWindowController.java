@@ -1057,8 +1057,10 @@ public class MainWindowController {
                 confirmButton.setOnAction(e2 -> {
                     int appointmentToDelete = allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId();
                     addMessage("Appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getCustomerName() + " deleted.", BLACK);
-                    if (Integer.parseInt(mIdField.getText()) == allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId()) {
-                        modifyAppointmentTab.setDisable(true);
+                    if (!modifyAppointmentTab.isDisabled()) {
+                        if (Integer.parseInt(mIdField.getText()) == allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId()) {
+                            modifyAppointmentTab.setDisable(true);
+                        }
                     }
                     AppointmentList.deleteAppointment(appointmentToDelete);
                     confirmWindow.close();
