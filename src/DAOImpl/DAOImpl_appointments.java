@@ -2,6 +2,7 @@ package DAOImpl;
 
 import DAO.DAO_appointments;
 import DAO.DAO_contacts;
+import DAO.DAO_customers;
 import DBConnectionClasses.DBConnection;
 import DBConnectionClasses.DBQuery;
 import Model.Appointment;
@@ -25,6 +26,7 @@ public class DAOImpl_appointments implements DAO_appointments {
     @Override
     public ObservableList<Appointment> getAllAppointments() throws SQLException {
         DAO_contacts contactsDao = new DAOImpl_contacts();
+        DAO_customers customersDao = new DAOImpl_customers();
 
         ObservableList<Appointment> allAppointments = FXCollections.observableArrayList();
 
@@ -73,7 +75,7 @@ public class DAOImpl_appointments implements DAO_appointments {
                     title,
                     description,
                     location,
-                    DAOImpl_customers.getCustomerName(customerId),
+                    customersDao.getCustomerName(customerId),
                     type,
                     myZoneStart,
                     myZoneEnd,
@@ -112,14 +114,14 @@ public class DAOImpl_appointments implements DAO_appointments {
         ps.setString(4, appointmentToAdd.getType());
         ps.setString(5, UTCZoneStart.toString());
         ps.setString(6, UTCZoneEnd.toString());
-        ps.setString(7, LocalDateTime.now().toString());
+        ps.setString(7, LocalDateTime.now(ZoneId.of("UTC")).toString());
         ps.setString(8, "admin");
         ps.setString(9, "admin");
         ps.setString(10, String.valueOf(appointmentToAdd.getCustomerId()));
         ps.setString(11, String.valueOf(appointmentToAdd.getContact().getContactId()));
         ps.setString(12, "1");
         ps.execute();
-        System.out.println(ps.getUpdateCount() + "row(s) affected.");
+        System.out.println(ps.getUpdateCount() + " row(s) affected.");
 
     }
 

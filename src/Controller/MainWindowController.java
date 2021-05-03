@@ -376,6 +376,7 @@ public class MainWindowController {
             demoMode = true;
             //load demo data into lists
             System.out.println("Could not connect to database.  Loading demo data into lists.");
+            addMessage("No database connection.  AppointmentScheduler is now in Demo mode.", RED);
             CustomerList.addCustomerList(DemoData.getDemoCustomerList());
             ContactList.addContactList(DemoData.getDemoContactList());
             AppointmentList.addAppointmentList(DemoData.getDemoAppointmentList());
@@ -385,6 +386,7 @@ public class MainWindowController {
             demoMode = false;
             //load database data into lists
             System.out.println("Loading database items into lists.");
+            addMessage("Database connected successfully.", BLACK);
 
             DAO_countries countriesDao = new DAOImpl_countries();
             DAO_customers customersDao = new DAOImpl_customers();
@@ -1327,6 +1329,15 @@ public class MainWindowController {
                                 modifyCustomerTab.setDisable(true);
                             }
                         }
+                        if (!demoMode) {
+                            DAO_customers customersDao = new DAOImpl_customers();
+                            try {
+                                customersDao.deleteCustomer(customerToDelete);
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                                addMessage("Something went horribly wrong while communicating with the database.  Customer was likely not deleted.", BLACK);
+                            }
+                        }
                         CustomerList.deleteCustomer(customerToDelete);
                         customerSelector.setItems(CustomerList.getCustomerNames());
                         mCustomerSelector.setItems(CustomerList.getCustomerNames());
@@ -1418,10 +1429,19 @@ public class MainWindowController {
                             postalCodeField.getText(),
                             phoneNumberField.getText()
                     );
-                    CustomerList.addCustomer(customerToAdd);
+                    if (demoMode) {
+                        CustomerList.addCustomer(customerToAdd);
+                    }
+                    else {
+                        DAO_customers customersDao = new DAOImpl_customers();
+                        customersDao.addCustomer(customerToAdd);
+                        CustomerList.addCustomer(customerToAdd);
+                        allCustomersTable.setItems(CustomerList.getCustomerList());
+                    }
                     customerSelector.setItems(CustomerList.getCustomerNames());
                     mCustomerSelector.setItems(CustomerList.getCustomerNames());
                     addMessage("New customer '" + nameField.getText() + "' was added successfully." + " (id: " + newCustomerId + ")", BLACK);
+
 
                     //empty out all the fields
                     nameField.setText("");
@@ -1505,9 +1525,13 @@ public class MainWindowController {
                     customerToChange.setCountry(mcCountryField.getValue());
                     customerToChange.setFirstLevelDivision(mcFirstLevelDivisionField.getValue());
                     for (Appointment appointment : AppointmentList.getAppointmentList()) {
-                        if (customerToChange.getCustomerId() == appointment.getCustomerId()) ;
+                        if (customerToChange.getCustomerId() == appointment.getCustomerId()) ; //todo do I still need this? not sure why its here.
                     }
 
+                    if (!demoMode) {
+                        DAO_customers customersDao = new DAOImpl_customers();
+                        customersDao.modifyCustomer(customerToChange);
+                    }
 
                     allCustomersTable.refresh();
                     allAppointmentsTable.refresh();

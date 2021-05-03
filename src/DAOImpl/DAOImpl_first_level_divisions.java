@@ -67,4 +67,21 @@ public class DAOImpl_first_level_divisions implements DAO_first_level_divisions 
         return firstLevelDivisionsList;
     }
 
+    @Override
+    public int getFirstLevelDivisionId(String nameToFind) throws SQLException {
+        Connection connection = DBConnection.getConnection();
+        DBQuery.setPreparedStatement(connection, selectAllString);
+        PreparedStatement ps = DBQuery.getPreparedStatement();
+        ps.execute();
+        ResultSet rs = ps.getResultSet();
+        while (rs.next()) {
+            int divisionId = rs.getInt("Division_ID");
+            String divisionName = rs.getString("Division");
+            if (divisionName.equals(nameToFind)) {
+                return divisionId;
+            }
+        }
+        return -1;
+    }
+
 }
