@@ -73,7 +73,7 @@ public class DAOImpl_customers implements DAO_customers {
     }
 
     @Override
-    public void addCustomer(Customer customerToAdd) throws SQLException {
+    public int addCustomer(Customer customerToAdd) throws SQLException {
         DAO_first_level_divisions fldDao = new DAOImpl_first_level_divisions();
 
         Connection connection = DBConnection.getConnection();
@@ -90,6 +90,21 @@ public class DAOImpl_customers implements DAO_customers {
         ps.setString(8, String.valueOf(fldDao.getFirstLevelDivisionId(customerToAdd.getFirstLevelDivision())));
         ps.execute();
         System.out.println(ps.getUpdateCount() + " row(s) affected.");
+
+        //return the generated Id
+        int generatedId = -1;
+
+        DBQuery.setPreparedStatement(connection, "SELECT Customer_ID FROM customers WHERE Customer_ID = @@Identity");
+        PreparedStatement ps2 = DBQuery.getPreparedStatement();
+        ps2.execute();
+        ResultSet rs = ps2.getResultSet();
+        if (rs.next()) {
+            generatedId = rs.getInt("Customer_ID");
+        }
+
+        System.out.println(generatedId);
+        return generatedId;
+
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public interface DAO_customers {
     public String getCustomerName(int customerIdToFind) throws SQLException;
     public ObservableList<Customer> getAllCustomers() throws SQLException;
-    public void addCustomer(Customer customerToAdd) throws SQLException;
+    public int addCustomer(Customer customerToAdd) throws SQLException;
     public void modifyCustomer(Customer customerToModify) throws SQLException;
     public void deleteCustomer(int customerId) throws SQLException;
 }

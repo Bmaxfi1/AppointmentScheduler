@@ -1001,6 +1001,7 @@ public class MainWindowController {
                         if (!demoMode) {
                             DAO_appointments appointmentsDao = new DAOImpl_appointments();
                             newAppointmentId = appointmentsDao.addAppointment(appointmentToAdd);
+                            allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
                         }
                         appointmentToAdd.setAppointmentId(newAppointmentId);
                         AppointmentList.addAppointment(appointmentToAdd);
@@ -1023,6 +1024,8 @@ public class MainWindowController {
                         customerIdField.setText("");
                         contactSelector.setValue("");
                         contactIdField.setText("");
+
+                        rtaTypeSelector.setItems(AppointmentList.getDifferentTypes());
                     } else {
                         addMessage("Appointment was NOT saved.  Check your entries on the 'Add Appointment' page.", RED);
                     }
@@ -1095,6 +1098,8 @@ public class MainWindowController {
                                 appointmentsDao.deleteAppointment(appointmentToDelete);
                                 allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
                                 AppointmentList.deleteAppointment(appointmentToDelete);
+                                rtaTypeSelector.setItems(AppointmentList.getDifferentTypes());
+
                             } catch (SQLException e3) {
                                 e3.printStackTrace();
                                 addMessage("Something went wrong while processing the delete request.  Appointment likely was not deleted.", RED);
@@ -1258,6 +1263,7 @@ public class MainWindowController {
                         }
                         appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
                         modifyAppointmentTab.setDisable(true);
+                        rtaTypeSelector.setItems(AppointmentList.getDifferentTypes());
                         addMessage("Appointment modification to " + Integer.parseInt(this.mIdField.getText()) + " saved.", BLACK);
 
 
@@ -1433,7 +1439,8 @@ public class MainWindowController {
                             CustomerList.addCustomer(customerToAdd);
                         } else {
                             DAO_customers customersDao = new DAOImpl_customers();
-                            customersDao.addCustomer(customerToAdd);
+                            int generatedId = customersDao.addCustomer(customerToAdd);
+                            customerToAdd.setCustomerId(generatedId);
                             CustomerList.addCustomer(customerToAdd);
                             allCustomersTable.setItems(CustomerList.getCustomerList());
                         }
