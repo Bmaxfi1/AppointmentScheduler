@@ -12,6 +12,7 @@ import DBConnectionClasses.DBConnection;
 import MiscTools.MiscTools;
 
 import Model.*;
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -37,6 +38,9 @@ import static java.time.temporal.IsoFields.WEEK_OF_WEEK_BASED_YEAR;
 import static javafx.scene.paint.Color.BLACK;
 import static javafx.scene.paint.Color.RED;
 
+/**
+ * The MainWindowController class is the handler for the mainWindow.
+ */
 
 public class MainWindowController {
 
@@ -332,1031 +336,771 @@ public class MainWindowController {
 
     //init
     public void initialize() throws SQLException {
-        System.out.println("Successfully began MainWindowController instantiation");
-        ZoneId userTimeZone = ZoneId.systemDefault();
-        String startupMessage = "Welcome!  Alerts will be displayed in this window.  All times are in local time(Your timezone is: " + userTimeZone.toString() + ").";
-        addMessage(startupMessage, BLACK);
-
-        //Create links between table columns and model
-        //appointment table
-        appointmentIdColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
-        titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
-        descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-        locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
-        customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-        typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
-        startColumn.setCellValueFactory(new PropertyValueFactory<>("startInstant"));
-        endColumn.setCellValueFactory(new PropertyValueFactory<>("endInstant"));
-        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
-
-        contactColumn.setCellFactory(tc -> new TableCell<Appointment, Contact>() {
-            @Override
-            protected void updateItem(Contact contact, boolean empty) {
-                super.updateItem(contact, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(contact.getContactName());
-                }
-            }
-        });
-
-        //customer table
-        customerIdColumn2.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-        postalCodeColumn.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
-        firstLevelDivisionColumn.setCellValueFactory(new PropertyValueFactory<>("firstLevelDivision"));
-        countryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+        try {
+            System.out.println("Successfully began MainWindowController instantiation");
+            ZoneId userTimeZone = ZoneId.systemDefault();
+            String startupMessage = "Welcome!  Alerts will be displayed in this window.  All times are in local time(Your timezone is: " + userTimeZone.toString() + ").";
+            addMessage(startupMessage, BLACK);
 
 
-        //this is where it is determined whether or not the demo list or DB will be used
-        boolean demoMode;
-        if (DBConnection.getConnection() == null) {
-            demoMode = true;
-            //load demo data into lists
-            System.out.println("Could not connect to database.  Loading demo data into lists.");
-            addMessage("No database connection.  AppointmentScheduler is now in Demo mode.", RED);
-            CustomerList.addCustomerList(DemoData.getDemoCustomerList());
-            ContactList.addContactList(DemoData.getDemoContactList());
-            AppointmentList.addAppointmentList(DemoData.getDemoAppointmentList());
-            CountryList.addCountryList(DemoData.getDemoCountryList());
-        }
-        else {
-            demoMode = false;
-            //load database data into lists
-            System.out.println("Loading database items into lists.");
-            addMessage("Database connected successfully.", BLACK);
+            //Create links between table columns and model
+            //appointment table
+            appointmentIdColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+            titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+            descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+            locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
+            customerColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+            typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+            startColumn.setCellValueFactory(new PropertyValueFactory<>("startInstant"));
+            endColumn.setCellValueFactory(new PropertyValueFactory<>("endInstant"));
+            customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+            contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
 
-            DAO_countries countriesDao = new DAOImpl_countries();
-            DAO_customers customersDao = new DAOImpl_customers();
-            DAO_contacts contactsDao = new DAOImpl_contacts();
-            DAO_appointments appointmentsDao = new DAOImpl_appointments();
-
-            CustomerList.addCustomerList(customersDao.getAllCustomers());
-            ContactList.addContactList(contactsDao.getAllContacts());
-            AppointmentList.addAppointmentList(appointmentsDao.getAllAppointments());
-            CountryList.addCountryList(countriesDao.getAllCountries());
-        }
-
-        //Check to see if there is an upcoming appointment within 15 minutes.
-        boolean upcomingAppointment = false;
-        for (Appointment appointment : AppointmentList.getAppointmentList()) {
-            if (appointment.getStartInstant().minusMinutes(15).isBefore(LocalDateTime.now()) && appointment.getStartInstant().isAfter(LocalDateTime.now())) {
-                upcomingAppointment = true;
-                addMessage("There is an upcoming appointment with " + appointment.getCustomerName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) + ". (Appointment Id: " + appointment.getAppointmentId() + ")", RED);
-            }
-        }
-        if (!upcomingAppointment) {
-            addMessage("There are no upcoming appointments within 15 minutes.", BLACK);
-        }
-
-        //Insert the lists into the tables
-        allCustomersTable.setItems(CustomerList.getCustomerList());
-        allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
-
-        //Format the appointment table time columns
-        //lambda addition
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a, MM/dd/yyyy");
-        startColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>() {
-            @Override
-            protected void updateItem(LocalDateTime dateTime, boolean empty) {
-                super.updateItem(dateTime, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(formatter.format(dateTime));
-                }
-            }
-        });
-        //lambda addition
-        endColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>() {
-            @Override
-            protected void updateItem(LocalDateTime dateTime, boolean empty) {
-                super.updateItem(dateTime, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    setText(formatter.format(dateTime));
-                }
-            }
-        });
-
-        //report misc
-        rtaYearTextField.setText(String.valueOf(LocalDateTime.now().getYear()));
-
-        //AM or PM Selectors
-        ObservableList<String> amPm = FXCollections.observableArrayList("AM", "PM");
-        startAmOrPm.setItems(amPm);
-        endAmOrPm.setItems(amPm);
-        mStartAmOrPm.setItems(amPm);
-        mEndAmOrPm.setItems(amPm);
-
-        //viewSelection button
-        ObservableList<String> weekOrMonth = FXCollections.observableArrayList("Week of", "Month of", "All");
-        viewSelector.setItems(weekOrMonth);
-        viewSelector.setOnAction(e -> {
-            if (viewSelector.getValue().equals("Week of")) {
-                datePicker.setPromptText("Select a week ->");
-                datePicker.setDisable(false);
-                datePicker.setValue(null);
-            }
-            if (viewSelector.getValue().equals("Month of")) {
-                datePicker.setPromptText("Select a month ->");
-                datePicker.setDisable(false);
-                datePicker.setValue(null);
-            }
-            if (viewSelector.getValue().equals("All")) {
-                datePicker.setPromptText("<- pick one");
-                datePicker.setValue(null);
-                datePicker.setDisable(true);
-                allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
-                filterSelectionLabel.setText("Showing all appointments");
-            }
-        });
-
-        //appointment datePicker - used to filter appointments
-        datePicker.setOnAction(e -> {
-            if (viewSelector.getValue().equals("Week of") && datePicker.getValue() != null) {
-                filterSelectionLabel.setText("Showing appointments in week " + datePicker.getValue().get(WEEK_OF_WEEK_BASED_YEAR) + " of " + datePicker.getValue().getYear());
-                //filtering mechanism
-                ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
-                for (Appointment appointment : AppointmentList.getAppointmentList()) {
-                    if (appointment.getStartInstant().get(WEEK_OF_WEEK_BASED_YEAR) == datePicker.getValue().get(WEEK_OF_WEEK_BASED_YEAR)) {
-                        filteredList.add(appointment);
-                    }
-                }
-                allAppointmentsTable.setItems(filteredList);
-            }
-            if (viewSelector.getValue().equals("Month of") && datePicker.getValue() != null) {
-                filterSelectionLabel.setText("Showing appointments in " + datePicker.getValue().getMonth() + " of " + datePicker.getValue().getYear());
-                //filtering mechanism
-                ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
-                for (Appointment appointment : AppointmentList.getAppointmentList()) {
-                    if (appointment.getStartInstant().getMonth() == datePicker.getValue().getMonth() && appointment.getStartInstant().getYear() == datePicker.getValue().getYear()) {
-                        filteredList.add(appointment);
-                    }
-                }
-                allAppointmentsTable.setItems(filteredList);
-            }
-        });
-
-        //appointment searchBox
-        searchBox.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (searchBox.getText().equals("")) {
-                allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
-                filterSelectionLabel.setText("Showing all appointments");
-            } else if (MiscTools.isInteger(searchBox.getText())) {
-                try {
-                    ObservableList<Appointment> searchResults = FXCollections.observableArrayList();
-                    searchResults.addAll(AppointmentList.lookupAppointment(Integer.parseInt(newValue)));
-                    for (Appointment appointment : AppointmentList.getAppointmentList())
-                        if (appointment.getCustomerId() == Integer.parseInt(searchBox.getText())) {
-                            searchResults.add(appointment);
-                        }
-                    for (Appointment appointment : AppointmentList.getAppointmentList()) {
-                        if (appointment.getContact().getContactId() == Integer.parseInt(searchBox.getText())) {
-                            searchResults.add(appointment);
-                        }
-                    }
-                    allAppointmentsTable.setItems(searchResults);
-                } catch (NumberFormatException numberFormatException) {
-                    addMessage("The number you entered is too long to be an Id.", BLACK);
-                }
-                filterSelectionLabel.setText("Showing search by Id results");
-            } else {
-                allAppointmentsTable.setItems(AppointmentList.lookupAppointment(newValue));
-                filterSelectionLabel.setText("Showing search by name results");
-            }
-            if (allAppointmentsTable.getItems().isEmpty()) {
-                allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
-                filterSelectionLabel.setText("Showing all appointments");
-            }
-        });
-
-        //Customer search box
-        customerSearchBox.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (customerSearchBox.getText().equals("")) {
-                        allCustomersTable.setItems(CustomerList.getCustomerList());
-                    } else if (MiscTools.isInteger(customerSearchBox.getText())) {
-                        try {
-                            allCustomersTable.setItems(CustomerList.lookupCustomer(Integer.parseInt(newValue)));
-                        } catch (NumberFormatException numberFormatException) {
-                            addMessage("The number you entered is too long to be an Id.", BLACK);
-                        }
+            contactColumn.setCellFactory(tc -> new TableCell<Appointment, Contact>() {
+                @Override
+                protected void updateItem(Contact contact, boolean empty) {
+                    super.updateItem(contact, empty);
+                    if (empty) {
+                        setText(null);
                     } else {
-                        allCustomersTable.setItems(CustomerList.lookupCustomer(newValue));
-                    }
-                    if (allCustomersTable.getItems().isEmpty()) {
-                        allCustomersTable.setItems(CustomerList.getCustomerList());
+                        setText(contact.getContactName());
                     }
                 }
-        );
+            });
 
-        //Customer Drop Down Menus
-        customerSelector.setItems(CustomerList.getCustomerNames());
-        mCustomerSelector.setItems(CustomerList.getCustomerNames());
+            //customer table
+            customerIdColumn2.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+            nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+            addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+            postalCodeColumn.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+            firstLevelDivisionColumn.setCellValueFactory(new PropertyValueFactory<>("firstLevelDivision"));
+            countryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
 
-        //Contact Drop Down Menus
-        contactSelector.setItems(ContactList.getContactNames());
-        mContactSelector.setItems(ContactList.getContactNames());
 
-        //Country Drop Down Menus
-        countrySelector.setItems(CountryList.getCountryNames());
-        countrySelector.setOnAction(e -> {
-            String selectedCountry = countrySelector.getValue();
-            for (Country country : CountryList.getCountryList()) {
-                if (country.getCountryName().equals(selectedCountry)) {
-                    firstLevelDivisionSelector.setItems(country.getFirstLevelDivisions());
+            //this is where it is determined whether or not the demo list or DB will be used
+            boolean demoMode;
+            if (DBConnection.getConnection() == null) {
+                demoMode = true;
+                //load demo data into lists
+                System.out.println("Could not connect to database.  Loading demo data into lists.");
+                addMessage("No database connection.  AppointmentScheduler is now in Demo mode.", RED);
+                CustomerList.addCustomerList(DemoData.getDemoCustomerList());
+                ContactList.addContactList(DemoData.getDemoContactList());
+                AppointmentList.addAppointmentList(DemoData.getDemoAppointmentList());
+                CountryList.addCountryList(DemoData.getDemoCountryList());
+            } else {
+                demoMode = false;
+                //load database data into lists
+                System.out.println("Loading database items into lists.");
+                addMessage("Database connected successfully.", BLACK);
+
+                DAO_countries countriesDao = new DAOImpl_countries();
+                DAO_customers customersDao = new DAOImpl_customers();
+                DAO_contacts contactsDao = new DAOImpl_contacts();
+                DAO_appointments appointmentsDao = new DAOImpl_appointments();
+
+                CustomerList.addCustomerList(customersDao.getAllCustomers());
+                ContactList.addContactList(contactsDao.getAllContacts());
+                AppointmentList.addAppointmentList(appointmentsDao.getAllAppointments());
+                CountryList.addCountryList(countriesDao.getAllCountries());
+            }
+
+            //initialize customer/appointment id generator
+            CustomerList.setInitialHighestCustomerId();
+            AppointmentList.setInitialHighestCustomerId();
+
+            //Check to see if there is an upcoming appointment within 15 minutes.
+            boolean upcomingAppointment = false;
+            for (Appointment appointment : AppointmentList.getAppointmentList()) {
+                if (appointment.getStartInstant().minusMinutes(15).isBefore(LocalDateTime.now()) && appointment.getStartInstant().isAfter(LocalDateTime.now())) {
+                    upcomingAppointment = true;
+                    addMessage("There is an upcoming appointment with " + appointment.getCustomerName() + " at " + appointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm a")) + ". (Appointment Id: " + appointment.getAppointmentId() + ")", RED);
                 }
             }
-        });
-        mcCountryField.setItems(CountryList.getCountryNames());
-        mcCountryField.setOnAction(e -> {
-            String selectedCountry = mcCountryField.getValue();
-            for (Country country : CountryList.getCountryList()) {
-                if (country.getCountryName().equals(selectedCountry)) {
-                    mcFirstLevelDivisionField.setItems(country.getFirstLevelDivisions());
-                }
-            }
-        });
-        tccCountrySelector.setItems(CountryList.getCountryList());
-        tccCountrySelector.setOnAction(e -> {
-            tccResultsVBox.getChildren().clear();
-
-            ObservableList<ObservableList<String>> listOfFLDAndTotal = CustomerList.getCustomersByCountry(tccCountrySelector.getValue());
-            ObservableList<String> listOfFLDs = listOfFLDAndTotal.get(0);
-            ObservableList<String> listOfTotals = listOfFLDAndTotal.get(1);
-
-
-            for (int i = 0; i < listOfFLDs.size(); i++) {
-                //this "region" fills the void space in an hbox for alignment purposes.
-                Region region = new Region();
-                HBox.setHgrow(region, Priority.ALWAYS);
-
-                Label fldLabel = new Label(listOfFLDs.get(i));
-                Label totalLabel = new Label(listOfTotals.get(i));
-
-                HBox lineItem = new HBox(fldLabel, region, totalLabel);
-
-
-                tccResultsVBox.getChildren().add(lineItem);
+            if (!upcomingAppointment) {
+                addMessage("There are no upcoming appointments within 15 minutes.", BLACK);
             }
 
-        });
+            //Insert the lists into the tables
+            allCustomersTable.setItems(CustomerList.getCustomerList());
+            allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
 
-        //Appointment Type Drop Down Menus
-        rtaTypeSelector.setItems(AppointmentList.getDifferentTypes());
-
-        //New Appointment tab - Customer Selector Value Change event - used to put the customer id into its field
-        customerSelector.setOnAction(e -> {
-
-            if (customerSelector.getSelectionModel().getSelectedItem() != null) {
-                ObservableList<Customer> listOfClientsSharingName = FXCollections.observableArrayList();
-                String nameOfSelectedCustomer = customerSelector.getValue();
-                for (Customer customer : CustomerList.getCustomerList()) {
-                    if (nameOfSelectedCustomer.equals(customer.getName())) {
-                        listOfClientsSharingName.add(customer);
+            //Format the appointment table time columns
+            //lambda addition
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a, MM/dd/yyyy");
+            startColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime dateTime, boolean empty) {
+                    super.updateItem(dateTime, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(formatter.format(dateTime));
                     }
                 }
-                if (listOfClientsSharingName.size() == 1) {
-                    customerIdField.setText(String.valueOf(listOfClientsSharingName.get(0).getCustomerId()));
+            });
+            //lambda addition
+            endColumn.setCellFactory(tc -> new TableCell<Appointment, LocalDateTime>() {
+                @Override
+                protected void updateItem(LocalDateTime dateTime, boolean empty) {
+                    super.updateItem(dateTime, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(formatter.format(dateTime));
+                    }
                 }
-                //handle matching customer names
-                if (listOfClientsSharingName.size() > 1) {
-                    Stage multiCustomerSelectorStage = new Stage();
-                    multiCustomerSelectorStage.initModality(Modality.APPLICATION_MODAL);
-                    multiCustomerSelectorStage.setResizable(false);
-                    multiCustomerSelectorStage.setTitle("Multiple customers found");
-                    Label infoLabel = new Label("There are multiple customers that share that name.  Which do you mean?");
-                    TableView<Customer> duplicatesTable = new TableView<>();
-                    TableColumn<Customer, String> multiCustomerNameColumn = new TableColumn<>("Name");
-                    TableColumn<Customer, Integer> multiCustomerIdColumn = new TableColumn<>("Id");
-                    TableColumn<Customer, String> multiCustomerAddressColumn = new TableColumn<>("Address");
-                    TableColumn<Customer, String> multiCustomerFLDColumn = new TableColumn<>("First-Level Division");
-                    TableColumn<Customer, String> multiCustomerCountryColumn = new TableColumn<>("Country");
-                    TableColumn<Customer, String> multiCustomerPhoneColumn = new TableColumn<>("Phone");
-                    multiCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-                    multiCustomerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-                    multiCustomerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-                    multiCustomerFLDColumn.setCellValueFactory(new PropertyValueFactory<>("firstLevelDivision"));
-                    multiCustomerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
-                    multiCustomerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-                    duplicatesTable.getColumns().addAll(multiCustomerNameColumn, multiCustomerIdColumn, multiCustomerAddressColumn, multiCustomerFLDColumn, multiCustomerCountryColumn, multiCustomerPhoneColumn);
-                    duplicatesTable.setItems(listOfClientsSharingName);
-                    Button confirmButton = new Button("Confirm");
-                    Button cancelButton = new Button("Cancel");
-                    confirmButton.setOnAction(e2 -> {
-                        if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
-                            customerIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getCustomerId()));
-                            multiCustomerSelectorStage.close();
+            });
+
+            //report misc
+            rtaYearTextField.setText(String.valueOf(LocalDateTime.now().getYear()));
+
+            //AM or PM Selectors
+            ObservableList<String> amPm = FXCollections.observableArrayList("AM", "PM");
+            startAmOrPm.setItems(amPm);
+            endAmOrPm.setItems(amPm);
+            mStartAmOrPm.setItems(amPm);
+            mEndAmOrPm.setItems(amPm);
+
+            //viewSelection button
+            ObservableList<String> weekOrMonth = FXCollections.observableArrayList("Week of", "Month of", "All");
+            viewSelector.setItems(weekOrMonth);
+            viewSelector.setOnAction(e -> {
+                if (viewSelector.getValue().equals("Week of")) {
+                    datePicker.setPromptText("Select a week ->");
+                    datePicker.setDisable(false);
+                    datePicker.setValue(null);
+                }
+                if (viewSelector.getValue().equals("Month of")) {
+                    datePicker.setPromptText("Select a month ->");
+                    datePicker.setDisable(false);
+                    datePicker.setValue(null);
+                }
+                if (viewSelector.getValue().equals("All")) {
+                    datePicker.setPromptText("<- pick one");
+                    datePicker.setValue(null);
+                    datePicker.setDisable(true);
+                    allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
+                    filterSelectionLabel.setText("Showing all appointments");
+                }
+            });
+
+            //appointment datePicker - used to filter appointments
+            datePicker.setOnAction(e -> {
+                if (viewSelector.getValue().equals("Week of") && datePicker.getValue() != null) {
+                    filterSelectionLabel.setText("Showing appointments in week " + datePicker.getValue().get(WEEK_OF_WEEK_BASED_YEAR) + " of " + datePicker.getValue().getYear());
+                    //filtering mechanism
+                    ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
+                    for (Appointment appointment : AppointmentList.getAppointmentList()) {
+                        if (appointment.getStartInstant().get(WEEK_OF_WEEK_BASED_YEAR) == datePicker.getValue().get(WEEK_OF_WEEK_BASED_YEAR)) {
+                            filteredList.add(appointment);
+                        }
+                    }
+                    allAppointmentsTable.setItems(filteredList);
+                }
+                if (viewSelector.getValue().equals("Month of") && datePicker.getValue() != null) {
+                    filterSelectionLabel.setText("Showing appointments in " + datePicker.getValue().getMonth() + " of " + datePicker.getValue().getYear());
+                    //filtering mechanism
+                    ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
+                    for (Appointment appointment : AppointmentList.getAppointmentList()) {
+                        if (appointment.getStartInstant().getMonth() == datePicker.getValue().getMonth() && appointment.getStartInstant().getYear() == datePicker.getValue().getYear()) {
+                            filteredList.add(appointment);
+                        }
+                    }
+                    allAppointmentsTable.setItems(filteredList);
+                }
+            });
+
+            //appointment searchBox
+            searchBox.textProperty().addListener((observable, oldValue, newValue) -> {
+                if (searchBox.getText().equals("")) {
+                    allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
+                    filterSelectionLabel.setText("Showing all appointments");
+                } else if (MiscTools.isInteger(searchBox.getText())) {
+                    try {
+                        ObservableList<Appointment> searchResults = FXCollections.observableArrayList();
+                        searchResults.addAll(AppointmentList.lookupAppointment(Integer.parseInt(newValue)));
+                        for (Appointment appointment : AppointmentList.getAppointmentList())
+                            if (appointment.getCustomerId() == Integer.parseInt(searchBox.getText())) {
+                                searchResults.add(appointment);
+                            }
+                        for (Appointment appointment : AppointmentList.getAppointmentList()) {
+                            if (appointment.getContact().getContactId() == Integer.parseInt(searchBox.getText())) {
+                                searchResults.add(appointment);
+                            }
+                        }
+                        allAppointmentsTable.setItems(searchResults);
+                    } catch (NumberFormatException numberFormatException) {
+                        addMessage("The number you entered is too long to be an Id.", BLACK);
+                    }
+                    filterSelectionLabel.setText("Showing search by Id results");
+                } else {
+                    allAppointmentsTable.setItems(AppointmentList.lookupAppointment(newValue));
+                    filterSelectionLabel.setText("Showing search by name results");
+                }
+                if (allAppointmentsTable.getItems().isEmpty()) {
+                    allAppointmentsTable.setItems(AppointmentList.getAppointmentList());
+                    filterSelectionLabel.setText("Showing all appointments");
+                }
+            });
+
+            //Customer search box
+            customerSearchBox.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (customerSearchBox.getText().equals("")) {
+                            allCustomersTable.setItems(CustomerList.getCustomerList());
+                        } else if (MiscTools.isInteger(customerSearchBox.getText())) {
+                            try {
+                                allCustomersTable.setItems(CustomerList.lookupCustomer(Integer.parseInt(newValue)));
+                            } catch (NumberFormatException numberFormatException) {
+                                addMessage("The number you entered is too long to be an Id.", BLACK);
+                            }
                         } else {
+                            allCustomersTable.setItems(CustomerList.lookupCustomer(newValue));
+                        }
+                        if (allCustomersTable.getItems().isEmpty()) {
+                            allCustomersTable.setItems(CustomerList.getCustomerList());
+                        }
+                    }
+            );
+
+            //Customer Drop Down Menus
+            customerSelector.setItems(CustomerList.getCustomerNames());
+            mCustomerSelector.setItems(CustomerList.getCustomerNames());
+
+            //Contact Drop Down Menus
+            contactSelector.setItems(ContactList.getContactNames());
+            mContactSelector.setItems(ContactList.getContactNames());
+
+            //Country Drop Down Menus
+            countrySelector.setItems(CountryList.getCountryNames());
+            countrySelector.setOnAction(e -> {
+                String selectedCountry = countrySelector.getValue();
+                for (Country country : CountryList.getCountryList()) {
+                    if (country.getCountryName().equals(selectedCountry)) {
+                        firstLevelDivisionSelector.setItems(country.getFirstLevelDivisions());
+                    }
+                }
+            });
+            mcCountryField.setItems(CountryList.getCountryNames());
+            mcCountryField.setOnAction(e -> {
+                String selectedCountry = mcCountryField.getValue();
+                for (Country country : CountryList.getCountryList()) {
+                    if (country.getCountryName().equals(selectedCountry)) {
+                        mcFirstLevelDivisionField.setItems(country.getFirstLevelDivisions());
+                    }
+                }
+            });
+            tccCountrySelector.setItems(CountryList.getCountryList());
+            tccCountrySelector.setOnAction(e -> {
+                tccResultsVBox.getChildren().clear();
+
+                ObservableList<ObservableList<String>> listOfFLDAndTotal = CustomerList.getCustomersByCountry(tccCountrySelector.getValue());
+                ObservableList<String> listOfFLDs = listOfFLDAndTotal.get(0);
+                ObservableList<String> listOfTotals = listOfFLDAndTotal.get(1);
+
+
+                for (int i = 0; i < listOfFLDs.size(); i++) {
+                    //this "region" fills the void space in an hbox for alignment purposes.
+                    Region region = new Region();
+                    HBox.setHgrow(region, Priority.ALWAYS);
+
+                    Label fldLabel = new Label(listOfFLDs.get(i));
+                    Label totalLabel = new Label(listOfTotals.get(i));
+
+                    HBox lineItem = new HBox(fldLabel, region, totalLabel);
+
+
+                    tccResultsVBox.getChildren().add(lineItem);
+                }
+
+            });
+
+            //Appointment Type Drop Down Menus
+            rtaTypeSelector.setItems(AppointmentList.getDifferentTypes());
+
+            //New Appointment tab - Customer Selector Value Change event - used to put the customer id into its field
+            customerSelector.setOnAction(e -> {
+
+                if (customerSelector.getSelectionModel().getSelectedItem() != null) {
+                    ObservableList<Customer> listOfClientsSharingName = FXCollections.observableArrayList();
+                    String nameOfSelectedCustomer = customerSelector.getValue();
+                    for (Customer customer : CustomerList.getCustomerList()) {
+                        if (nameOfSelectedCustomer.equals(customer.getName())) {
+                            listOfClientsSharingName.add(customer);
+                        }
+                    }
+                    if (listOfClientsSharingName.size() == 1) {
+                        customerIdField.setText(String.valueOf(listOfClientsSharingName.get(0).getCustomerId()));
+                    }
+                    //handle matching customer names
+                    if (listOfClientsSharingName.size() > 1) {
+                        Stage multiCustomerSelectorStage = new Stage();
+                        multiCustomerSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                        multiCustomerSelectorStage.setResizable(false);
+                        multiCustomerSelectorStage.setTitle("Multiple customers found");
+                        Label infoLabel = new Label("There are multiple customers that share that name.  Which do you mean?");
+                        TableView<Customer> duplicatesTable = new TableView<>();
+                        TableColumn<Customer, String> multiCustomerNameColumn = new TableColumn<>("Name");
+                        TableColumn<Customer, Integer> multiCustomerIdColumn = new TableColumn<>("Id");
+                        TableColumn<Customer, String> multiCustomerAddressColumn = new TableColumn<>("Address");
+                        TableColumn<Customer, String> multiCustomerFLDColumn = new TableColumn<>("First-Level Division");
+                        TableColumn<Customer, String> multiCustomerCountryColumn = new TableColumn<>("Country");
+                        TableColumn<Customer, String> multiCustomerPhoneColumn = new TableColumn<>("Phone");
+                        multiCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+                        multiCustomerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                        multiCustomerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+                        multiCustomerFLDColumn.setCellValueFactory(new PropertyValueFactory<>("firstLevelDivision"));
+                        multiCustomerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+                        multiCustomerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+                        duplicatesTable.getColumns().addAll(multiCustomerNameColumn, multiCustomerIdColumn, multiCustomerAddressColumn, multiCustomerFLDColumn, multiCustomerCountryColumn, multiCustomerPhoneColumn);
+                        duplicatesTable.setItems(listOfClientsSharingName);
+                        Button confirmButton = new Button("Confirm");
+                        Button cancelButton = new Button("Cancel");
+                        confirmButton.setOnAction(e2 -> {
+                            if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
+                                customerIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getCustomerId()));
+                                multiCustomerSelectorStage.close();
+                            } else {
+                                multiCustomerSelectorStage.close();
+                                addMessage("No customer selected.  Please try again.", RED);
+                                customerSelector.getSelectionModel().clearSelection();
+                                customerIdField.setText("");
+                            }
+                        });
+                        cancelButton.setOnAction(e2 -> {
                             multiCustomerSelectorStage.close();
-                            addMessage("No customer selected.  Please try again.", RED);
                             customerSelector.getSelectionModel().clearSelection();
                             customerIdField.setText("");
-                        }
-                    });
-                    cancelButton.setOnAction(e2 -> {
-                        multiCustomerSelectorStage.close();
-                        customerSelector.getSelectionModel().clearSelection();
-                        customerIdField.setText("");
-                    });
-                    HBox buttonRow = new HBox(10);
-                    VBox layout = new VBox(10);
-                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
-                    layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
-                    layout.setPadding(new Insets(20));
-                    Scene multiCustomerSelectorScene = new Scene(layout, 570, 300);
-                    multiCustomerSelectorStage.setScene(multiCustomerSelectorScene);
-                    multiCustomerSelectorStage.show();
-                }
-            }
-        });
-
-        //New Appointment tab - Contact Selector Value Change event - used to put the contact id into its field
-        contactSelector.setOnAction(e -> {
-
-            if (contactSelector.getSelectionModel().getSelectedItem() != null) {
-                ObservableList<Contact> listOfContactsSharingName = FXCollections.observableArrayList();
-                String nameOfSelectedContact = contactSelector.getValue();
-                for (Contact contact : ContactList.getContactList()) {
-                    if (nameOfSelectedContact.equals(contact.getContactName())) {
-                        listOfContactsSharingName.add(contact);
+                        });
+                        HBox buttonRow = new HBox(10);
+                        VBox layout = new VBox(10);
+                        buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                        layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
+                        layout.setPadding(new Insets(20));
+                        Scene multiCustomerSelectorScene = new Scene(layout, 570, 300);
+                        multiCustomerSelectorStage.setScene(multiCustomerSelectorScene);
+                        multiCustomerSelectorStage.show();
                     }
                 }
-                if (listOfContactsSharingName.size() == 1) {
-                    contactIdField.setText(String.valueOf(listOfContactsSharingName.get(0).getContactId()));
-                }
-                //handle matching customer names
-                if (listOfContactsSharingName.size() > 1) {
-                    Stage multiContactSelectorStage = new Stage();
-                    multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
-                    multiContactSelectorStage.setResizable(false);
-                    multiContactSelectorStage.setTitle("Multiple contacts found");
-                    Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
-                    TableView<Contact> duplicatesTable = new TableView<>();
-                    TableColumn<Contact, String> multiContactNameColumn = new TableColumn<>("Name");
-                    TableColumn<Contact, Integer> multiContactIdColumn = new TableColumn<>("Id");
-                    TableColumn<Contact, String> multiContactAddressColumn = new TableColumn<>("E-mail");
-                    multiContactNameColumn.setCellValueFactory(new PropertyValueFactory<>("contactName"));
-                    multiContactIdColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
-                    multiContactAddressColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-                    duplicatesTable.getColumns().addAll(multiContactNameColumn, multiContactIdColumn, multiContactAddressColumn);
-                    duplicatesTable.setItems(listOfContactsSharingName);
-                    Button confirmButton = new Button("Confirm");
-                    Button cancelButton = new Button("Cancel");
-                    confirmButton.setOnAction(e2 -> {
-                        if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
-                            contactIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getContactId()));
+            });
+
+            //New Appointment tab - Contact Selector Value Change event - used to put the contact id into its field
+            contactSelector.setOnAction(e -> {
+
+                if (contactSelector.getSelectionModel().getSelectedItem() != null) {
+                    ObservableList<Contact> listOfContactsSharingName = FXCollections.observableArrayList();
+                    String nameOfSelectedContact = contactSelector.getValue();
+                    for (Contact contact : ContactList.getContactList()) {
+                        if (nameOfSelectedContact.equals(contact.getContactName())) {
+                            listOfContactsSharingName.add(contact);
+                        }
+                    }
+                    if (listOfContactsSharingName.size() == 1) {
+                        contactIdField.setText(String.valueOf(listOfContactsSharingName.get(0).getContactId()));
+                    }
+                    //handle matching customer names
+                    if (listOfContactsSharingName.size() > 1) {
+                        Stage multiContactSelectorStage = new Stage();
+                        multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                        multiContactSelectorStage.setResizable(false);
+                        multiContactSelectorStage.setTitle("Multiple contacts found");
+                        Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
+                        TableView<Contact> duplicatesTable = new TableView<>();
+                        TableColumn<Contact, String> multiContactNameColumn = new TableColumn<>("Name");
+                        TableColumn<Contact, Integer> multiContactIdColumn = new TableColumn<>("Id");
+                        TableColumn<Contact, String> multiContactAddressColumn = new TableColumn<>("E-mail");
+                        multiContactNameColumn.setCellValueFactory(new PropertyValueFactory<>("contactName"));
+                        multiContactIdColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
+                        multiContactAddressColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+                        duplicatesTable.getColumns().addAll(multiContactNameColumn, multiContactIdColumn, multiContactAddressColumn);
+                        duplicatesTable.setItems(listOfContactsSharingName);
+                        Button confirmButton = new Button("Confirm");
+                        Button cancelButton = new Button("Cancel");
+                        confirmButton.setOnAction(e2 -> {
+                            if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
+                                contactIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getContactId()));
+                                multiContactSelectorStage.close();
+                            } else {
+                                multiContactSelectorStage.close();
+                                addMessage("No contact selected.  Please try again.", RED);
+                                contactSelector.getSelectionModel().clearSelection();
+                                contactIdField.setText("");
+                            }
+                        });
+                        cancelButton.setOnAction(e2 -> {
                             multiContactSelectorStage.close();
-                        } else {
-                            multiContactSelectorStage.close();
-                            addMessage("No contact selected.  Please try again.", RED);
                             contactSelector.getSelectionModel().clearSelection();
                             contactIdField.setText("");
-                        }
-                    });
-                    cancelButton.setOnAction(e2 -> {
-                        multiContactSelectorStage.close();
-                        contactSelector.getSelectionModel().clearSelection();
-                        contactIdField.setText("");
-                    });
-                    HBox buttonRow = new HBox(10);
-                    VBox layout = new VBox(10);
-                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
-                    layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
-                    layout.setPadding(new Insets(20));
-                    Scene multiContactSelectorScene = new Scene(layout, 570, 300);
-                    multiContactSelectorStage.setScene(multiContactSelectorScene);
-                    multiContactSelectorStage.show();
-                }
-            }
-        });
-
-        //Modify Appointment tab - Customer selector value change event
-        mCustomerSelector.setOnAction(e -> {
-            if (mCustomerSelector.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
-                ObservableList<Customer> listOfClientsSharingName = FXCollections.observableArrayList();
-                String nameOfSelectedCustomer = mCustomerSelector.getValue();
-                for (Customer customer : CustomerList.getCustomerList()) {
-                    if (nameOfSelectedCustomer.equals(customer.getName())) {
-                        listOfClientsSharingName.add(customer);
+                        });
+                        HBox buttonRow = new HBox(10);
+                        VBox layout = new VBox(10);
+                        buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                        layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
+                        layout.setPadding(new Insets(20));
+                        Scene multiContactSelectorScene = new Scene(layout, 570, 300);
+                        multiContactSelectorStage.setScene(multiContactSelectorScene);
+                        multiContactSelectorStage.show();
                     }
                 }
-                if (listOfClientsSharingName.size() == 1) {
-                    mCustomerIdField.setText(String.valueOf(listOfClientsSharingName.get(0).getCustomerId()));
-                }
-                //handle matching customer names
-                if (listOfClientsSharingName.size() > 1) {
-                    Stage multiCustomerSelectorStage = new Stage();
-                    multiCustomerSelectorStage.initModality(Modality.APPLICATION_MODAL);
-                    multiCustomerSelectorStage.setResizable(false);
-                    multiCustomerSelectorStage.setTitle("Multiple customers found");
-                    Label infoLabel = new Label("There are multiple customers that share that name.  Which do you mean?");
-                    TableView<Customer> duplicatesTable = new TableView<>();
-                    TableColumn<Customer, String> multiCustomerNameColumn = new TableColumn<>("Name");
-                    TableColumn<Customer, Integer> multiCustomerIdColumn = new TableColumn<>("Id");
-                    TableColumn<Customer, String> multiCustomerAddressColumn = new TableColumn<>("Address");
-                    TableColumn<Customer, String> multiCustomerFLDColumn = new TableColumn<>("First-Level Division");
-                    TableColumn<Customer, String> multiCustomerCountryColumn = new TableColumn<>("Country");
-                    TableColumn<Customer, String> multiCustomerPhoneColumn = new TableColumn<>("Phone");
-                    multiCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-                    multiCustomerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-                    multiCustomerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-                    multiCustomerFLDColumn.setCellValueFactory(new PropertyValueFactory<>("firstLevelDivision"));
-                    multiCustomerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
-                    multiCustomerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-                    duplicatesTable.getColumns().addAll(multiCustomerNameColumn, multiCustomerIdColumn, multiCustomerAddressColumn, multiCustomerFLDColumn, multiCustomerCountryColumn, multiCustomerPhoneColumn);
-                    duplicatesTable.setItems(listOfClientsSharingName);
-                    Button confirmButton = new Button("Confirm");
-                    Button cancelButton = new Button("Cancel");
-                    confirmButton.setOnAction(e2 -> {
-                        if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
-                            mCustomerIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getCustomerId()));
+            });
+
+            //Modify Appointment tab - Customer selector value change event
+            mCustomerSelector.setOnAction(e -> {
+                if (mCustomerSelector.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
+                    ObservableList<Customer> listOfClientsSharingName = FXCollections.observableArrayList();
+                    String nameOfSelectedCustomer = mCustomerSelector.getValue();
+                    for (Customer customer : CustomerList.getCustomerList()) {
+                        if (nameOfSelectedCustomer.equals(customer.getName())) {
+                            listOfClientsSharingName.add(customer);
+                        }
+                    }
+                    if (listOfClientsSharingName.size() == 1) {
+                        mCustomerIdField.setText(String.valueOf(listOfClientsSharingName.get(0).getCustomerId()));
+                    }
+                    //handle matching customer names
+                    if (listOfClientsSharingName.size() > 1) {
+                        Stage multiCustomerSelectorStage = new Stage();
+                        multiCustomerSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                        multiCustomerSelectorStage.setResizable(false);
+                        multiCustomerSelectorStage.setTitle("Multiple customers found");
+                        Label infoLabel = new Label("There are multiple customers that share that name.  Which do you mean?");
+                        TableView<Customer> duplicatesTable = new TableView<>();
+                        TableColumn<Customer, String> multiCustomerNameColumn = new TableColumn<>("Name");
+                        TableColumn<Customer, Integer> multiCustomerIdColumn = new TableColumn<>("Id");
+                        TableColumn<Customer, String> multiCustomerAddressColumn = new TableColumn<>("Address");
+                        TableColumn<Customer, String> multiCustomerFLDColumn = new TableColumn<>("First-Level Division");
+                        TableColumn<Customer, String> multiCustomerCountryColumn = new TableColumn<>("Country");
+                        TableColumn<Customer, String> multiCustomerPhoneColumn = new TableColumn<>("Phone");
+                        multiCustomerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+                        multiCustomerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+                        multiCustomerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+                        multiCustomerFLDColumn.setCellValueFactory(new PropertyValueFactory<>("firstLevelDivision"));
+                        multiCustomerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+                        multiCustomerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+                        duplicatesTable.getColumns().addAll(multiCustomerNameColumn, multiCustomerIdColumn, multiCustomerAddressColumn, multiCustomerFLDColumn, multiCustomerCountryColumn, multiCustomerPhoneColumn);
+                        duplicatesTable.setItems(listOfClientsSharingName);
+                        Button confirmButton = new Button("Confirm");
+                        Button cancelButton = new Button("Cancel");
+                        confirmButton.setOnAction(e2 -> {
+                            if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
+                                mCustomerIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getCustomerId()));
+                                multiCustomerSelectorStage.close();
+                            } else {
+                                multiCustomerSelectorStage.close();
+                                addMessage("No customer selected.  Please try again.", RED);
+                                mCustomerSelector.getSelectionModel().clearSelection();
+                                mCustomerIdField.setText("");
+                            }
+                        });
+                        cancelButton.setOnAction(e2 -> {
                             multiCustomerSelectorStage.close();
-                        } else {
-                            multiCustomerSelectorStage.close();
-                            addMessage("No customer selected.  Please try again.", RED);
                             mCustomerSelector.getSelectionModel().clearSelection();
                             mCustomerIdField.setText("");
-                        }
-                    });
-                    cancelButton.setOnAction(e2 -> {
-                        multiCustomerSelectorStage.close();
-                        mCustomerSelector.getSelectionModel().clearSelection();
-                        mCustomerIdField.setText("");
-                    });
-                    HBox buttonRow = new HBox(10);
-                    VBox layout = new VBox(10);
-                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
-                    layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
-                    layout.setPadding(new Insets(20));
-                    Scene multiCustomerSelectorScene = new Scene(layout, 570, 300);
-                    multiCustomerSelectorStage.setScene(multiCustomerSelectorScene);
-                    multiCustomerSelectorStage.show();
-                }
-            }
-        });
-
-        //Modify Appointment tab - Contact selector value change event
-        mContactSelector.setOnAction(e -> {
-
-            if (mContactSelector.getSelectionModel().getSelectedItem() != null) {
-                ObservableList<Contact> listOfContactsSharingName = FXCollections.observableArrayList();
-                String nameOfSelectedContact = mContactSelector.getValue();
-                for (Contact contact : ContactList.getContactList()) {
-                    if (nameOfSelectedContact.equals(contact.getContactName())) {
-                        listOfContactsSharingName.add(contact);
+                        });
+                        HBox buttonRow = new HBox(10);
+                        VBox layout = new VBox(10);
+                        buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                        layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
+                        layout.setPadding(new Insets(20));
+                        Scene multiCustomerSelectorScene = new Scene(layout, 570, 300);
+                        multiCustomerSelectorStage.setScene(multiCustomerSelectorScene);
+                        multiCustomerSelectorStage.show();
                     }
                 }
-                if (listOfContactsSharingName.size() == 1) {
-                    mContactIdField.setText(String.valueOf(listOfContactsSharingName.get(0).getContactId()));
-                }
-                //handle matching customer names
-                if (listOfContactsSharingName.size() > 1) {
-                    Stage multiContactSelectorStage = new Stage();
-                    multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
-                    multiContactSelectorStage.setResizable(false);
-                    multiContactSelectorStage.setTitle("Multiple contacts found");
-                    Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
-                    TableView<Contact> duplicatesTable = new TableView<>();
-                    TableColumn<Contact, String> multiContactNameColumn = new TableColumn<>("Name");
-                    TableColumn<Contact, Integer> multiContactIdColumn = new TableColumn<>("Id");
-                    TableColumn<Contact, String> multiContactAddressColumn = new TableColumn<>("E-mail");
-                    multiContactNameColumn.setCellValueFactory(new PropertyValueFactory<>("contactName"));
-                    multiContactIdColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
-                    multiContactAddressColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
-                    duplicatesTable.getColumns().addAll(multiContactNameColumn, multiContactIdColumn, multiContactAddressColumn);
-                    duplicatesTable.setItems(listOfContactsSharingName);
-                    Button confirmButton = new Button("Confirm");
-                    Button cancelButton = new Button("Cancel");
-                    confirmButton.setOnAction(e2 -> {
-                        if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
-                            mContactIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getContactId()));
+            });
+
+            //Modify Appointment tab - Contact selector value change event
+            mContactSelector.setOnAction(e -> {
+
+                if (mContactSelector.getSelectionModel().getSelectedItem() != null) {
+                    ObservableList<Contact> listOfContactsSharingName = FXCollections.observableArrayList();
+                    String nameOfSelectedContact = mContactSelector.getValue();
+                    for (Contact contact : ContactList.getContactList()) {
+                        if (nameOfSelectedContact.equals(contact.getContactName())) {
+                            listOfContactsSharingName.add(contact);
+                        }
+                    }
+                    if (listOfContactsSharingName.size() == 1) {
+                        mContactIdField.setText(String.valueOf(listOfContactsSharingName.get(0).getContactId()));
+                    }
+                    //handle matching customer names
+                    if (listOfContactsSharingName.size() > 1) {
+                        Stage multiContactSelectorStage = new Stage();
+                        multiContactSelectorStage.initModality(Modality.APPLICATION_MODAL);
+                        multiContactSelectorStage.setResizable(false);
+                        multiContactSelectorStage.setTitle("Multiple contacts found");
+                        Label infoLabel = new Label("There are multiple contacts that share that name.  Which do you mean?");
+                        TableView<Contact> duplicatesTable = new TableView<>();
+                        TableColumn<Contact, String> multiContactNameColumn = new TableColumn<>("Name");
+                        TableColumn<Contact, Integer> multiContactIdColumn = new TableColumn<>("Id");
+                        TableColumn<Contact, String> multiContactAddressColumn = new TableColumn<>("E-mail");
+                        multiContactNameColumn.setCellValueFactory(new PropertyValueFactory<>("contactName"));
+                        multiContactIdColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
+                        multiContactAddressColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+                        duplicatesTable.getColumns().addAll(multiContactNameColumn, multiContactIdColumn, multiContactAddressColumn);
+                        duplicatesTable.setItems(listOfContactsSharingName);
+                        Button confirmButton = new Button("Confirm");
+                        Button cancelButton = new Button("Cancel");
+                        confirmButton.setOnAction(e2 -> {
+                            if (duplicatesTable.getSelectionModel().getSelectedItem() != null) {
+                                mContactIdField.setText(String.valueOf(duplicatesTable.getSelectionModel().getSelectedItem().getContactId()));
+                                multiContactSelectorStage.close();
+                            } else {
+                                multiContactSelectorStage.close();
+                                addMessage("No contact selected.  Please try again.", RED);
+                                mContactSelector.getSelectionModel().clearSelection();
+                                mContactIdField.setText("");
+                            }
+                        });
+                        cancelButton.setOnAction(e2 -> {
                             multiContactSelectorStage.close();
-                        } else {
-                            multiContactSelectorStage.close();
-                            addMessage("No contact selected.  Please try again.", RED);
                             mContactSelector.getSelectionModel().clearSelection();
                             mContactIdField.setText("");
-                        }
-                    });
-                    cancelButton.setOnAction(e2 -> {
-                        multiContactSelectorStage.close();
-                        mContactSelector.getSelectionModel().clearSelection();
-                        mContactIdField.setText("");
-                    });
-                    HBox buttonRow = new HBox(10);
-                    VBox layout = new VBox(10);
-                    buttonRow.getChildren().addAll(confirmButton, cancelButton);
-                    layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
-                    layout.setPadding(new Insets(20));
-                    Scene multiContactSelectorScene = new Scene(layout, 570, 300);
-                    multiContactSelectorStage.setScene(multiContactSelectorScene);
-                    multiContactSelectorStage.show();
+                        });
+                        HBox buttonRow = new HBox(10);
+                        VBox layout = new VBox(10);
+                        buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                        layout.getChildren().addAll(infoLabel, duplicatesTable, buttonRow);
+                        layout.setPadding(new Insets(20));
+                        Scene multiContactSelectorScene = new Scene(layout, 570, 300);
+                        multiContactSelectorStage.setScene(multiContactSelectorScene);
+                        multiContactSelectorStage.show();
+                    }
                 }
-            }
-        });
+            });
 
-        //New Appointment tab - Save Button
-        saveButton.setOnAction(e -> {
-            //declare needed variables
-            LocalTime startTime = null;
-            LocalDate startDate = null;
-            LocalDateTime startDateTime = null;
-            LocalTime endTime = null;
-            LocalDate endDate = null;
-            LocalDateTime endDateTime = null;
+            //New Appointment tab - Save Button
+            saveButton.setOnAction(e -> {
+                //declare needed variables
+                LocalTime startTime = null;
+                LocalDate startDate = null;
+                LocalDateTime startDateTime = null;
+                LocalTime endTime = null;
+                LocalDate endDate = null;
+                LocalDateTime endDateTime = null;
 
-            //validation section
-            try {
-                boolean validationError = false;
+                //validation section
+                try {
+                    boolean validationError = false;
 
-                if (titleField.getLength() > 50 || titleField.getLength() < 1) {
-                    validationError = true;
-                    titleErrorMessage.setText("Title character length must be between 1-50.");
-                } else {
-                    titleErrorMessage.setText("");
-                }
-
-                if (descriptionField.getLength() > 50 || descriptionField.getLength() < 1) {
-                    validationError = true;
-                    descriptionErrorMessage.setText("Description character length must be between 1-50.");
-                } else {
-                    descriptionErrorMessage.setText("");
-                }
-
-                if (locationField.getLength() > 50 || locationField.getLength() < 1) {
-                    validationError = true;
-                    locationErrorMessage.setText("Location character length must be between 1-50.");
-                } else {
-                    locationErrorMessage.setText("");
-                }
-
-                if (customerSelector.getValue() != null) {
-                    customerErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    customerErrorMessage.setText("No customer selected.");
-                }
-
-                if (typeField.getLength() > 50 || typeField.getLength() < 1) {
-                    validationError = true;
-                    typeErrorMessage.setText("Type character length must be between 1-50.");
-                } else {
-                    typeErrorMessage.setText("");
-                }
-
-                if (startDateField.getValue() != null && startTimeField.getText() != null && startAmOrPm.getValue() != null) {
-                    startDate = startDateField.getValue();
-                    String startTimeString = startTimeField.getText() + " " + startAmOrPm.getValue();
-                    System.out.println("startTimeString is " + startTimeString);
-                    startTime = LocalTime.parse(startTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
-                    startDateTime = LocalDateTime.of(startDate, startTime);
-                    System.out.println("start time is " + startTime);
-                    startErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    startErrorMessage.setText("Please enter a starting time/date.");
-                }
-
-                if (endDateField.getValue() != null && endTimeField.getText() != null && endAmOrPm.getValue() != null) {
-                    endDate = endDateField.getValue();
-                    String endTimeString = endTimeField.getText() + " " + endAmOrPm.getValue();
-                    System.out.println("endTimeString is " + endTimeString);
-                    endTime = LocalTime.parse(endTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
-                    endDateTime = LocalDateTime.of(endDate, endTime);
-                    System.out.println("end time is " + endTime);
-                    endErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    endErrorMessage.setText("Please enter an ending time/date.");
-                }
-
-                if (customerIdField.getText() != null) {
-                    contactErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    contactErrorMessage.setText("Please try re-selecting the customer.");
-                }
-
-                if (startDateTime != null && endDateTime != null) {
-                    if (startDateTime.isAfter(endDateTime)) {
+                    if (titleField.getLength() > 50 || titleField.getLength() < 1) {
                         validationError = true;
-                        startErrorMessage.setText("Start time cannot be after end time.");
-                        endErrorMessage.setText("End time cannot be before start time.");
+                        titleErrorMessage.setText("Title character length must be between 1-50.");
                     } else {
-                        if (MiscTools.isOutsideBusinessHours(startDateTime, endDateTime)) {
+                        titleErrorMessage.setText("");
+                    }
+
+                    if (descriptionField.getLength() > 50 || descriptionField.getLength() < 1) {
+                        validationError = true;
+                        descriptionErrorMessage.setText("Description character length must be between 1-50.");
+                    } else {
+                        descriptionErrorMessage.setText("");
+                    }
+
+                    if (locationField.getLength() > 50 || locationField.getLength() < 1) {
+                        validationError = true;
+                        locationErrorMessage.setText("Location character length must be between 1-50.");
+                    } else {
+                        locationErrorMessage.setText("");
+                    }
+
+                    if (customerSelector.getValue() != null) {
+                        customerErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        customerErrorMessage.setText("No customer selected.");
+                    }
+
+                    if (typeField.getLength() > 50 || typeField.getLength() < 1) {
+                        validationError = true;
+                        typeErrorMessage.setText("Type character length must be between 1-50.");
+                    } else {
+                        typeErrorMessage.setText("");
+                    }
+
+                    if (startDateField.getValue() != null && startTimeField.getText() != null && startAmOrPm.getValue() != null) {
+                        startDate = startDateField.getValue();
+                        String startTimeString = startTimeField.getText() + " " + startAmOrPm.getValue();
+                        System.out.println("startTimeString is " + startTimeString);
+                        startTime = LocalTime.parse(startTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
+                        startDateTime = LocalDateTime.of(startDate, startTime);
+                        System.out.println("start time is " + startTime);
+                        startErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        startErrorMessage.setText("Please enter a starting time/date.");
+                    }
+
+                    if (endDateField.getValue() != null && endTimeField.getText() != null && endAmOrPm.getValue() != null) {
+                        endDate = endDateField.getValue();
+                        String endTimeString = endTimeField.getText() + " " + endAmOrPm.getValue();
+                        System.out.println("endTimeString is " + endTimeString);
+                        endTime = LocalTime.parse(endTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
+                        endDateTime = LocalDateTime.of(endDate, endTime);
+                        System.out.println("end time is " + endTime);
+                        endErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        endErrorMessage.setText("Please enter an ending time/date.");
+                    }
+
+                    if (customerIdField.getText() != null) {
+                        contactErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        contactErrorMessage.setText("Please try re-selecting the customer.");
+                    }
+
+                    if (startDateTime != null && endDateTime != null) {
+                        if (startDateTime.isAfter(endDateTime)) {
                             validationError = true;
-                            startErrorMessage.setText("That time/date is outside of the standard business hours.");
-                            endErrorMessage.setText("That time/date is outside of the standard business hours.");
+                            startErrorMessage.setText("Start time cannot be after end time.");
+                            endErrorMessage.setText("End time cannot be before start time.");
                         } else {
-                            if (MiscTools.appointmentOverlaps(Integer.parseInt(customerIdField.getText()), startDateTime, endDateTime)) {
+                            if (MiscTools.isOutsideBusinessHours(startDateTime, endDateTime)) {
                                 validationError = true;
-                                startErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
-                                endErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                                startErrorMessage.setText("That time/date is outside of the standard business hours.");
+                                endErrorMessage.setText("That time/date is outside of the standard business hours.");
                             } else {
-                                startErrorMessage.setText("");
-                                endErrorMessage.setText("");
+                                if (MiscTools.appointmentOverlaps(Integer.parseInt(customerIdField.getText()), startDateTime, endDateTime)) {
+                                    validationError = true;
+                                    startErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                                    endErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                                } else {
+                                    startErrorMessage.setText("");
+                                    endErrorMessage.setText("");
+                                }
                             }
                         }
                     }
-                }
 
-                if (contactSelector.getValue() != null) {
-                    contactErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    contactErrorMessage.setText("No contact selected.");
-                }
-
-
-                //validation complete, time to add the appointment
-                int appointmentId = -1;
-                if (!validationError) {
-                    //generate an appointment id
-                    for (int i = 0; i < AppointmentList.getAppointmentList().size(); i++) {
-                        if (appointmentId <= AppointmentList.getAppointmentList().get(i).getAppointmentId()) {
-                            appointmentId = AppointmentList.getAppointmentList().get(i).getAppointmentId() + 1;
-                        }
+                    if (contactSelector.getValue() != null) {
+                        contactErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        contactErrorMessage.setText("No contact selected.");
                     }
-                    Appointment appointmentToAdd = new Appointment(
-                            appointmentId,
-                            this.titleField.getText(),
-                            this.descriptionField.getText(),
-                            this.locationField.getText(),
-                            this.customerSelector.getValue(),
-                            this.typeField.getText(),
-                            startDateTime,
-                            endDateTime,
-                            Integer.parseInt(this.customerIdField.getText()),
-                            ContactList.getContact(Integer.parseInt(this.contactIdField.getText()))
-                    );
-                    if (demoMode) {
+
+
+                    //validation complete, time to add the appointment
+                    if (!validationError) {
+                        int newAppointmentId = AppointmentList.getNewAppointmentId();
+                        Appointment appointmentToAdd = new Appointment(
+                                newAppointmentId,
+                                this.titleField.getText(),
+                                this.descriptionField.getText(),
+                                this.locationField.getText(),
+                                this.customerSelector.getValue(),
+                                this.typeField.getText(),
+                                startDateTime,
+                                endDateTime,
+                                Integer.parseInt(this.customerIdField.getText()),
+                                ContactList.getContact(Integer.parseInt(this.contactIdField.getText()))
+                        );
+                        if (!demoMode) {
+                            DAO_appointments appointmentsDao = new DAOImpl_appointments();
+                            newAppointmentId = appointmentsDao.addAppointment(appointmentToAdd);
+                        }
+                        appointmentToAdd.setAppointmentId(newAppointmentId);
                         AppointmentList.addAppointment(appointmentToAdd);
-                    }
-                    else {
-                        DAO_appointments appointmentsDao = new DAOImpl_appointments();
-                        appointmentsDao.addAppointment(appointmentToAdd);
-                        allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
-                    }
-                    System.out.println("appointment saved");
-                    addMessage("appointment " + appointmentId + " saved.", BLACK);
-
-                    //reset all fields to be empty
-                    titleField.setText("");
-                    descriptionField.setText("");
-                    locationField.setText("");
-                    customerSelector.setValue("");
-                    typeField.setText("");
-                    startDateField.setValue(null);
-                    startTimeField.setText("");
-                    startAmOrPm.getSelectionModel().clearSelection();
-                    endDateField.setValue(null);
-                    endTimeField.setText("");
-                    endAmOrPm.getSelectionModel().clearSelection();
-                    customerIdField.setText("");
-                    contactSelector.setValue("");
-                    contactIdField.setText("");
-                } else {
-                    addMessage("Appointment was NOT saved.  Check your entries on the 'Add Appointment' page.", RED);
-                }
-            } catch (DateTimeException dateTimeException) {
-                startErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
-                endErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
-                System.out.println("dateTimeException during 'add Appointment' save.");
-                addMessage("Appointment was NOT saved.  Exception occurred.", RED);
-            } catch (NullPointerException nullPointerException) {
-                System.out.println("nullPointerException during 'add Appointment' save.");
-                addMessage("Appointment was NOT saved.  Exception occurred.", RED);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                System.out.println("Unknown exception during 'add Appointment' save.");
-                addMessage("Appointment was NOT saved.  Exception occurred.", RED);
-            }
-
-        });
-
-        //All Appointments tab - Modify Button
-        modifyButton.setOnAction(e -> {
-            if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && modifyAppointmentTab.isDisabled()) {
-                Appointment selectedAppointment = allAppointmentsTable.getSelectionModel().getSelectedItem();
-                DateTimeFormatter.ofPattern("hh:mm a");
-                appointmentsTabPane.getSelectionModel().select(modifyAppointmentTab);
-                mIdField.setText(String.valueOf(selectedAppointment.getAppointmentId()));
-                mTitleField.setText(selectedAppointment.getTitle());
-                mDescriptionField.setText(selectedAppointment.getDescription());
-                mLocationField.setText(selectedAppointment.getLocation());
-                mCustomerSelector.setValue(selectedAppointment.getCustomerName());
-                mTypeField.setText(selectedAppointment.getType());
-                mStartDateField.setValue(selectedAppointment.getStartInstant().toLocalDate());
-                mStartTimeField.setText(LocalTime.parse(selectedAppointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
-                mStartAmOrPm.setValue(MiscTools.getAmOrPm(selectedAppointment.getStartInstant().toLocalTime()));
-                mEndDateField.setValue(selectedAppointment.getEndInstant().toLocalDate());
-                mEndTimeField.setText(LocalTime.parse(selectedAppointment.getEndInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
-                mEndAmOrPm.setValue(MiscTools.getAmOrPm(selectedAppointment.getEndInstant().toLocalTime()));
-                mCustomerIdField.setText(String.valueOf(selectedAppointment.getCustomerId()));
-                mContactSelector.setValue(selectedAppointment.getContact().getContactName());
-                mContactIdField.setText(String.valueOf(selectedAppointment.getContact().getContactId()));
-                modifyAppointmentTab.setDisable(false);
-            } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
-                addMessage("There is already an appointment modification in progress.  Please save or cancel the pending changes on the 'Modify Appointment' tab.", RED);
-            } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
-                addMessage("Please select an appointment to change.", BLACK);
-            }
-        });
-
-        //All Appointments tab - Delete Button
-        deleteButton.setOnAction(e -> {
-            if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null) {
-                Stage confirmWindow = new Stage();
-                confirmWindow.initModality(Modality.APPLICATION_MODAL);
-                confirmWindow.setResizable(false);
-                confirmWindow.setTitle("Delete Confirmation");
-                Label infoLabel = new Label("Delete appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getCustomerName() + "?");
-                Button confirmButton = new Button("Confirm");
-                Button cancelButton = new Button("Cancel");
-                confirmButton.setOnAction(e2 -> {
-                    int appointmentToDelete = allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId();
-                    addMessage("Appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getCustomerName() + " deleted.", BLACK);
-                    if (!modifyAppointmentTab.isDisabled()) {
-                        if (Integer.parseInt(mIdField.getText()) == allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId()) {
-                            modifyAppointmentTab.setDisable(true);
-                        }
-                    }
-                    if (demoMode) {
-                        AppointmentList.deleteAppointment(appointmentToDelete);
-                    }
-                    else {
-                        DAO_appointments appointmentsDao = new DAOImpl_appointments();
-                        try {
-                            appointmentsDao.deleteAppointment(appointmentToDelete);
-                            allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
-                        } catch (SQLException e3) {
-                            e3.printStackTrace();
-                            addMessage("Something went wrong while processing the delete request.  Appointment likely was not deleted.", RED);
-                        }
-                    }
-                    confirmWindow.close();
-                });
-                cancelButton.setOnAction(e2 -> {
-                    addMessage("Delete canceled.  No changes made.", BLACK);
-                    confirmWindow.close();
-                });
-                HBox buttonRow = new HBox(10);
-                buttonRow.setAlignment(Pos.CENTER);
-                VBox layout = new VBox(10);
-                layout.setAlignment(Pos.CENTER);
-                buttonRow.getChildren().addAll(confirmButton, cancelButton);
-                layout.getChildren().addAll(infoLabel, buttonRow);
-                layout.setPadding(new Insets(20));
-                Scene multiCustomerSelectorScene = new Scene(layout, 300, 150);
-                confirmWindow.setScene(multiCustomerSelectorScene);
-                confirmWindow.show();
-            } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
-                addMessage("Please select an appointment to delete.", BLACK);
-            }
-
-        });
-
-        //Modify Appointment Tab - Save Button
-        mSaveButton.setOnAction(e -> {
-            //declare needed variables
-            LocalTime startTime = null;
-            LocalDate startDate = null;
-            LocalDateTime startDateTime = null;
-            LocalTime endTime = null;
-            LocalDate endDate = null;
-            LocalDateTime endDateTime = null;
-
-            //validation section
-            try {
-                boolean validationError = false;
-
-                if (mTitleField.getLength() > 50 || mTitleField.getLength() < 1) {
-                    validationError = true;
-                    mTitleErrorMessage.setText("Title character length must be between 1-50.");
-                } else {
-                    mTitleErrorMessage.setText("");
-                }
-
-                if (mDescriptionField.getLength() > 50 || mDescriptionField.getLength() < 1) {
-                    validationError = true;
-                    mDescriptionErrorMessage.setText("Description character length must be between 1-50.");
-                } else {
-                    mDescriptionErrorMessage.setText("");
-                }
-
-                if (mLocationField.getLength() > 50 || mLocationField.getLength() < 1) {
-                    validationError = true;
-                    mLocationErrorMessage.setText("Location character length must be between 1-50.");
-                } else {
-                    mLocationErrorMessage.setText("");
-                }
-
-                if (mCustomerSelector.getValue() != null) {
-                    mCustomerErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    mCustomerErrorMessage.setText("No customer selected.");
-                }
-
-                if (mTypeField.getLength() > 50 || mTypeField.getLength() < 1) {
-                    validationError = true;
-                    mTypeErrorMessage.setText("Type character length must be between 1-50.");
-                } else {
-                    mTypeErrorMessage.setText("");
-                }
-
-                if (mStartDateField.getValue() != null && mStartTimeField.getText() != null && mStartAmOrPm.getValue() != null) {
-                    startDate = mStartDateField.getValue();
-                    String startTimeString = mStartTimeField.getText() + " " + mStartAmOrPm.getValue();
-                    System.out.println("startTimeString is " + startTimeString);
-                    startTime = LocalTime.parse(startTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
-                    startDateTime = LocalDateTime.of(startDate, startTime);
-                    System.out.println("start time is " + startTime);
-                    mStartErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    mStartErrorMessage.setText("Please enter a starting time/date.");
-                }
-
-                if (mEndDateField.getValue() != null && mEndTimeField.getText() != null && mEndAmOrPm.getValue() != null) {
-                    endDate = mEndDateField.getValue();
-                    String endTimeString = mEndTimeField.getText() + " " + mEndAmOrPm.getValue();
-                    System.out.println("endTimeString is " + endTimeString);
-                    endTime = LocalTime.parse(endTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
-                    endDateTime = LocalDateTime.of(endDate, endTime);
-                    System.out.println("end time is " + endTime);
-                    mEndErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    mEndErrorMessage.setText("Please enter an ending time/date.");
-                }
-
-                if (mCustomerIdField.getText() != null) {
-                    mContactErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    mContactErrorMessage.setText("Please try re-selecting the customer.");
-                }
-
-                if (startDateTime != null && endDateTime != null) {
-                    if (startDateTime.isAfter(endDateTime)) {
-                        validationError = true;
-                        mStartErrorMessage.setText("Start time cannot be after end time.");
-                        mEndErrorMessage.setText("End time cannot be before start time.");
-                    } else {
-                        if (MiscTools.isOutsideBusinessHours(startDateTime, endDateTime)) {
-                            validationError = true;
-                            mStartErrorMessage.setText("That time/date is outside of the standard business hours.");
-                            mEndErrorMessage.setText("That time/date is outside of the standard business hours.");
-                        } else {
-                            if (MiscTools.appointmentOverlaps(Integer.parseInt(mCustomerIdField.getText()), startDateTime, endDateTime, Integer.parseInt(mIdField.getText()))) {
-                                validationError = true;
-                                mStartErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
-                                mEndErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
-                            } else {
-                                mStartErrorMessage.setText("");
-                                mEndErrorMessage.setText("");
-                            }
-                        }
-                    }
-                }
-
-                if (mContactSelector.getValue() != null) {
-                    mContactErrorMessage.setText("");
-                } else {
-                    validationError = true;
-                    mContactErrorMessage.setText("No customer selected.");
-                }
-
-
-                //validation complete, time to change the appointment
-                if (!validationError) {
-                    Appointment appointmentToChange = AppointmentList.lookupAppointment(Integer.parseInt(mIdField.getText())).get(0);
-                    appointmentToChange.setTitle(this.mTitleField.getText());
-                    appointmentToChange.setDescription(mDescriptionField.getText());
-                    appointmentToChange.setLocation(mLocationField.getText());
-                    appointmentToChange.setCustomerName(mCustomerSelector.getValue());
-                    appointmentToChange.setType(mTypeField.getText());
-                    appointmentToChange.setStartInstant(startDateTime);
-                    appointmentToChange.setEndInstant(endDateTime);
-                    appointmentToChange.setCustomerId(Integer.parseInt(mCustomerIdField.getText()));
-                    appointmentToChange.setContact(ContactList.getContact(Integer.parseInt(mContactIdField.getText())));
-                    if (demoMode) {
                         allAppointmentsTable.refresh();
-                    }
-                    else {
-                        DAO_appointments appointmentsDao = new DAOImpl_appointments();
-                        appointmentsDao.modifyAppointment(appointmentToChange);
-                        allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
-                    }
-                    appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
-                    modifyAppointmentTab.setDisable(true);
-                    addMessage("Appointment modification to " + Integer.parseInt(this.mIdField.getText()) + " saved.", BLACK);
+                        System.out.println("appointment saved");
+                        addMessage("appointment # " + newAppointmentId + " saved.", BLACK);
 
-
-                } else {
-                    addMessage("Appointment changes NOT saved.  Check your entries on the 'Modify Appointment' tab.", RED);
+                        //reset all fields to be empty
+                        titleField.setText("");
+                        descriptionField.setText("");
+                        locationField.setText("");
+                        customerSelector.setValue("");
+                        typeField.setText("");
+                        startDateField.setValue(null);
+                        startTimeField.setText("");
+                        startAmOrPm.getSelectionModel().clearSelection();
+                        endDateField.setValue(null);
+                        endTimeField.setText("");
+                        endAmOrPm.getSelectionModel().clearSelection();
+                        customerIdField.setText("");
+                        contactSelector.setValue("");
+                        contactIdField.setText("");
+                    } else {
+                        addMessage("Appointment was NOT saved.  Check your entries on the 'Add Appointment' page.", RED);
+                    }
+                } catch (DateTimeException dateTimeException) {
+                    startErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
+                    endErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
+                    System.out.println("dateTimeException during 'add Appointment' save.");
+                    addMessage("Appointment was NOT saved.  Exception occurred.", RED);
+                } catch (NullPointerException nullPointerException) {
+                    System.out.println("nullPointerException during 'add Appointment' save.");
+                    addMessage("Appointment was NOT saved.  Exception occurred.", RED);
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                    System.out.println("Unknown exception during 'add Appointment' save.");
+                    addMessage("Appointment was NOT saved.  Exception occurred.", RED);
                 }
-            } catch (DateTimeException dateTimeException) {
-                mStartErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
-                mEndErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
-                System.out.println("dateTimeException during 'add Appointment' save.");
-                addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
-            } catch (NullPointerException nullPointerException) {
-                System.out.println("nullPointerException during 'modify Appointment' save.");
-                addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
-            } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-                System.out.println("indexOutOfBoundsException during 'modify Appointment' save.");
-                addMessage("Appointment change was NOT saved.  This appointment no longer exists.", RED);
-                appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
-                modifyAppointmentTab.setDisable(true);
-            } catch (Exception exception) {
-                System.out.println("Unknown exception during 'modify Appointment' save.");
-                System.out.println(exception);
-                addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
-            }
-        });
 
-        //Modify Appointment Tab - Cancel Button
-        mCancelButton.setOnAction(e -> {
-            appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
-            modifyAppointmentTab.setDisable(true);
-            addMessage("Appointment modification canceled.", BLACK);
-        });
+            });
 
-        //All Customers Tab - Modify Button
-        modifyCustomerButton.setOnAction(e -> {
-            if (allCustomersTable.getSelectionModel().getSelectedItem() != null && modifyCustomerTab.isDisabled()) {
-                Customer selectedCustomer = allCustomersTable.getSelectionModel().getSelectedItem();
-                modifyCustomerTab.setDisable(false);
-                customersTabPane.getSelectionModel().select(modifyCustomerTab);
-                mcCustomerIdField.setText(String.valueOf(selectedCustomer.getCustomerId()));
-                mcNameField.setText(selectedCustomer.getName());
-                mcPhoneNumberField.setText(selectedCustomer.getPhoneNumber());
-                mcAddressField.setText(selectedCustomer.getAddress());
-                mcPostalCodeField.setText(selectedCustomer.getPostalCode());
-                mcCountryField.setValue(selectedCustomer.getCountry());
-                mcFirstLevelDivisionField.setValue(selectedCustomer.getFirstLevelDivision());
-            } else if (allCustomersTable.getSelectionModel().getSelectedItem() != null && !modifyCustomerTab.isDisabled()) {
-                addMessage("There is already a customer modification in progress.  Please save or cancel the pending changes on the 'Modify Customer' tab.", RED);
-            } else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
-                addMessage("Please select a customer to change.", BLACK);
-            }
-        });
+            //All Appointments tab - Modify Button
+            modifyButton.setOnAction(e -> {
+                if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && modifyAppointmentTab.isDisabled()) {
+                    Appointment selectedAppointment = allAppointmentsTable.getSelectionModel().getSelectedItem();
+                    DateTimeFormatter.ofPattern("hh:mm a");
+                    appointmentsTabPane.getSelectionModel().select(modifyAppointmentTab);
+                    mIdField.setText(String.valueOf(selectedAppointment.getAppointmentId()));
+                    mTitleField.setText(selectedAppointment.getTitle());
+                    mDescriptionField.setText(selectedAppointment.getDescription());
+                    mLocationField.setText(selectedAppointment.getLocation());
+                    mCustomerSelector.setValue(selectedAppointment.getCustomerName());
+                    mTypeField.setText(selectedAppointment.getType());
+                    mStartDateField.setValue(selectedAppointment.getStartInstant().toLocalDate());
+                    mStartTimeField.setText(LocalTime.parse(selectedAppointment.getStartInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
+                    mStartAmOrPm.setValue(MiscTools.getAmOrPm(selectedAppointment.getStartInstant().toLocalTime()));
+                    mEndDateField.setValue(selectedAppointment.getEndInstant().toLocalDate());
+                    mEndTimeField.setText(LocalTime.parse(selectedAppointment.getEndInstant().format(DateTimeFormatter.ofPattern("hh:mm"))).toString());
+                    mEndAmOrPm.setValue(MiscTools.getAmOrPm(selectedAppointment.getEndInstant().toLocalTime()));
+                    mCustomerIdField.setText(String.valueOf(selectedAppointment.getCustomerId()));
+                    mContactSelector.setValue(selectedAppointment.getContact().getContactName());
+                    mContactIdField.setText(String.valueOf(selectedAppointment.getContact().getContactId()));
+                    modifyAppointmentTab.setDisable(false);
+                } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null && !modifyAppointmentTab.isDisabled()) {
+                    addMessage("There is already an appointment modification in progress.  Please save or cancel the pending changes on the 'Modify Appointment' tab.", RED);
+                } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
+                    addMessage("Please select an appointment to change.", BLACK);
+                }
+            });
 
-        //All Customers Tab - Delete Button
-        deleteCustomerButton.setOnAction(e -> {
-            if (allCustomersTable.getSelectionModel().getSelectedItem() != null) {
-                if (allCustomersTable.getSelectionModel().getSelectedItem().hasExistingAppointments()) {
-                    addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", cannot be deleted without first deleting all of the customer's existing appointments.", RED);
-                } else {
+            //All Appointments tab - Delete Button
+            deleteButton.setOnAction(e -> {
+                if (allAppointmentsTable.getSelectionModel().getSelectedItem() != null) {
                     Stage confirmWindow = new Stage();
                     confirmWindow.initModality(Modality.APPLICATION_MODAL);
                     confirmWindow.setResizable(false);
                     confirmWindow.setTitle("Delete Confirmation");
-                    Label infoLabel = new Label("Delete customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + " , " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + "?");
+                    Label infoLabel = new Label("Delete appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getCustomerName() + "?");
                     Button confirmButton = new Button("Confirm");
                     Button cancelButton = new Button("Cancel");
                     confirmButton.setOnAction(e2 -> {
-                        int customerToDelete = allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId();
-                        addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", deleted.", BLACK);
-                        if (!modifyCustomerTab.isDisabled()) {
-                            if (Integer.parseInt(mcCustomerIdField.getText()) == allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId()) {
-                                modifyCustomerTab.setDisable(true);
+                        int appointmentToDelete = allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId();
+                        addMessage("Appointment # " + allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId() + " with " + allAppointmentsTable.getSelectionModel().getSelectedItem().getCustomerName() + " deleted.", BLACK);
+                        if (!modifyAppointmentTab.isDisabled()) {
+                            if (Integer.parseInt(mIdField.getText()) == allAppointmentsTable.getSelectionModel().getSelectedItem().getAppointmentId()) {
+                                modifyAppointmentTab.setDisable(true);
                             }
                         }
                         if (!demoMode) {
-                            DAO_customers customersDao = new DAOImpl_customers();
-                                for (Appointment appointment: AppointmentList.getAppointmentList()) {
-                                    if (appointment.getCustomerId() == customerToDelete) {
-                                        addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", cannot be deleted without first deleting all of the customer's existing appointments.", RED);
-
-                                    }
-                                    else {
-                                        try {
-                                            customersDao.deleteCustomer(customerToDelete);
-                                        } catch (SQLException e1) {
-                                            e1.printStackTrace();
-                                            addMessage("Something went horribly wrong while communicating with the database.  Customer was likely not deleted.", RED);
-                                        }
-                                        CustomerList.deleteCustomer(customerToDelete);
-                                        customerSelector.setItems(CustomerList.getCustomerNames());
-                                        mCustomerSelector.setItems(CustomerList.getCustomerNames());
-                                    }
-                                }
-
+                            DAO_appointments appointmentsDao = new DAOImpl_appointments();
+                            try {
+                                appointmentsDao.deleteAppointment(appointmentToDelete);
+                                allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
+                                AppointmentList.deleteAppointment(appointmentToDelete);
+                            } catch (SQLException e3) {
+                                e3.printStackTrace();
+                                addMessage("Something went wrong while processing the delete request.  Appointment likely was not deleted.", RED);
+                            }
                         }
-                        else {
-                            CustomerList.deleteCustomer(customerToDelete);
-                            customerSelector.setItems(CustomerList.getCustomerNames());
-                            mCustomerSelector.setItems(CustomerList.getCustomerNames());
-                        }
+                        AppointmentList.deleteAppointment(appointmentToDelete);
                         confirmWindow.close();
                     });
                     cancelButton.setOnAction(e2 -> {
@@ -1373,237 +1117,486 @@ public class MainWindowController {
                     Scene multiCustomerSelectorScene = new Scene(layout, 300, 150);
                     confirmWindow.setScene(multiCustomerSelectorScene);
                     confirmWindow.show();
-                }
-            } else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
-                addMessage("Please select a customer to delete.", BLACK);
-            }
-
-        });
-
-        //New Customer Tab - Save Button
-        customerSaveButton.setOnAction(e -> {
-            //declare local variables
-            boolean validationError = false;
-
-            //validation
-            try {
-                if (nameField.getText().length() > 50 || nameField.getText().length() < 1) {
-                    validationError = true;
-                    nameErrorLabel.setText("Name length must be between 1-50.");
-                } else {
-                    nameErrorLabel.setText("");
+                } else if (allAppointmentsTable.getSelectionModel().getSelectedItem() == null) {
+                    addMessage("Please select an appointment to delete.", BLACK);
                 }
 
-                if (phoneNumberField.getText().length() > 50 || phoneNumberField.getText().length() < 1) {
-                    validationError = true;
-                    phoneNumberErrorLabel.setText("Phone length must be between 1-50.");
-                } else {
-                    phoneNumberErrorLabel.setText("");
-                }
+            });
 
-                if (addressField.getText().length() > 100 || addressField.getText().length() < 1) {
-                    validationError = true;
-                    addressErrorLabel.setText("Address length must be between 1-100.");
-                } else {
-                    addressErrorLabel.setText("");
-                }
+            //Modify Appointment Tab - Save Button
+            mSaveButton.setOnAction(e -> {
+                //declare needed variables
+                LocalTime startTime = null;
+                LocalDate startDate = null;
+                LocalDateTime startDateTime = null;
+                LocalTime endTime = null;
+                LocalDate endDate = null;
+                LocalDateTime endDateTime = null;
 
-                if (postalCodeField.getText().length() > 50 || postalCodeField.getText().length() < 1) {
-                    validationError = true;
-                    postalCodeErrorLabel.setText("Postal Code length must be between 1-50.");
-                } else {
-                    postalCodeErrorLabel.setText("");
-                }
+                //validation section
+                try {
+                    boolean validationError = false;
 
-                if (countrySelector.getValue() == null) {
-                    validationError = true;
-                    countryErrorLabel.setText("Please select a country.");
-                } else {
-                    countryErrorLabel.setText("");
-                }
-
-                if (firstLevelDivisionSelector.getValue() == null) {
-                    validationError = true;
-                    firstLevelDivisionErrorLabel.setText("Please select a region.");
-                } else {
-                    firstLevelDivisionErrorLabel.setText("");
-                }
-                int newCustomerId = -1;
-                if (!validationError) {
-                    for (int i = 0; i < CustomerList.getCustomerList().size(); i++) {
-                        if (newCustomerId <= CustomerList.getCustomerList().get(i).getCustomerId()) {
-                            newCustomerId = CustomerList.getCustomerList().get(i).getCustomerId() + 1;
-                        }
+                    if (mTitleField.getLength() > 50 || mTitleField.getLength() < 1) {
+                        validationError = true;
+                        mTitleErrorMessage.setText("Title character length must be between 1-50.");
+                    } else {
+                        mTitleErrorMessage.setText("");
                     }
 
-                    Customer customerToAdd = new Customer(
-                            newCustomerId,
-                            countrySelector.getValue(),
-                            firstLevelDivisionSelector.getValue(),
-                            nameField.getText(),
-                            addressField.getText(),
-                            postalCodeField.getText(),
-                            phoneNumberField.getText()
-                    );
-                    if (demoMode) {
-                        CustomerList.addCustomer(customerToAdd);
+                    if (mDescriptionField.getLength() > 50 || mDescriptionField.getLength() < 1) {
+                        validationError = true;
+                        mDescriptionErrorMessage.setText("Description character length must be between 1-50.");
+                    } else {
+                        mDescriptionErrorMessage.setText("");
                     }
-                    else {
-                        DAO_customers customersDao = new DAOImpl_customers();
-                        customersDao.addCustomer(customerToAdd);
-                        CustomerList.addCustomer(customerToAdd);
-                        allCustomersTable.setItems(CustomerList.getCustomerList());
+
+                    if (mLocationField.getLength() > 50 || mLocationField.getLength() < 1) {
+                        validationError = true;
+                        mLocationErrorMessage.setText("Location character length must be between 1-50.");
+                    } else {
+                        mLocationErrorMessage.setText("");
                     }
-                    customerSelector.setItems(CustomerList.getCustomerNames());
-                    mCustomerSelector.setItems(CustomerList.getCustomerNames());
-                    addMessage("New customer '" + nameField.getText() + "' was added successfully." + " (id: " + newCustomerId + ")", BLACK);
 
-                    //empty out all the fields
-                    nameField.setText("");
-                    phoneNumberField.setText("");
-                    addressField.setText("");
-                    postalCodeField.setText("");
-                    countrySelector.getSelectionModel().clearSelection();
-                    firstLevelDivisionSelector.getSelectionModel().clearSelection();
-                } else {
-                    addMessage("New customer was NOT added.  Please check your entries.", RED);
-                }
+                    if (mCustomerSelector.getValue() != null) {
+                        mCustomerErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        mCustomerErrorMessage.setText("No customer selected.");
+                    }
 
-            } catch (Exception exception) {
-                System.out.println("Exception " + exception + " during save new customer.");
-                addMessage("New customer was NOT added.  Exception occurred.", RED);
-            }
-        });
+                    if (mTypeField.getLength() > 50 || mTypeField.getLength() < 1) {
+                        validationError = true;
+                        mTypeErrorMessage.setText("Type character length must be between 1-50.");
+                    } else {
+                        mTypeErrorMessage.setText("");
+                    }
 
-        //Modify Customer Tab - Save Button
-        mcSaveButton.setOnAction(e -> {
-            //declare local variables
-            boolean validationError = false;
+                    if (mStartDateField.getValue() != null && mStartTimeField.getText() != null && mStartAmOrPm.getValue() != null) {
+                        startDate = mStartDateField.getValue();
+                        String startTimeString = mStartTimeField.getText() + " " + mStartAmOrPm.getValue();
+                        System.out.println("startTimeString is " + startTimeString);
+                        startTime = LocalTime.parse(startTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
+                        startDateTime = LocalDateTime.of(startDate, startTime);
+                        System.out.println("start time is " + startTime);
+                        mStartErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        mStartErrorMessage.setText("Please enter a starting time/date.");
+                    }
 
-            //validation
-            try {
-                if (mcNameField.getText().length() > 50 || mcNameField.getText().length() < 1) {
-                    validationError = true;
-                    mcNameErrorMessage.setText("Name length must be between 1-50.");
-                } else {
-                    mcNameErrorMessage.setText("");
-                }
+                    if (mEndDateField.getValue() != null && mEndTimeField.getText() != null && mEndAmOrPm.getValue() != null) {
+                        endDate = mEndDateField.getValue();
+                        String endTimeString = mEndTimeField.getText() + " " + mEndAmOrPm.getValue();
+                        System.out.println("endTimeString is " + endTimeString);
+                        endTime = LocalTime.parse(endTimeString, DateTimeFormatter.ofPattern("hh:mm a", Locale.getDefault()));
+                        endDateTime = LocalDateTime.of(endDate, endTime);
+                        System.out.println("end time is " + endTime);
+                        mEndErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        mEndErrorMessage.setText("Please enter an ending time/date.");
+                    }
 
-                if (mcPhoneNumberField.getText().length() > 50 || mcPhoneNumberField.getText().length() < 1) {
-                    validationError = true;
-                    mcPhoneNumberErrorMessage.setText("Phone length must be between 1-50.");
-                } else {
-                    mcPhoneNumberErrorMessage.setText("");
-                }
+                    if (mCustomerIdField.getText() != null) {
+                        mContactErrorMessage.setText("");
+                    } else {
+                        validationError = true;
+                        mContactErrorMessage.setText("Please try re-selecting the customer.");
+                    }
 
-                if (mcAddressField.getText().length() > 100 || mcAddressField.getText().length() < 1) {
-                    validationError = true;
-                    mcAddressErrorMessage.setText("Address length must be between 1-100.");
-                } else {
-                    mcAddressErrorMessage.setText("");
-                }
-
-                if (mcPostalCodeField.getText().length() > 50 || mcPostalCodeField.getText().length() < 1) {
-                    validationError = true;
-                    mcPostalCodeErrorMessage.setText("Postal Code length must be between 1-50.");
-                } else {
-                    mcPostalCodeErrorMessage.setText("");
-                }
-
-                if (mcCountryField.getValue() == null) {
-                    validationError = true;
-                    mcCountryErrorMessage.setText("Please select a country.");
-                } else {
-                    mcCountryErrorMessage.setText("");
-                }
-
-                if (mcFirstLevelDivisionField.getValue() == null) {
-                    validationError = true;
-                    mcFirstLevelDivisionErrorMessage.setText("Please select a region.");
-                } else {
-                    mcFirstLevelDivisionErrorMessage.setText("");
-                }
-                if (!validationError) {
-                    Customer customerToChange = CustomerList.lookupCustomer(Integer.parseInt(mcCustomerIdField.getText())).get(0);
-                    if (customerToChange.hasExistingAppointments()) {
-                        for (Appointment appointment : AppointmentList.getAppointmentList()) {
-                            if (customerToChange.getCustomerId() == appointment.getCustomerId()) {
-                                appointment.setCustomerName(mcNameField.getText());
+                    if (startDateTime != null && endDateTime != null) {
+                        if (startDateTime.isAfter(endDateTime)) {
+                            validationError = true;
+                            mStartErrorMessage.setText("Start time cannot be after end time.");
+                            mEndErrorMessage.setText("End time cannot be before start time.");
+                        } else {
+                            if (MiscTools.isOutsideBusinessHours(startDateTime, endDateTime)) {
+                                validationError = true;
+                                mStartErrorMessage.setText("That time/date is outside of the standard business hours.");
+                                mEndErrorMessage.setText("That time/date is outside of the standard business hours.");
+                            } else {
+                                if (MiscTools.appointmentOverlaps(Integer.parseInt(mCustomerIdField.getText()), startDateTime, endDateTime, Integer.parseInt(mIdField.getText()))) {
+                                    validationError = true;
+                                    mStartErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                                    mEndErrorMessage.setText("This appointment time overlaps with an existing appointment time.");
+                                } else {
+                                    mStartErrorMessage.setText("");
+                                    mEndErrorMessage.setText("");
+                                }
                             }
                         }
                     }
 
-                    customerToChange.setName(mcNameField.getText());
-                    customerToChange.setAddress(mcAddressField.getText());
-                    customerToChange.setPhoneNumber(mcPhoneNumberField.getText());
-                    customerToChange.setPostalCode(mcPostalCodeField.getText());
-                    customerToChange.setCountry(mcCountryField.getValue());
-                    customerToChange.setFirstLevelDivision(mcFirstLevelDivisionField.getValue());
-
-
-                    if (!demoMode) {
-                        DAO_customers customersDao = new DAOImpl_customers();
-                        customersDao.modifyCustomer(customerToChange);
-                    }
-
-                    allCustomersTable.refresh();
-                    allAppointmentsTable.refresh();
-                    customerSelector.setItems(CustomerList.getCustomerNames());
-                    mCustomerSelector.setItems(CustomerList.getCustomerNames());
-                    addMessage("Customer '" + mcNameField.getText() + "' was modified successfully." + " (id: " + mcCustomerIdField.getText() + ")", BLACK);
-                    customersTabPane.getSelectionModel().select(allCustomersTab);
-                    modifyCustomerTab.setDisable(true);
-                } else {
-                    addMessage("New customer was NOT added.  Please check your entries.", RED);
-                }
-
-            } catch (Exception exception) {
-                System.out.println("Exception " + exception + " during save new customer.");
-                addMessage("New customer was NOT added.  Exception occurred.", RED);
-            }
-        });
-
-        //Modify Customer Tab - Cancel Button
-        mcCancelButton.setOnAction(e -> {
-            customersTabPane.getSelectionModel().select(allCustomersTab);
-            modifyCustomerTab.setDisable(true);
-            addMessage("Customer modification canceled.", BLACK);
-        });
-
-        //Reports Tab - Refresh Button
-        rtaRetrieveButton.setOnAction(e -> {
-
-            try {
-                if (rtaTypeSelector.getValue() != null && rtaYearTextField.getText() != null) {
-                    String selectedType = rtaTypeSelector.getValue();
-                    int selectedYear = Integer.parseInt(rtaYearTextField.getText());
-                    ObservableList<Integer> allAppointmentsForYear = FXCollections.observableArrayList();
-                    if (selectedType.equals("<All>")) {
-                        allAppointmentsForYear = AppointmentList.getAppointmentTotals(selectedYear);
+                    if (mContactSelector.getValue() != null) {
+                        mContactErrorMessage.setText("");
                     } else {
-                        allAppointmentsForYear = AppointmentList.getAppointmentTotals(selectedYear, selectedType);
+                        validationError = true;
+                        mContactErrorMessage.setText("No customer selected.");
                     }
-                    janResults.setText(String.valueOf(allAppointmentsForYear.get(0)));
-                    febResults.setText(String.valueOf(allAppointmentsForYear.get(1)));
-                    marResults.setText(String.valueOf(allAppointmentsForYear.get(2)));
-                    aprResults.setText(String.valueOf(allAppointmentsForYear.get(3)));
-                    mayResults.setText(String.valueOf(allAppointmentsForYear.get(4)));
-                    junResults.setText(String.valueOf(allAppointmentsForYear.get(5)));
-                    julResults.setText(String.valueOf(allAppointmentsForYear.get(6)));
-                    augResults.setText(String.valueOf(allAppointmentsForYear.get(7)));
-                    sepResults.setText(String.valueOf(allAppointmentsForYear.get(8)));
-                    octResults.setText(String.valueOf(allAppointmentsForYear.get(9)));
-                    novResults.setText(String.valueOf(allAppointmentsForYear.get(10)));
-                    decResults.setText(String.valueOf(allAppointmentsForYear.get(11)));
+
+
+                    //validation complete, time to change the appointment
+                    if (!validationError) {
+                        Appointment appointmentToChange = AppointmentList.lookupAppointment(Integer.parseInt(mIdField.getText())).get(0);
+                        appointmentToChange.setAppointmentId(Integer.parseInt(mIdField.getText()));
+                        appointmentToChange.setTitle(this.mTitleField.getText());
+                        appointmentToChange.setDescription(mDescriptionField.getText());
+                        appointmentToChange.setLocation(mLocationField.getText());
+                        appointmentToChange.setCustomerName(mCustomerSelector.getValue());
+                        appointmentToChange.setType(mTypeField.getText());
+                        appointmentToChange.setStartInstant(startDateTime);
+                        appointmentToChange.setEndInstant(endDateTime);
+                        appointmentToChange.setCustomerId(Integer.parseInt(mCustomerIdField.getText()));
+                        appointmentToChange.setContact(ContactList.getContact(Integer.parseInt(mContactIdField.getText())));
+                        if (demoMode) {
+                            allAppointmentsTable.refresh();
+                        } else {
+                            DAO_appointments appointmentsDao = new DAOImpl_appointments();
+                            appointmentsDao.modifyAppointment(appointmentToChange);
+                            allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
+                        }
+                        appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
+                        modifyAppointmentTab.setDisable(true);
+                        addMessage("Appointment modification to " + Integer.parseInt(this.mIdField.getText()) + " saved.", BLACK);
+
+
+                    } else {
+                        addMessage("Appointment changes NOT saved.  Check your entries on the 'Modify Appointment' tab.", RED);
+                    }
+                } catch (DateTimeException dateTimeException) {
+                    mStartErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
+                    mEndErrorMessage.setText("Please use the proper 12-hour time format '00:00'.");
+                    System.out.println("dateTimeException during 'add Appointment' save.");
+                    addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
+                } catch (NullPointerException nullPointerException) {
+                    System.out.println("nullPointerException during 'modify Appointment' save.");
+                    addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
+                } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
+                    System.out.println("indexOutOfBoundsException during 'modify Appointment' save.");
+                    addMessage("Appointment change was NOT saved.  This appointment no longer exists.", RED);
+                    appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
+                    modifyAppointmentTab.setDisable(true);
+                } catch (Exception exception) {
+                    System.out.println("Unknown exception during 'modify Appointment' save.");
+                    System.out.println(exception);
+                    addMessage("Appointment change was NOT saved.  Exception occurred.", RED);
                 }
-                else {
+            });
+
+            //Modify Appointment Tab - Cancel Button
+            mCancelButton.setOnAction(e -> {
+                appointmentsTabPane.getSelectionModel().select(allAppointmentsTab);
+                modifyAppointmentTab.setDisable(true);
+                addMessage("Appointment modification canceled.", BLACK);
+            });
+
+            //All Customers Tab - Modify Button
+            modifyCustomerButton.setOnAction(e -> {
+                if (allCustomersTable.getSelectionModel().getSelectedItem() != null && modifyCustomerTab.isDisabled()) {
+                    Customer selectedCustomer = allCustomersTable.getSelectionModel().getSelectedItem();
+                    modifyCustomerTab.setDisable(false);
+                    customersTabPane.getSelectionModel().select(modifyCustomerTab);
+                    mcCustomerIdField.setText(String.valueOf(selectedCustomer.getCustomerId()));
+                    mcNameField.setText(selectedCustomer.getName());
+                    mcPhoneNumberField.setText(selectedCustomer.getPhoneNumber());
+                    mcAddressField.setText(selectedCustomer.getAddress());
+                    mcPostalCodeField.setText(selectedCustomer.getPostalCode());
+                    mcCountryField.setValue(selectedCustomer.getCountry());
+                    mcFirstLevelDivisionField.setValue(selectedCustomer.getFirstLevelDivision());
+                } else if (allCustomersTable.getSelectionModel().getSelectedItem() != null && !modifyCustomerTab.isDisabled()) {
+                    addMessage("There is already a customer modification in progress.  Please save or cancel the pending changes on the 'Modify Customer' tab.", RED);
+                } else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
+                    addMessage("Please select a customer to change.", BLACK);
+                }
+            });
+
+            //All Customers Tab - Delete Button
+            deleteCustomerButton.setOnAction(e -> {
+                if (allCustomersTable.getSelectionModel().getSelectedItem() != null) {
+                    if (allCustomersTable.getSelectionModel().getSelectedItem().hasExistingAppointments()) {
+                        addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", cannot be deleted without first deleting all of the customer's existing appointments.", RED);
+                    } else {
+                        Stage confirmWindow = new Stage();
+                        confirmWindow.initModality(Modality.APPLICATION_MODAL);
+                        confirmWindow.setResizable(false);
+                        confirmWindow.setTitle("Delete Confirmation");
+                        Label infoLabel = new Label("Delete customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + " , " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + "?");
+                        Button confirmButton = new Button("Confirm");
+                        Button cancelButton = new Button("Cancel");
+                        confirmButton.setOnAction(e2 -> {
+                            int customerToDelete = allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId();
+                            addMessage("Customer # " + allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId() + ", " + allCustomersTable.getSelectionModel().getSelectedItem().getName() + ", deleted.", BLACK);
+                            if (!modifyCustomerTab.isDisabled()) {
+                                if (Integer.parseInt(mcCustomerIdField.getText()) == allCustomersTable.getSelectionModel().getSelectedItem().getCustomerId()) {
+                                    modifyCustomerTab.setDisable(true);
+                                }
+                            }
+                            if (!demoMode) {
+                                DAO_customers customersDao = new DAOImpl_customers();
+                                try {
+                                    customersDao.deleteCustomer(customerToDelete);
+                                } catch (SQLException e1) {
+                                    e1.printStackTrace();
+                                    addMessage("Something went horribly wrong while communicating with the database.  Customer was likely not deleted.", RED);
+                                }
+
+
+                            }
+                            CustomerList.deleteCustomer(customerToDelete);
+                            customerSelector.setItems(CustomerList.getCustomerNames());
+                            mCustomerSelector.setItems(CustomerList.getCustomerNames());
+                            confirmWindow.close();
+                        });
+                        cancelButton.setOnAction(e2 -> {
+                            addMessage("Delete canceled.  No changes made.", BLACK);
+                            confirmWindow.close();
+                        });
+                        HBox buttonRow = new HBox(10);
+                        buttonRow.setAlignment(Pos.CENTER);
+                        VBox layout = new VBox(10);
+                        layout.setAlignment(Pos.CENTER);
+                        buttonRow.getChildren().addAll(confirmButton, cancelButton);
+                        layout.getChildren().addAll(infoLabel, buttonRow);
+                        layout.setPadding(new Insets(20));
+                        Scene multiCustomerSelectorScene = new Scene(layout, 300, 150);
+                        confirmWindow.setScene(multiCustomerSelectorScene);
+                        confirmWindow.show();
+                    }
+                } else if (allCustomersTable.getSelectionModel().getSelectedItem() == null) {
+                    addMessage("Please select a customer to delete.", BLACK);
+                }
+
+            });
+
+            //New Customer Tab - Save Button
+            customerSaveButton.setOnAction(e -> {
+                //declare local variables
+                boolean validationError = false;
+
+                //validation
+                try {
+                    if (nameField.getText().length() > 50 || nameField.getText().length() < 1) {
+                        validationError = true;
+                        nameErrorLabel.setText("Name length must be between 1-50.");
+                    } else {
+                        nameErrorLabel.setText("");
+                    }
+
+                    if (phoneNumberField.getText().length() > 50 || phoneNumberField.getText().length() < 1) {
+                        validationError = true;
+                        phoneNumberErrorLabel.setText("Phone length must be between 1-50.");
+                    } else {
+                        phoneNumberErrorLabel.setText("");
+                    }
+
+                    if (addressField.getText().length() > 100 || addressField.getText().length() < 1) {
+                        validationError = true;
+                        addressErrorLabel.setText("Address length must be between 1-100.");
+                    } else {
+                        addressErrorLabel.setText("");
+                    }
+
+                    if (postalCodeField.getText().length() > 50 || postalCodeField.getText().length() < 1) {
+                        validationError = true;
+                        postalCodeErrorLabel.setText("Postal Code length must be between 1-50.");
+                    } else {
+                        postalCodeErrorLabel.setText("");
+                    }
+
+                    if (countrySelector.getValue() == null) {
+                        validationError = true;
+                        countryErrorLabel.setText("Please select a country.");
+                    } else {
+                        countryErrorLabel.setText("");
+                    }
+
+                    if (firstLevelDivisionSelector.getValue() == null) {
+                        validationError = true;
+                        firstLevelDivisionErrorLabel.setText("Please select a region.");
+                    } else {
+                        firstLevelDivisionErrorLabel.setText("");
+                    }
+                    if (!validationError) {
+
+                        int newCustomerId = CustomerList.getNewCustomerId();
+                        Customer customerToAdd = new Customer(
+                                newCustomerId,
+                                countrySelector.getValue(),
+                                firstLevelDivisionSelector.getValue(),
+                                nameField.getText(),
+                                addressField.getText(),
+                                postalCodeField.getText(),
+                                phoneNumberField.getText()
+                        );
+                        if (demoMode) {
+                            CustomerList.addCustomer(customerToAdd);
+                        } else {
+                            DAO_customers customersDao = new DAOImpl_customers();
+                            customersDao.addCustomer(customerToAdd);
+                            CustomerList.addCustomer(customerToAdd);
+                            allCustomersTable.setItems(CustomerList.getCustomerList());
+                        }
+                        customerSelector.setItems(CustomerList.getCustomerNames());
+                        mCustomerSelector.setItems(CustomerList.getCustomerNames());
+                        addMessage("New customer '" + nameField.getText() + "' was added successfully." + " (id: " + newCustomerId + ")", BLACK);
+
+                        //empty out all the fields
+                        nameField.setText("");
+                        phoneNumberField.setText("");
+                        addressField.setText("");
+                        postalCodeField.setText("");
+                        countrySelector.getSelectionModel().clearSelection();
+                        firstLevelDivisionSelector.getSelectionModel().clearSelection();
+                    } else {
+                        addMessage("New customer was NOT added.  Please check your entries.", RED);
+                    }
+
+                } catch (Exception exception) {
+                    System.out.println("Exception " + exception + " during save new customer.");
+                    addMessage("New customer was NOT added.  Exception occurred.", RED);
+                }
+            });
+
+            //Modify Customer Tab - Save Button
+            mcSaveButton.setOnAction(e -> {
+                //declare local variables
+                boolean validationError = false;
+
+                //validation
+                try {
+                    if (mcNameField.getText().length() > 50 || mcNameField.getText().length() < 1) {
+                        validationError = true;
+                        mcNameErrorMessage.setText("Name length must be between 1-50.");
+                    } else {
+                        mcNameErrorMessage.setText("");
+                    }
+
+                    if (mcPhoneNumberField.getText().length() > 50 || mcPhoneNumberField.getText().length() < 1) {
+                        validationError = true;
+                        mcPhoneNumberErrorMessage.setText("Phone length must be between 1-50.");
+                    } else {
+                        mcPhoneNumberErrorMessage.setText("");
+                    }
+
+                    if (mcAddressField.getText().length() > 100 || mcAddressField.getText().length() < 1) {
+                        validationError = true;
+                        mcAddressErrorMessage.setText("Address length must be between 1-100.");
+                    } else {
+                        mcAddressErrorMessage.setText("");
+                    }
+
+                    if (mcPostalCodeField.getText().length() > 50 || mcPostalCodeField.getText().length() < 1) {
+                        validationError = true;
+                        mcPostalCodeErrorMessage.setText("Postal Code length must be between 1-50.");
+                    } else {
+                        mcPostalCodeErrorMessage.setText("");
+                    }
+
+                    if (mcCountryField.getValue() == null) {
+                        validationError = true;
+                        mcCountryErrorMessage.setText("Please select a country.");
+                    } else {
+                        mcCountryErrorMessage.setText("");
+                    }
+
+                    if (mcFirstLevelDivisionField.getValue() == null) {
+                        validationError = true;
+                        mcFirstLevelDivisionErrorMessage.setText("Please select a region.");
+                    } else {
+                        mcFirstLevelDivisionErrorMessage.setText("");
+                    }
+                    if (!validationError) {
+                        Customer customerToChange = CustomerList.lookupCustomer(Integer.parseInt(mcCustomerIdField.getText())).get(0);
+                        if (customerToChange.hasExistingAppointments()) {
+                            for (Appointment appointment : AppointmentList.getAppointmentList()) {
+                                if (customerToChange.getCustomerId() == appointment.getCustomerId()) {
+                                    appointment.setCustomerName(mcNameField.getText());
+                                }
+                            }
+                        }
+
+                        customerToChange.setName(mcNameField.getText());
+                        customerToChange.setAddress(mcAddressField.getText());
+                        customerToChange.setPhoneNumber(mcPhoneNumberField.getText());
+                        customerToChange.setPostalCode(mcPostalCodeField.getText());
+                        customerToChange.setCountry(mcCountryField.getValue());
+                        customerToChange.setFirstLevelDivision(mcFirstLevelDivisionField.getValue());
+
+
+                        if (demoMode) {
+                            allCustomersTable.refresh();
+                            allAppointmentsTable.refresh();
+                        } else {
+                            DAO_customers customersDao = new DAOImpl_customers();
+                            DAO_appointments appointmentsDao = new DAOImpl_appointments();
+
+                            customersDao.modifyCustomer(customerToChange);
+                            allCustomersTable.setItems(customersDao.getAllCustomers());
+                            allAppointmentsTable.setItems(appointmentsDao.getAllAppointments());
+
+
+                        }
+
+                        customerSelector.setItems(CustomerList.getCustomerNames());
+                        mCustomerSelector.setItems(CustomerList.getCustomerNames());
+                        addMessage("Customer '" + mcNameField.getText() + "' was modified successfully." + " (id: " + mcCustomerIdField.getText() + ")", BLACK);
+                        customersTabPane.getSelectionModel().select(allCustomersTab);
+                        modifyCustomerTab.setDisable(true);
+                    } else {
+                        addMessage("New customer was NOT added.  Please check your entries.", RED);
+                    }
+
+                } catch (Exception exception) {
+                    System.out.println("Exception " + exception + " during save new customer.");
+                    addMessage("New customer was NOT added.  Exception occurred.", RED);
+                }
+            });
+
+            //Modify Customer Tab - Cancel Button
+            mcCancelButton.setOnAction(e -> {
+                customersTabPane.getSelectionModel().select(allCustomersTab);
+                modifyCustomerTab.setDisable(true);
+                addMessage("Customer modification canceled.", BLACK);
+            });
+
+            //Reports Tab - Refresh Button
+            rtaRetrieveButton.setOnAction(e -> {
+
+                try {
+                    if (rtaTypeSelector.getValue() != null && rtaYearTextField.getText() != null) {
+                        String selectedType = rtaTypeSelector.getValue();
+                        int selectedYear = Integer.parseInt(rtaYearTextField.getText());
+                        ObservableList<Integer> allAppointmentsForYear = FXCollections.observableArrayList();
+                        if (selectedType.equals("<All>")) {
+                            allAppointmentsForYear = AppointmentList.getAppointmentTotals(selectedYear);
+                        } else {
+                            allAppointmentsForYear = AppointmentList.getAppointmentTotals(selectedYear, selectedType);
+                        }
+                        janResults.setText(String.valueOf(allAppointmentsForYear.get(0)));
+                        febResults.setText(String.valueOf(allAppointmentsForYear.get(1)));
+                        marResults.setText(String.valueOf(allAppointmentsForYear.get(2)));
+                        aprResults.setText(String.valueOf(allAppointmentsForYear.get(3)));
+                        mayResults.setText(String.valueOf(allAppointmentsForYear.get(4)));
+                        junResults.setText(String.valueOf(allAppointmentsForYear.get(5)));
+                        julResults.setText(String.valueOf(allAppointmentsForYear.get(6)));
+                        augResults.setText(String.valueOf(allAppointmentsForYear.get(7)));
+                        sepResults.setText(String.valueOf(allAppointmentsForYear.get(8)));
+                        octResults.setText(String.valueOf(allAppointmentsForYear.get(9)));
+                        novResults.setText(String.valueOf(allAppointmentsForYear.get(10)));
+                        decResults.setText(String.valueOf(allAppointmentsForYear.get(11)));
+                    } else {
+                        addMessage("Please select an appointment type and enter a valid 4-digit year number.", BLACK);
+                    }
+                } catch (NumberFormatException numberFormatException) {
                     addMessage("Please select an appointment type and enter a valid 4-digit year number.", BLACK);
                 }
-            } catch (NumberFormatException numberFormatException) {
-                addMessage("Please select an appointment type and enter a valid 4-digit year number.", BLACK);
-            }
-        });
+            });
 
+        } catch (CommunicationsException communicationsException) {
+            addMessage("Communication to the server was timed out.  Please restart the application.", RED);
+            System.out.println(communicationsException.getMessage());
+        }
     }
 
     //methods
@@ -1619,7 +1612,7 @@ public class MainWindowController {
         HBox fullMessage = new HBox(currentTimeLabel, messageToAddLabel);
 
         messageToAddLabel.setTextFill(color);
-        System.out.println("alertMessage added");
+        System.out.println("alertMessage added: " + message);
         alertMessages.getChildren().add(fullMessage);
         alertScrollPane.vvalueProperty().bind(alertMessages.heightProperty()); //this causes the scrollbar to snap to bottom
     }

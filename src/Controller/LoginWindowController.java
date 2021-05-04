@@ -1,6 +1,7 @@
 package Controller;
 
 import MiscTools.MiscTools;
+import Model.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +16,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.ResourceBundle;
+
+/**
+ * The LoginWindowController class is the handler for the login window.
+ */
 
 
 //As a reminder, the FXML file is pointing to this controller class.
@@ -71,9 +76,11 @@ public class LoginWindowController {
         ResourceBundle labels = ResourceBundle.getBundle("Internationalization.ResourceBundle", Locale.getDefault());
 
         //login validation with actual users is beyond the scope of this project.
+        User testUser = new User(1, "test", "test"); //test user for demo purposes
+
         try {
             boolean loginSuccessful;
-            if (userIdField.getText().equals("test") && passwordField.getText().equals("test")) {
+            if (testUser.credentialsValid(userIdField.getText(), passwordField.getText())) {
                 loginSuccessful = true;
 
                 //set a pointer to the current stage
@@ -102,7 +109,7 @@ public class LoginWindowController {
 
 
         } catch (Exception exception){
-            System.out.println(exception);
+            exception.printStackTrace();
         }
 
     }

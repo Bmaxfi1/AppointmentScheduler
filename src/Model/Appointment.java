@@ -2,6 +2,9 @@ package Model;
 
 import java.time.LocalDateTime;
 
+/**
+ * The Appointment class defines an appointment instance.  This class relies heavily on other classes to function.
+ */
 
 public class Appointment {
 

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class AppointmentList {
 
     private static ObservableList<Appointment> appointmentList = FXCollections.observableArrayList();
+    private static int currentHighestAppointmentId;
 
     /**
      *
@@ -154,5 +155,20 @@ public class AppointmentList {
         appointmentList.removeIf(appointment -> idToDelete == appointment.getAppointmentId());  //this is the first time I've used this sort of Lambda
     }
 
+    public static int getNewAppointmentId() {
+        currentHighestAppointmentId++;
+        return currentHighestAppointmentId;
+    }
+
+    public static void setInitialHighestCustomerId() {
+        int newAppointmentId = -1;
+        for (int i = 0; i < AppointmentList.getAppointmentList().size(); i++) {
+            if (newAppointmentId <= AppointmentList.getAppointmentList().get(i).getAppointmentId()) {
+                newAppointmentId = AppointmentList.getAppointmentList().get(i).getAppointmentId();
+            }
+        }
+        currentHighestAppointmentId = newAppointmentId;
+
+    }
 }
 

@@ -46,8 +46,6 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(loginWindow, 387, 285));
         primaryStage.setResizable(false);
         primaryStage.show();
-
-
     }
 
     public static void main(String[] args) throws SQLException {

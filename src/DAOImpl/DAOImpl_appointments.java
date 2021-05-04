@@ -89,7 +89,9 @@ public class DAOImpl_appointments implements DAO_appointments {
     }
 
     @Override
-    public void addAppointment(Appointment appointmentToAdd) throws SQLException {
+    public int addAppointment(Appointment appointmentToAdd) throws SQLException {
+
+        int generatedId = -1;
 
         LocalDateTime startInstant = appointmentToAdd.getStartInstant();
         LocalDateTime endInstant = appointmentToAdd.getEndInstant();
@@ -102,8 +104,6 @@ public class DAOImpl_appointments implements DAO_appointments {
 
         LocalDateTime UTCZoneStart = convertedStart.toLocalDateTime();
         LocalDateTime UTCZoneEnd = convertedEnd.toLocalDateTime();
-
-
 
         Connection connection = DBConnection.getConnection();
         DBQuery.setPreparedStatement(connection, addAppointmentString);
@@ -118,10 +118,22 @@ public class DAOImpl_appointments implements DAO_appointments {
         ps.setString(8, "admin");
         ps.setString(9, "admin");
         ps.setString(10, String.valueOf(appointmentToAdd.getCustomerId()));
-        ps.setString(11, String.valueOf(appointmentToAdd.getContact().getContactId()));
-        ps.setString(12, "1");
+        ps.setString(11, "1");
+        ps.setString(12, String.valueOf(appointmentToAdd.getContact().getContactId()));
         ps.execute();
         System.out.println(ps.getUpdateCount() + " row(s) affected.");
+
+        //return the generated Id
+        DBQuery.setPreparedStatement(connection, "SELECT Appointment_ID FROM appointments WHERE Appointment_ID = @@Identity");
+        PreparedStatement ps2 = DBQuery.getPreparedStatement();
+        ps2.execute();
+        ResultSet rs = ps2.getResultSet();
+        if (rs.next()) {
+            generatedId = rs.getInt("Appointment_ID");
+        }
+
+        System.out.println(generatedId);
+        return generatedId;
 
     }
 
@@ -168,8 +180,10 @@ public class DAOImpl_appointments implements DAO_appointments {
         ps.setString(8, String.valueOf(appointmentToModify.getCustomerId()));
         ps.setString(9, "1");
         ps.setString(10, String.valueOf(appointmentToModify.getContact().getContactId()));
-        ps.setString(11, String.valueOf(appointmentToModify.getCustomerId()));
+        ps.setString(11, String.valueOf(appointmentToModify.getAppointmentId()));
         ps.execute();
         System.out.println(ps.getUpdateCount() + "row(s) affected.");
     }
+
+
 }

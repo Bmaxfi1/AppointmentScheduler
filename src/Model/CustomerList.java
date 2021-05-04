@@ -13,6 +13,7 @@ import java.util.Locale;
 public class CustomerList {
 
     private static ObservableList<Customer> customerList = FXCollections.observableArrayList();
+    private static int currentHighestCustomerId;
 
     /**
      * @param customerToAdd the customer to be added to the list
@@ -98,4 +99,18 @@ public class CustomerList {
     }
 
 
+    public static int getNewCustomerId() {
+        currentHighestCustomerId++;
+        return currentHighestCustomerId;
+    }
+
+    public static void setInitialHighestCustomerId() {
+        int newCustomerId = -1;
+        for (int i = 0; i < CustomerList.getCustomerList().size(); i++) {
+            if (newCustomerId <= CustomerList.getCustomerList().get(i).getCustomerId()) {
+                newCustomerId = CustomerList.getCustomerList().get(i).getCustomerId();
+            }
+        }
+        currentHighestCustomerId = newCustomerId;
+    }
 }
