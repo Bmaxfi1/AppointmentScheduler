@@ -13,9 +13,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The Implementation of the DAO Interface
+ */
 public class DAOImpl_countries implements DAO_countries {
     private static final String selectAllString = "SELECT * FROM countries";
 
+    @Override
     public String getCountryName(int countryIdToFind) throws SQLException {
         Connection connection = DBConnection.getConnection();
         DBQuery.setPreparedStatement(connection, selectAllString);
@@ -32,6 +36,7 @@ public class DAOImpl_countries implements DAO_countries {
         return null;
     }
 
+    @Override
     public ObservableList<Country> getAllCountries() throws SQLException{
         ObservableList<Country> allCountries = FXCollections.observableArrayList();
 

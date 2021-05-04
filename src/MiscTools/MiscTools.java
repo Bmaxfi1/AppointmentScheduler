@@ -14,8 +14,16 @@ import java.time.ZonedDateTime;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
+/**
+ * The MiscTools Class holds several general static methods that are used throughout the app
+ */
 public abstract class MiscTools {
 
+    /**
+     *
+     * @param str the string to check
+     * @return true if the parameter is an integer
+     */
     public static boolean isInteger(String str) {
         if (str == null) {
             return false;
@@ -40,6 +48,11 @@ public abstract class MiscTools {
         return true;
     }
 
+    /**
+     *
+     * @param timeToCheck the time to check
+     * @return string containing AM or PM
+     */
     public static String getAmOrPm(LocalTime timeToCheck) {
         if (timeToCheck.getHour() >= 12) {
             return "PM";
@@ -48,6 +61,12 @@ public abstract class MiscTools {
         }
     }
 
+    /**
+     *
+     * @param startTimeToCheck the start time
+     * @param endTimeToCheck the end time
+     * @return true if the business is closed between the start time and end time
+     */
     public static boolean isOutsideBusinessHours(LocalDateTime startTimeToCheck, LocalDateTime endTimeToCheck) {
         ZoneId myZone = ZoneId.systemDefault();
         ZoneId EST = ZoneId.of("America/New_York");
@@ -68,6 +87,13 @@ public abstract class MiscTools {
                 !startTimeToCheckEST.toLocalDate().toString().equals(endTimeToCheckEST.toLocalDate().toString());
     }
 
+    /**
+     *
+     * @param customerId the customer to check for overlapping appointments
+     * @param start the start time
+     * @param end the end time
+     * @return true if the customer has an appointment between the start time and end time
+     */
     public static boolean appointmentOverlaps(int customerId, LocalDateTime start, LocalDateTime end) {
         for (Appointment appointment: AppointmentList.getAppointmentList()) {
             if (customerId == appointment.getCustomerId()) {
@@ -79,7 +105,15 @@ public abstract class MiscTools {
         return false;
     }
 
-    //when modifying an appointment, it is important to ignore the appointment we are changing.
+    /**
+     * When modifying an appointment, it is important to ignore the appointment we are changing. This overloaded method
+     * takes into account an existing appointment.
+     * @param customerId the int of the customer to check for overlapping appointments
+     * @param start the start time
+     * @param end the end time
+     * @param appointmentIdToDisregard the appointment that is being modified
+     * @return true if the customer has an appointment between the start time and end time, ignoring a certain appointment
+     */
     public static boolean appointmentOverlaps(int customerId, LocalDateTime start, LocalDateTime end, int appointmentIdToDisregard) {
         for (Appointment appointment: AppointmentList.getAppointmentList()) {
             if (appointment.getAppointmentId() != appointmentIdToDisregard) {
@@ -93,6 +127,11 @@ public abstract class MiscTools {
         return false;
     }
 
+    /**
+     *
+     * @param loginDetails a string containing details to be logged
+     * @throws IOException
+     */
     public static void recordLoginToFile(String loginDetails) throws IOException {
         Files.writeString(
                 Path.of(System.getProperty("java.io.tmpdir"), "login_activity.txt"),

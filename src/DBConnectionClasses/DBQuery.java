@@ -3,19 +3,12 @@ package DBConnectionClasses;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
+/**
+ * The DBQuery class is used to hold and provide prepared statements
+ */
 public abstract class DBQuery {
-    private static Statement statement; //statement reference
     private static PreparedStatement preparedStatement;
-
-    public static void setStatement(Connection connection) throws SQLException {
-        statement = connection.createStatement();
-    }
-
-    public static Statement getStatement() {
-        return statement;
-    }
 
     public static void setPreparedStatement(Connection conn, String sqlStatement) throws SQLException {
         preparedStatement = conn.prepareStatement(sqlStatement);
@@ -25,6 +18,8 @@ public abstract class DBQuery {
         return preparedStatement;
     }
 }
+
+//THESE ARE NOTES FOR MYSELF
 /*
 //SQL Statement examples
 

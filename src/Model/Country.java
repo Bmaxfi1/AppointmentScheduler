@@ -2,6 +2,9 @@ package Model;
 
 import javafx.collections.ObservableList;
 
+/**
+ * The Country class defines a country object.  Customers use Countries in their addresses.
+ */
 public class Country {
     private int countryId;
     private String countryName;
@@ -13,30 +16,26 @@ public class Country {
         this.firstLevelDivisions = firstLevelDivisions;
     }
 
-    public int getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(int countryId) {
-        this.countryId = countryId;
-    }
-
+    /**
+     *
+     * @return the countryName
+     */
     public String getCountryName() {
         return countryName;
     }
 
-    public void setCountryName(String countryName) {
-        this.countryName = countryName;
-    }
-
+    /**
+     *
+     * @return the list of strings containing the first level divisions for this country
+     */
     public ObservableList<String> getFirstLevelDivisions() {
         return firstLevelDivisions;
     }
 
-    public void setFirstLevelDivisions(ObservableList<String> firstLevelDivisions) {
-        this.firstLevelDivisions = firstLevelDivisions;
-    }
-
+    /**
+     * this method causes "toString()" to return the country name rather than the object address
+     * @return the country name as a string
+     */
     public String toString() {
         return this.countryName;
     }

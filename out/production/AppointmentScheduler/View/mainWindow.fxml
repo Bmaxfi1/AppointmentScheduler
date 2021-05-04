@@ -59,7 +59,6 @@
                                     <TextField fx:id="endTimeField" layoutX="287.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" promptText="00:00" />
                                     <ChoiceBox fx:id="endAmOrPm" layoutX="363.0" layoutY="235.0" prefHeight="25.0" prefWidth="62.0" />
                                     <TextField fx:id="customerIdField" disable="true" layoutX="358.0" layoutY="142.0" prefHeight="25.0" prefWidth="67.0" promptText="&lt;Cust ID&gt;" />
-                                    <Button fx:id="saveButton" defaultButton="true" layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
                                     <Label layoutX="21.0" layoutY="22.0" text="Appointment ID" />
                                     <Label layoutX="21.0" layoutY="53.0" text="Title" />
                                     <Label layoutX="21.0" layoutY="115.0" text="Location" />
@@ -79,6 +78,7 @@
                                     <Label fx:id="contactErrorMessage" disable="true" layoutX="460.0" layoutY="270.0" textFill="RED" />
                                     <ComboBox fx:id="contactSelector" layoutX="146.0" layoutY="266.0" prefHeight="25.0" prefWidth="203.0" promptText="Select a Contact" />
                                     <TextField fx:id="contactIdField" disable="true" layoutX="361.0" layoutY="266.0" prefHeight="25.0" prefWidth="67.0" promptText="&lt;Cont ID&gt;" />
+                                    <Button fx:id="saveButton" defaultButton="true" layoutX="21.0" layoutY="312.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="279.0" text="Save and Add New Appointment" />
                                  </children>
                               </AnchorPane>
                            </content>

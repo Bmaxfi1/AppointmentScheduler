@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 /**
  * This is just a class for loading a sample database to the application, for debugging or demonstration purposes.
  */
-
 public abstract class DemoData {
 
     public static ObservableList<Customer> getDemoCustomerList() {

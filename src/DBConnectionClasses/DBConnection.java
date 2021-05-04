@@ -15,6 +15,9 @@ import java.sql.Connection;
 //execute() - runs a SQL Statement (string arg).  returns true if a SELECT statement was executed, false if INSERT, UPDATE, DELETE
 //getUpdateCount() - returns the number of rows affected by an INSERT, UPDATE, or DELETE command.  Only used on execute that returns false.
 
+/**
+ * The DBConnection class is used to get and store a database connection
+ */
 public class DBConnection {
     private static final String protocol = "jdbc";
     private static final String vendorName = ":mysql:";

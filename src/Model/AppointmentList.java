@@ -6,7 +6,7 @@ import javafx.collections.ObservableList;
 import java.time.LocalDateTime;
 
 /**
- * A list of all appointments received from the database, plus any locally added appointments.
+ * A list of appointments.
  */
 public class AppointmentList {
 
@@ -21,6 +21,10 @@ public class AppointmentList {
         appointmentList.add(appointmentToAdd);
     }
 
+    /**
+     *
+     * @param listToAdd the list that will be added to appointmentList
+     */
     public static void addAppointmentList(ObservableList<Appointment> listToAdd) {
         for (Appointment appointment:
              listToAdd) {
@@ -28,10 +32,19 @@ public class AppointmentList {
         }
     }
 
+    /**
+     *
+     * @return the static appointmentList
+     */
     public static ObservableList<Appointment> getAppointmentList() {
         return appointmentList;
     }
 
+    /**
+     *
+     * @param searchText the id of the search query
+     * @return the appointment(s) matching the parameter
+     */
     public static ObservableList<Appointment> lookupAppointment(int searchText){
         ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
         for (Appointment appointment: appointmentList) {
@@ -44,10 +57,15 @@ public class AppointmentList {
         return filteredList;
     }
 
-    public static ObservableList<Appointment> lookupAppointment(String customerName) {
+    /**
+     *
+     * @param name the customer/contact name to search for
+     * @return the results of the search
+     */
+    public static ObservableList<Appointment> lookupAppointment(String name) {
         ObservableList<Appointment> filteredList = FXCollections.observableArrayList();
         for (Appointment appointment:appointmentList){
-            if (appointment.getCustomerName().toLowerCase().contains(customerName.toLowerCase()) || appointment.getContact().getContactName().toLowerCase().contains(customerName.toLowerCase())) {
+            if (appointment.getCustomerName().toLowerCase().contains(name.toLowerCase()) || appointment.getContact().getContactName().toLowerCase().contains(name.toLowerCase())) {
                 filteredList.add(appointment);
             }
         }
@@ -73,6 +91,11 @@ public class AppointmentList {
         return listOfTypes;
     }
 
+    /**
+     *
+     * @param year the year to collect totals from
+     * @return the total appointments for the year, in a list and totalled by month.
+     */
     public static ObservableList<Integer> getAppointmentTotals(int year) {
         ObservableList<Integer> appointmentTotalsByMonth= FXCollections.observableArrayList();
         int jan = 0;
@@ -112,6 +135,12 @@ public class AppointmentList {
         return appointmentTotalsByMonth;
     }
 
+    /**
+     *
+     * @param year the year to collect totals from
+     * @param type the type of appointment to return
+     * @return the total appointments for the year, in a list and totalled by month.
+     */
     public static ObservableList<Integer> getAppointmentTotals(int year, String type) {
         ObservableList<Integer> appointmentTotalsByMonth= FXCollections.observableArrayList();
         int jan = 0;
@@ -151,16 +180,29 @@ public class AppointmentList {
         return appointmentTotalsByMonth;
     }
 
+    /**
+     * **Lambda Here**
+     * The lambda shown here is a shorthand version of a conditional remove operation
+     *
+     * @param idToDelete the id of the appointment to delete
+     */
     public static void deleteAppointment(int idToDelete) {
         appointmentList.removeIf(appointment -> idToDelete == appointment.getAppointmentId());  //this is the first time I've used this sort of Lambda
     }
 
+    /**
+     *
+     * @return a new unique appointmentId, used only in demo mode.
+     */
     public static int getNewAppointmentId() {
         currentHighestAppointmentId++;
         return currentHighestAppointmentId;
     }
 
-    public static void setInitialHighestCustomerId() {
+    /**
+     * determines current highest appointmentId and sets it to the static member
+     */
+    public static void setInitialHighestAppointmentId() {
         int newAppointmentId = -1;
         for (int i = 0; i < AppointmentList.getAppointmentList().size(); i++) {
             if (newAppointmentId <= AppointmentList.getAppointmentList().get(i).getAppointmentId()) {

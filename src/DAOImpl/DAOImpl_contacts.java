@@ -12,9 +12,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The Implementation of the DAO Interface
+ */
 public class DAOImpl_contacts implements DAO_contacts {
     private static final String selectAllString = "SELECT * FROM contacts";
 
+    @Override
     public Contact getContact(int contactIdToFind) throws SQLException {
         Contact contact;
 
@@ -36,6 +40,7 @@ public class DAOImpl_contacts implements DAO_contacts {
         return null;
     }
 
+    @Override
     public ObservableList<Contact> getAllContacts() throws SQLException {
         ObservableList<Contact> allContacts = FXCollections.observableArrayList();
 

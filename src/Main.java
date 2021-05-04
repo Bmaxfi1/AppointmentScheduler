@@ -1,19 +1,12 @@
 import DBConnectionClasses.DBConnection;
-import DBConnectionClasses.DBQuery;
-import MiscTools.MiscTools;
-import Model.*;
-import Controller.*;
-
+import Model.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.sql.*;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.sql.SQLException;
 
 /**
  * @author Brandon Maxfield
@@ -37,9 +30,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        //create test user
-        User testUser = new User(1, "test", "test");
-
         //load login window
         Parent loginWindow = FXMLLoader.load(getClass().getResource("View/loginWindow.fxml"));
         primaryStage.setTitle("AppointmentScheduler");

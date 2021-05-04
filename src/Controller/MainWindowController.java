@@ -41,7 +41,6 @@ import static javafx.scene.paint.Color.RED;
 /**
  * The MainWindowController class is the handler for the mainWindow.
  */
-
 public class MainWindowController {
 
     //This section is for linking the FXML file to this controller class
@@ -334,14 +333,13 @@ public class MainWindowController {
     @FXML
     private Label initialAlertMessage;
 
-    //init
+    //init runs when the mainWindow instance is created
     public void initialize() throws SQLException {
         try {
             System.out.println("Successfully began MainWindowController instantiation");
             ZoneId userTimeZone = ZoneId.systemDefault();
             String startupMessage = "Welcome!  Alerts will be displayed in this window.  All times are in local time(Your timezone is: " + userTimeZone.toString() + ").";
             addMessage(startupMessage, BLACK);
-
 
             //Create links between table columns and model
             //appointment table
@@ -355,7 +353,6 @@ public class MainWindowController {
             endColumn.setCellValueFactory(new PropertyValueFactory<>("endInstant"));
             customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
             contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
-
             contactColumn.setCellFactory(tc -> new TableCell<Appointment, Contact>() {
                 @Override
                 protected void updateItem(Contact contact, boolean empty) {
@@ -408,7 +405,7 @@ public class MainWindowController {
 
             //initialize customer/appointment id generator
             CustomerList.setInitialHighestCustomerId();
-            AppointmentList.setInitialHighestCustomerId();
+            AppointmentList.setInitialHighestAppointmentId();
 
             //Check to see if there is an upcoming appointment within 15 minutes.
             boolean upcomingAppointment = false;

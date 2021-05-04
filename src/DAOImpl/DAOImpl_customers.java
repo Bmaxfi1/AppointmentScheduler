@@ -16,6 +16,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+/**
+ * The Implementation of the DAO Interface
+ */
 public class DAOImpl_customers implements DAO_customers {
     private static final String selectAllString = "SELECT * FROM customers";
     private static final String addString = "INSERT INTO customers VALUES(NULL, ?, ?, ?, ?, ?, ?, NULL, ?, ?)";

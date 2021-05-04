@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * The list of customers.
+ * A list of customers.
  */
 public class CustomerList {
 
@@ -22,6 +22,10 @@ public class CustomerList {
         customerList.add(customerToAdd);
     }
 
+    /**
+     *
+     * @param listToAdd the list that will be added to the static customerList
+     */
     public static void addCustomerList(ObservableList<Customer> listToAdd) {
         for (Customer customer :
                 listToAdd) {
@@ -29,14 +33,18 @@ public class CustomerList {
         }
     }
 
-    public static Customer getCustomer(int index) {
-        return customerList.get(index);
-    }
-
+    /**
+     *
+     * @return the static customerList
+     */
     public static ObservableList<Customer> getCustomerList() {
         return customerList;
     }
 
+    /**
+     *
+     * @return a list of strings that contains the names of all customers in the static customerList
+     */
     public static ObservableList<String> getCustomerNames() {
         ObservableList<String> customerNames = FXCollections.observableArrayList();
         for (Customer customer : customerList) {
@@ -45,6 +53,11 @@ public class CustomerList {
         return customerNames;
     }
 
+    /**
+     *
+     * @param customerId the id of the customer to look for
+     * @return a list of all customers sharing the id
+     */
     public static ObservableList<Customer> lookupCustomer(int customerId) {
         ObservableList<Customer> filteredList = FXCollections.observableArrayList();
         for (Customer customer : customerList) {
@@ -57,6 +70,11 @@ public class CustomerList {
         return filteredList;
     }
 
+    /**
+     *
+     * @param searchText the name of the customer to find
+     * @return a list of all customers that contain the searchText
+     */
     public static ObservableList<Customer> lookupCustomer(String searchText) {
         ObservableList<Customer> filteredList = FXCollections.observableArrayList();
         for (Customer customer : customerList) {
@@ -68,10 +86,21 @@ public class CustomerList {
         return filteredList;
     }
 
+    /**
+     * **Lambda Here**
+     * The lambda shown here is a shorthand version of a conditional remove operation
+     *
+     * @param idToDelete the Id of the customer to be deleted
+     */
     public static void deleteCustomer(int idToDelete) {
         customerList.removeIf(customer -> idToDelete == customer.getCustomerId());  //this is the first time I've used this sort of Lambda
     }
 
+    /**
+     *
+     * @param country the country for which the list will be built upon
+     * @return a list of all customers that live in a particular country
+     */
     public static ObservableList<ObservableList<String>> getCustomersByCountry(Country country) {
         ObservableList<ObservableList<String>> listOfFLDAndTotal = FXCollections.observableArrayList();
         ObservableList<String> firstLevelDivisions = country.getFirstLevelDivisions();
@@ -98,12 +127,18 @@ public class CustomerList {
         return listOfFLDAndTotal;
     }
 
-
+    /**
+     *
+     * @return a new customerId that is higher than the current highest customerId in customerList
+     */
     public static int getNewCustomerId() {
         currentHighestCustomerId++;
         return currentHighestCustomerId;
     }
 
+    /**
+     * determines the current highest customerId and sets it to the static member
+     */
     public static void setInitialHighestCustomerId() {
         int newCustomerId = -1;
         for (int i = 0; i < CustomerList.getCustomerList().size(); i++) {

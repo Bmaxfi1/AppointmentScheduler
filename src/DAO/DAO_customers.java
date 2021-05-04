@@ -1,15 +1,13 @@
 package DAO;
 
-import DBConnectionClasses.DBConnection;
-import DBConnectionClasses.DBQuery;
 import Model.Customer;
 import javafx.collections.ObservableList;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * The DAO Interface for customers
+ */
 public interface DAO_customers {
     public String getCustomerName(int customerIdToFind) throws SQLException;
     public ObservableList<Customer> getAllCustomers() throws SQLException;

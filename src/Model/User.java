@@ -15,6 +15,12 @@ public class User {
         this.password = password;
     }
 
+    /**
+     *
+     * @param userNameProvided the username
+     * @param passwordProvided the password
+     * @return true if x.userName = x.password
+     */
     public boolean credentialsValid(String userNameProvided, String passwordProvided) {
         return userName.equals(userNameProvided) && password.equals(passwordProvided);
     }

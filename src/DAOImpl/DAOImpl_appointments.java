@@ -13,6 +13,9 @@ import java.sql.*;
 import java.time.*;
 import java.util.TimeZone;
 
+/**
+ * The Implementation of the DAO Interface
+ */
 public class DAOImpl_appointments implements DAO_appointments {
 
     private static final String selectAllString = "SELECT * FROM appointments";
