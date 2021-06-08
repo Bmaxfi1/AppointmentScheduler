@@ -116,6 +116,9 @@ public class LoginWindowController{
                 System.out.println("Successfully loaded mainWindow.fxml");
                 System.out.println("about to set the scene to mainWindow.fxml");
                 thisStage.setScene(new Scene(mainScene, 923, 505));
+                thisStage.setResizable(true);
+                thisStage.setMinWidth(923);
+                thisStage.setMinHeight(530);
                 System.out.println("Successfully set the scene to mainWindow.fxml");
 
                 //create the main window controller

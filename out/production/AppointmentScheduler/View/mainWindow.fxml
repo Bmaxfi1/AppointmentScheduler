@@ -8,7 +8,7 @@
 
 <AnchorPane fx:id="mainAnchorPane" prefHeight="503.0" prefWidth="923.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.MainWindowController">
    <children>
-      <TabPane fx:id="mainTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="923.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.rightAnchor="0.0">
+      <TabPane fx:id="mainTabPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="417.0" prefWidth="923.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="86.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
           <Tab fx:id="appointmentsTab" text="Appointments">
             <content>
@@ -18,9 +18,14 @@
                            <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="346.0" prefWidth="734.0">
                                  <children>
-                                    <Button fx:id="modifyButton" layoutX="574.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Modify" />
-                                    <Button fx:id="deleteButton" layoutX="642.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" text="Delete" />
-                                    <TableView fx:id="allAppointmentsTable" layoutY="46.0" prefHeight="311.0" prefWidth="923.0">
+                                    <HBox layoutX="574.0" layoutY="14.0" spacing="10.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="10.0">
+                                       <children>
+                                          <Button fx:id="modifyButton" layoutX="574.0" layoutY="14.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="Modify" />
+                                          <Button fx:id="deleteButton" mnemonicParsing="false" prefHeight="25.0" prefWidth="57.0" text="Delete" />
+                                          <TextField fx:id="searchBox" prefHeight="25.0" prefWidth="190.0" promptText="Search by ID or Name" />
+                                       </children>
+                                    </HBox>
+                                    <TableView fx:id="allAppointmentsTable" layoutY="46.0" prefHeight="311.0" prefWidth="923.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="46.0">
                                       <columns>
                                         <TableColumn fx:id="appointmentIdColumn" prefWidth="97.0" text="Appointment ID" />
                                         <TableColumn fx:id="titleColumn" prefWidth="105.0" text="Title" />
@@ -34,7 +39,6 @@
                                           <TableColumn fx:id="customerIdColumn" prefWidth="74.0" text="Customer Id" />
                                       </columns>
                                     </TableView>
-                                    <TextField fx:id="searchBox" layoutX="719.0" layoutY="14.0" prefHeight="25.0" prefWidth="190.0" promptText="Search by ID or Name" />
                                     <DatePicker fx:id="datePicker" disable="true" editable="false" layoutX="160.0" layoutY="14.0" prefHeight="25.0" prefWidth="137.0" promptText="&lt;- pick one" showWeekNumbers="true" />
                                     <Label layoutX="14.0" layoutY="18.0" text="View" />
                                     <ComboBox fx:id="viewSelector" layoutX="48.0" layoutY="14.0" prefHeight="25.0" prefWidth="93.0" promptText="Filters" />
@@ -137,7 +141,7 @@
                         <content>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
-                                    <TableView fx:id="allCustomersTable" layoutY="46.0" prefHeight="313.0" prefWidth="923.0">
+                                    <TableView fx:id="allCustomersTable" layoutY="46.0" prefHeight="313.0" prefWidth="923.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="46.0">
                                       <columns>
                                         <TableColumn fx:id="customerIdColumn2" prefWidth="75.0" text="Customer ID" />
                                         <TableColumn fx:id="nameColumn" prefWidth="118.0" text="Name" />
@@ -150,7 +154,7 @@
                                     </TableView>
                                     <Button fx:id="modifyCustomerButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" text="Modify Customer" />
                                     <Button fx:id="deleteCustomerButton" layoutX="132.0" layoutY="14.0" mnemonicParsing="false" text="Delete Customer" />
-                                    <TextField fx:id="customerSearchBox" layoutX="694.0" layoutY="14.0" prefHeight="25.0" prefWidth="215.0" promptText="Search by ID or Name" />
+                                    <TextField fx:id="customerSearchBox" layoutX="694.0" layoutY="14.0" prefHeight="25.0" prefWidth="215.0" promptText="Search by ID or Name" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="11.0" />
                                  </children>
                               </AnchorPane>
                         </content>
@@ -222,7 +226,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TabPane prefHeight="388.0" prefWidth="923.0" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane prefHeight="388.0" prefWidth="923.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <tabs>
                             <Tab text="Total Appointments">
                               <content>
@@ -281,7 +285,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <ScrollPane fx:id="alertScrollPane" fitToWidth="true" layoutX="11.0" layoutY="428.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="64.0" prefWidth="902.0">
+      <ScrollPane fx:id="alertScrollPane" fitToWidth="true" layoutX="11.0" layoutY="428.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="64.0" prefWidth="902.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
         <content>
             <VBox fx:id="alertMessages" prefHeight="18.0" prefWidth="709.0" />
         </content>

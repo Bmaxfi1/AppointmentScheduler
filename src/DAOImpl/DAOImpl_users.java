@@ -29,10 +29,6 @@ public class DAOImpl_users implements DAO_users {
 
 
         while (rs.next()) {
-            System.out.println(rs.getString("User_Name"));
-            System.out.println(rs.getString("Password"));
-            System.out.println(rs.getString("salt"));
-
             String salt = rs.getString("salt");
             String saltedPw = salt + p;
 
@@ -40,8 +36,6 @@ public class DAOImpl_users implements DAO_users {
             crypt.reset();
             crypt.update(saltedPw.getBytes(StandardCharsets.UTF_8));
             String sha1pw = String.format("%040x", new BigInteger(1, crypt.digest()));
-
-            System.out.println(sha1pw);
 
             if (rs.getString("User_Name").equals(userName)) {
                 if (rs.getString("Password").equals(sha1pw)) {
