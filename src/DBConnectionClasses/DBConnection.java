@@ -29,12 +29,13 @@ public class DBConnection {
     private static final String MYSQLJBCDriver = "com.mysql.jdbc.Driver";
 
     private static final String username = "U07Vc0";
+    private static final String password = "53689140160";
     private static Connection conn = null;
 
     public static Connection startConnection() {
         try {
             Class.forName(MYSQLJBCDriver);
-            conn = DriverManager.getConnection(jdbcURL, username, "53689140160");
+            conn = DriverManager.getConnection(jdbcURL, username, password);
 
             System.out.println("Connection successful");
         } catch (SQLException e) {
