@@ -114,8 +114,9 @@ public class LoginWindowController{
 
                 //get the new scene from the fxml file and set it to the stage
                 System.out.println("about to load mainWindow.fxml");
-                URL url = new File("src/View/mainWindow.fxml").toURI().toURL();
-                Parent mainScene = FXMLLoader.load(url);
+//                URL url = new File("/View/mainWindow.fxml").toURI().toURL();
+//                Parent mainScene = FXMLLoader.load(url);
+                Parent mainScene = FXMLLoader.load(getClass().getResource("/View/mainWindow.fxml"));
                 System.out.println("Successfully loaded mainWindow.fxml");
                 System.out.println("about to set the scene to mainWindow.fxml");
                 thisStage.setScene(new Scene(mainScene, 923, 505));
