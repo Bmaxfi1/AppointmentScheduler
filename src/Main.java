@@ -3,6 +3,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.sql.SQLException;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
  * @author Brandon Maxfield
  * <p>
  * FUTURE ENHANCEMENTS
- * 1. Resizable window with element resizing.
+ * 1. Resizable window with element resizing. -- done
  * 2. Duplicate names won't show up in the drop down menu when adding/modifying appointments.
  * 3. Searchable contact list for adding/modifying appointments.
  * 4. Typable dates in appointment form.
@@ -34,6 +35,7 @@ public class Main extends Application {
         primaryStage.setTitle("AppointmentScheduler");
         primaryStage.setScene(new Scene(loginWindow, 387, 285));
         primaryStage.setResizable(false);
+        primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("View/icon.png")));
         primaryStage.show();
     }
 
